@@ -1,6 +1,8 @@
 package com.PollBuzz.pollbuzz.LoginSignup;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.PollBuzz.pollbuzz.R;
@@ -25,6 +27,7 @@ public class SignupFragment extends Fragment {
     private Button signup;
     private firebase fb;
     private KAlertDialog dialog;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public SignupFragment() {
     }
@@ -71,13 +74,10 @@ public class SignupFragment extends Fragment {
                     if (task.isSuccessful()) {
                         dialog.dismissWithAnimation();
                         fb.getUser().sendEmailVerification().addOnCompleteListener(task1 -> {
-<<<<<<< HEAD
                             Bundle bundle = new Bundle();
                             bundle.putString("user_id", fb.getUserId());
                             bundle.putString("timestamp", Timestamp.now().toDate().toString());
                             mFirebaseAnalytics.logEvent("signup", bundle);
-=======
->>>>>>> parent of 85d8e2c... Events added
                             Toast.makeText(getContext(), "Signup successful.\nPlease verify your mail.", Toast.LENGTH_LONG).show();
                             fb.signOut();
                         });
@@ -101,6 +101,7 @@ public class SignupFragment extends Fragment {
         signup = view.findViewById(R.id.signup);
         dialog=new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
+        mFirebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
     }
     private void showDialog() {
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
