@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".navFragments.FilterActivity">
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="@font/maven_pro"
+        android:layout_margin="24dp"
+        android:textSize="24sp"
+        android:id="@+id/viewed"
+        android:visibility="gone"
+        android:text="You have voted all active polls..."
+        android:layout_centerInParent="true" />
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="@font/maven_pro"
+        android:layout_margin="24dp"
+        android:textSize="24sp"
+        android:id="@+id/viewed2"
+        android:text="Select a filter option"
+        android:layout_centerInParent="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/linear_search">
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:text="@string/home_feed_title"
+            android:textColor="@color/colorPrimaryDark"
+            android:fontFamily="@font/pacifico"
+            android:textSize="40sp"
+            android:id="@+id/text"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_weight="2"
+            />
+
+        <ImageButton
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_filter_list_dark_24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:padding="5dp"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/type_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/linear_search"
+        android:background="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search for username"
+            android:textColor="@color/black"
+            android:layout_marginRight="10dp"
+            android:layout_weight="3"/>
+
+        <Button
+            android:id="@id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:background="@color/colorPrimaryDark"
+            android:layout_marginRight="20dp"
+            app:cornerRadius="20dp"
+            android:layout_marginBottom="10dp"
+            />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/type_layout"
+        android:layout_marginVertical="5dp"
+        android:id="@+id/date_layout"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="Starting Date"
+            android:gravity="center_vertical|center_horizontal"
+            android:fontFamily="@font/maven_pro"
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="2"
+            android:id="@+id/starting_date"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="-to-"
+            android:gravity="center_vertical|center_horizontal"
+            android:fontFamily="@font/maven_pro"
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:hint="Ending Date"
+            android:gravity="center_vertical|center_horizontal"
+            android:fontFamily="@font/maven_pro"
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="2"
+            android:id="@+id/ending_date"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+        <ImageButton
+            android:id="@+id/check"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_check_dark_24dp"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:paddingRight="10dp"/>
+
+
+    </LinearLayout>
+
+    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:layout_below="@id/date_layout"
+        android:layoutAnimation="@anim/animation_down_to_up"
+        app:shimmer_demo_shimmer_color="@color/white"
+        app:shimmer_demo_angle="20"
+        app:shimmer_demo_view_holder_item_background="@color/white"
+        app:shimmer_demo_layout_manager_type="linear_vertical"
+        app:shimmer_demo_layout="@layout/placeholder"
+        app:shimmer_demo_child_count="7"
+        />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        android:id="@+id/pBar" />
+
+
+
+
+</RelativeLayout>

@@ -18,8 +18,9 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
-        <activity android:name=".results.PieChartActivity"></activity>
-        <activity android:name=".results.PercentageResult"></activity>
+        <activity android:name=".navFragments.FilterActivity"></activity>
+        <activity android:name=".results.PieChartActivity" />
+        <activity android:name=".results.PercentageResult" />
         <activity
             android:name=".results.Image_type_result"
             android:screenOrientation="unspecified" />
