@@ -47,24 +47,13 @@
         app:shimmer_demo_layout="@layout/placeholder"
         app:shimmer_demo_child_count="7"
         />
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/fab"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:layout_marginRight="10dp"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            app:backgroundTint="@color/white"-->
-<!--            android:tooltipText="Add Poll"-->
-<!--            app:maxImageSize="40dp"-->
-<!--            app:borderWidth="0dp"-->
-<!--            app:pressedTranslationZ="12dp"-->
-<!--            app:rippleColor="@color/colorPrimary"-->
-<!--            android:src="@drawable/ic_add_primary_dark_24dp"-->
-<!--            app:elevation="10dp"/>-->
+    <ProgressBar
+        android:id="@+id/pBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

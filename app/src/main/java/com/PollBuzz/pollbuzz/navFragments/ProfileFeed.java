@@ -6,6 +6,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.StorageReference;
 
@@ -43,6 +44,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -74,9 +76,13 @@ public class ProfileFeed extends Fragment {
     private firebase fb;
     private LayoutAnimationController controller;
     private MaterialTextView viewed;
-    private String UID="";
+    private String UID = "";
     private DocumentReference userDoc;
     private Toolbar tB;
+    private DocumentSnapshot lastIndex;
+    private LinearLayoutManager linearLayoutManager;
+    ProgressBar progressBar;
+    Boolean flagFirst = true, flagFetch = true;
 
     public ProfileFeed() {
     }
@@ -93,7 +99,7 @@ public class ProfileFeed extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.activity_profile_feed, container, false);
+        View view = inflater.inflate(R.layout.activity_profile_feed, container, false);
         setGlobals(view);
         return view;
     }
@@ -111,9 +117,8 @@ public class ProfileFeed extends Fragment {
         if (getArguments() != null) {
             UID = getArguments().getString("UID");
             userDoc = fb.getUsersCollection().document(UID);
-        }
-        else{
-            userDoc=fb.getUserDocument();
+        } else {
+            userDoc = fb.getUserDocument();
         }
     }
 
@@ -168,37 +173,94 @@ public class ProfileFeed extends Fragment {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         });
+        profileRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!mArrayList.isEmpty() && linearLayoutManager.findLastVisibleItemPosition() == mArrayList.size() - 1 && flagFetch && !flagFirst) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    flagFetch = false;
+                    getData();
+                }
+            }
+        });
     }
 
     private void getData() {
         try {
-            userDoc.collection("Created").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        Log.d("ProfielFeed",userDoc.getId());
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                            if (dS.get("pollId") != null)
-                                fb.getPollsCollection().document(dS.get("pollId").toString()).get().addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful() && task1.getResult() != null) {
-                                        DocumentSnapshot dS1 = task1.getResult();
-                                        if (dS1.exists()) {
-                                            addToRecyclerView(dS1);
-                                        }
-                                    } else {
-                                        Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            if (lastIndex == null) {
+                userDoc.collection("Created")
+                        .orderBy("timestamp", Query.Direction.DESCENDING)
+                        .limit(20)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                if (!task.getResult().isEmpty()) {
+                                    for (QueryDocumentSnapshot dS : task.getResult()) {
+                                        if (dS.get("pollId") != null)
+                                            fb.getPollsCollection().document(dS.get("pollId").toString()).get().addOnCompleteListener(task1 -> {
+                                                if (task1.isSuccessful() && task1.getResult() != null) {
+                                                    DocumentSnapshot dS1 = task1.getResult();
+                                                    if (dS1.exists()) {
+                                                        addToRecyclerView(dS1);
+                                                    }
+                                                } else {
+                                                    Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        lastIndex = dS;
                                     }
-                                });
+                                } else {
+                                    flagFetch = false;
+                                    profileRV.hideShimmerAdapter();
+                                    viewed.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                profileRV.hideShimmerAdapter();
+                                if (getContext() != null)
+                                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                userDoc.collection("Created")
+                        .orderBy("timestamp", Query.Direction.DESCENDING)
+                        .startAfter(lastIndex)
+                        .limit(20)
+                        .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
+                            Log.d("ProfielFeed", userDoc.getId());
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                if (dS.get("pollId") != null)
+                                    fb.getPollsCollection().document(dS.get("pollId").toString()).get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful() && task1.getResult() != null) {
+                                            DocumentSnapshot dS1 = task1.getResult();
+                                            if (dS1.exists()) {
+                                                addToRecyclerView(dS1);
+                                            }
+                                        } else {
+                                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                lastIndex=dS;
+                            }
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
+                            flagFetch=false;
                         }
                     } else {
-                        profileRV.hideShimmerAdapter();
-                        viewed.setVisibility(View.VISIBLE);
+                        if (getContext() != null)
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    profileRV.hideShimmerAdapter();
-                    if (getContext() != null)
-                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                });
+
+            }
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
@@ -210,19 +272,17 @@ public class ProfileFeed extends Fragment {
         mArrayList.add(polldetails);
         Collections.sort(mArrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
         mAdapter.notifyDataSetChanged();
-        profileRV.hideShimmerAdapter();
-        profileRV.scheduleLayoutAnimation();
+        progressBar.setVisibility(View.GONE);
+        flagFetch = true;
+        if(flagFirst) {
+            profileRV.hideShimmerAdapter();
+            profileRV.scheduleLayoutAnimation();
+            flagFirst = false;
+        }
     }
 
     private void setGlobals(@NonNull View view) {
-        setHasOptionsMenu(true);
-        Toolbar toolbar = view.findViewById(R.id.htab_toolbar);
-        ((MainActivity) getActivity()).setSupportActionBar(toolbar);
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-            ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            onBackArrowPressed(toolbar);
-        }
+        ToolbarSetup(view);
         tB = view.findViewById(R.id.htab_toolbar2);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
@@ -232,7 +292,7 @@ public class ProfileFeed extends Fragment {
         pPic = view.findViewById(R.id.profilePic);
         profileRV = (ShimmerRecyclerView) view.findViewById(R.id.profileRV);
         profileRV.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
@@ -240,32 +300,26 @@ public class ProfileFeed extends Fragment {
         profileRV.setAdapter(mAdapter);
         profileRV.setLayoutAnimation(controller);
         profileRV.showShimmerAdapter();
+        progressBar = view.findViewById(R.id.pBar);
     }
 
-    private void onBackArrowPressed(Toolbar toolbar) {
-        try {
-            toolbar.setNavigationOnClickListener(view1 -> {
-                getActivity().onBackPressed();
-//                if (getFragmentManager() != null) {
-//                    int index = getFragmentManager().getBackStackEntryCount() - 1;
-//                    FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(index);
-//                    String tag = backEntry.getName();
-//                    getFragmentManager().beginTransaction().hide(ProfileFeed.this)
-//                            .show(getFragmentManager().findFragmentByTag(tag))
-//                            .commit();
-//                    if (tag.equals("1")) {
-//                        MainActivity.bottomBar.setActiveItem(0);
-//                        MainActivity.active = MainActivity.fragment1;
-//                    } else if (tag.equals("2")) {
-//                        MainActivity.bottomBar.setActiveItem(1);
-//                        MainActivity.active = MainActivity.fragment2;
-//                    }
-//                }
-            });
-        } catch (Exception e) {
-            FirebaseCrashlytics.getInstance().log(e.getMessage());
+    private void ToolbarSetup(@NonNull View view) {
+        setHasOptionsMenu(true);
+        Toolbar toolbar = view.findViewById(R.id.htab_toolbar);
+        ((MainActivity) getActivity()).setSupportActionBar(toolbar);
+        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            try {
+                toolbar.setNavigationOnClickListener(view1 -> {
+                    getActivity().onBackPressed();
+                });
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
+            }
         }
     }
+
 
     private void showImagePickerOptions() {
         ImagePickerActivity.showImagePickerOptions(getContext(), new ImagePickerActivity.PickerOptionListener() {
@@ -375,7 +429,7 @@ public class ProfileFeed extends Fragment {
 
     private void loadProfilePic(String url, Boolean update) {
         try {
-            if (url != null && getActivity()!=null) {
+            if (url != null && getActivity() != null) {
                 Glide.with(getActivity().getApplicationContext())
                         .load(url)
                         .transform(new CircleCrop())
