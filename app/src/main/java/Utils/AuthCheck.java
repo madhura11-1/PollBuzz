@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,8 +39,8 @@ public class AuthCheck extends AppCompatActivity {
         if (!isUserLoggedIn(fb)) {
             helper.removeProfileSetUpPref(getApplicationContext());
             Bundle bundle = new Bundle();
-            bundle.putLong("timestamp", Timestamp.now().getSeconds());
-            mFirebaseAnalytics.logEvent("opened_unknown", bundle);
+            bundle.putString("timestamp", Timestamp.now().toDate().toString());
+            mFirebaseAnalytics.logEvent("open_by_unknown", bundle);
         }
         else {
             fb.getUserDocument().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -48,11 +49,11 @@ public class AuthCheck extends AppCompatActivity {
                     if(task.isSuccessful()){
                         DocumentSnapshot dS=task.getResult();
                         Bundle bundle = new Bundle();
-                        bundle.putString("_id",fb.getUserId());
+                        bundle.putString("user_id",fb.getUserId());
                         if (dS != null) {
                             bundle.putString("username",dS.get("username").toString());
                         }
-                        bundle.putLong("timestamp", Timestamp.now().getSeconds());
+                        bundle.putString("timestamp", Timestamp.now().toDate().toString());
                         mFirebaseAnalytics.logEvent("opened", bundle);
                     }
                 }

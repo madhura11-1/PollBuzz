@@ -210,6 +210,7 @@ public class ProfileFeed extends Fragment {
                                                         addToRecyclerView(dS1);
                                                     }
                                                 } else {
+                                                    if(getContext()!=null && task1.getException()!=null)
                                                     Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });

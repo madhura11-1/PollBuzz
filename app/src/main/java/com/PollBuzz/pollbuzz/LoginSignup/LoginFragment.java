@@ -107,9 +107,9 @@ public class LoginFragment extends Fragment {
                             if (task1.isSuccessful()) {
                                 DocumentSnapshot dS = task1.getResult();
                                 Bundle bundle = new Bundle();
-                                bundle.putString("_id", fb.getUserId());
+                                bundle.putString("user_id", fb.getUserId());
                                 bundle.putString("username", dS.get("username").toString());
-                                bundle.putLong("timestamp", Timestamp.now().getSeconds());
+                                bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                 mFirebaseAnalytics.logEvent("login", bundle);
                                 Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
                                 dialog.dismissWithAnimation();
@@ -191,10 +191,10 @@ public class LoginFragment extends Fragment {
                                 if (task1.isSuccessful()) {
                                     DocumentSnapshot dS = task1.getResult();
                                     Bundle bundle = new Bundle();
-                                    bundle.putString("_id", fb.getUserId());
+                                    bundle.putString("user_id", fb.getUserId());
                                     bundle.putString("username", dS.get("username").toString());
-                                    bundle.putLong("timestamp", Timestamp.now().getSeconds());
-                                    mFirebaseAnalytics.logEvent("google_login", bundle);
+                                    bundle.putString("timestamp", Timestamp.now().toDate().toString());
+                                    mFirebaseAnalytics.logEvent("gLogin", bundle);
                                     Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
                                     dialog.dismissWithAnimation();
                                     isProfileSet(dS);

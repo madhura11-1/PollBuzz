@@ -75,8 +75,8 @@ public class SignupFragment extends Fragment {
                         dialog.dismissWithAnimation();
                         fb.getUser().sendEmailVerification().addOnCompleteListener(task1 -> {
                             Bundle bundle = new Bundle();
-                            bundle.putString("_id", fb.getUserId());
-                            bundle.putLong("timestamp", Timestamp.now().getSeconds());
+                            bundle.putString("user_id", fb.getUserId());
+                            bundle.putString("timestamp", Timestamp.now().toDate().toString());
                             mFirebaseAnalytics.logEvent("signup", bundle);
                             Toast.makeText(getContext(), "Signup successful.\nPlease verify your mail.", Toast.LENGTH_LONG).show();
                             fb.signOut();
