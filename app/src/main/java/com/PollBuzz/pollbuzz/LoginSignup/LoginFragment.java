@@ -25,8 +25,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -44,7 +42,6 @@ public class LoginFragment extends Fragment {
     private GoogleSignInClient googleSignInClient;
     private firebase fb;
     private KAlertDialog dialog;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     public LoginFragment() {
     }
@@ -81,7 +78,6 @@ public class LoginFragment extends Fragment {
                 .build();
         googleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
         googleSignInClient.signOut();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
     }
 
     private void login() {
@@ -105,6 +101,7 @@ public class LoginFragment extends Fragment {
                     } else {
                         fb.getUserDocument().get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
+<<<<<<< HEAD
                                 DocumentSnapshot dS = task1.getResult();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("user_id", fb.getUserId());
@@ -112,7 +109,11 @@ public class LoginFragment extends Fragment {
                                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                 mFirebaseAnalytics.logEvent("login", bundle);
                                 Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
+=======
+>>>>>>> parent of 85d8e2c... Events added
                                 dialog.dismissWithAnimation();
+                                Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
+                                DocumentSnapshot dS = task1.getResult();
                                 isProfileSet(dS);
                             } else {
                                 dialog.dismissWithAnimation();
@@ -189,6 +190,7 @@ public class LoginFragment extends Fragment {
                         if (task.isSuccessful()) {
                             fb.getUserDocument().get().addOnCompleteListener(task1 -> {
                                 if (task1.isSuccessful()) {
+<<<<<<< HEAD
                                     DocumentSnapshot dS = task1.getResult();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("user_id", fb.getUserId());
@@ -196,7 +198,11 @@ public class LoginFragment extends Fragment {
                                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                     mFirebaseAnalytics.logEvent("gLogin", bundle);
                                     Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
+=======
+>>>>>>> parent of 85d8e2c... Events added
                                     dialog.dismissWithAnimation();
+                                    Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
+                                    DocumentSnapshot dS = task1.getResult();
                                     isProfileSet(dS);
                                 } else {
                                     dialog.dismissWithAnimation();
@@ -222,7 +228,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void closeKeyboard() {
-        if (getActivity() != null) {
+        if(getActivity()!=null) {
             View view = getActivity().getCurrentFocus();
             if (view != null) {
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

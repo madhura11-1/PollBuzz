@@ -1,34 +1,24 @@
 package Utils;
 
-import com.PollBuzz.pollbuzz.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.Timestamp;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.LoginSignup.ProfileSetUp;
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AuthCheck extends AppCompatActivity {
-    FirebaseAnalytics mFirebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth_check);
         FirebaseApp.initializeApp(getApplicationContext());
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
-        mFirebaseAnalytics=FirebaseAnalytics.getInstance(this);
         firebase fb = new firebase();
         Intent i = getIntent(fb);
         startActivity(i);
@@ -38,6 +28,7 @@ public class AuthCheck extends AppCompatActivity {
         Intent i = new Intent(AuthCheck.this, LoginSignupActivity.class);
         if (!isUserLoggedIn(fb)) {
             helper.removeProfileSetUpPref(getApplicationContext());
+<<<<<<< HEAD
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             mFirebaseAnalytics.logEvent("open_by_unknown", bundle);
@@ -58,6 +49,10 @@ public class AuthCheck extends AppCompatActivity {
                     }
                 }
             });
+=======
+        }
+        else {
+>>>>>>> parent of 85d8e2c... Events added
             i = isProfileSetUp() ? new Intent(AuthCheck.this, MainActivity.class) :
                     new Intent(AuthCheck.this, ProfileSetUp.class);
         }
