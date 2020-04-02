@@ -47,6 +47,7 @@ public class PercentageResult extends AppCompatActivity {
     firebase fb;
     ImageButton home,logout;
     String uid,type;
+    int flag;
     Map<String,Integer> map;
     LinearLayout linearLayout;
     public static Double total;
@@ -302,6 +303,10 @@ public class PercentageResult extends AppCompatActivity {
     private void getIntentExtras(Intent intent) {
      uid = intent.getExtras().getString("UID");
      type = intent.getExtras().getString("type");
+     flag=intent.getIntExtra("flag",0);
+     if(flag==1)
+         result.setVisibility(View.GONE);
+
     }
 
     private void setGlobals(View view) {

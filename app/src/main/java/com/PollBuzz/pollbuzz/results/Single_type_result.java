@@ -45,10 +45,11 @@ public class Single_type_result extends AppCompatActivity {
     Dialog dialog;
     FirebaseAuth auth;
     firebase fb = new firebase();
-    ImageButton home, logout;
+   TextView poll_stats;
     FirebaseAuth.AuthStateListener listener;
     Map<String, Object> response;
     Integer integer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,19 +122,16 @@ public class Single_type_result extends AppCompatActivity {
 
     private void setActionBarFunctionality() {
 
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Single_type_result.this, MainActivity.class);
-                startActivity(i);
-            }
-        });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-            }
-        });
+       poll_stats.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent i=new Intent(Single_type_result.this,PercentageResult.class);
+               i.putExtra("UID",key);
+               i.putExtra("type","IMAGE POLL");
+               i.putExtra("flag",1);
+               startActivity(i);
+           }
+       });
     }
 
     private void getIntentExtras(Intent intent) {
@@ -154,8 +152,7 @@ public class Single_type_result extends AppCompatActivity {
 
     private void setGlobals(View view) {
 
-        home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
+
         query = findViewById(R.id.query);
         group = findViewById(R.id.options);
         options = new HashMap<>();

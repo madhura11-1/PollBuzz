@@ -43,12 +43,12 @@ public class Ranking_type_result extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener listener;
     String key,uid;
-    ImageButton home, logout;
     Typeface typeface;
     Dialog dialog;
     Map<String, Object> response;
     TreeMap<String, Object> options;
     Integer integer;
+    TextView poll_stats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,20 +126,18 @@ public class Ranking_type_result extends AppCompatActivity {
     }
 
     private void setActionBarFunctionality() {
-
-        home.setOnClickListener(new View.OnClickListener() {
+        poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Ranking_type_result.this, MainActivity.class);
+                Intent i=new Intent(Ranking_type_result.this,PercentageResult.class);
+                i.putExtra("UID",key);
+                i.putExtra("type","PRIORITY POLL");
+                i.putExtra("flag",1);
                 startActivity(i);
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-            }
-        });
+
+
     }
 
     private void getIntentExtras(Intent intent) {
@@ -161,9 +159,7 @@ public class Ranking_type_result extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-
-        home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
+        poll_stats=view.findViewById(R.id.poll_stats);
         auth = FirebaseAuth.getInstance();
         options=new TreeMap<>();
         query_ranking_result = findViewById(R.id.query_ranking_result);

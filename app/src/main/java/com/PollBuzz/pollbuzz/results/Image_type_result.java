@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,7 +45,7 @@ public class Image_type_result extends AppCompatActivity {
     String key, uid;
     Typeface typeface;
     Dialog dialog;
-    ImageButton logout, home;
+    TextView poll_stats;
     Map<String, Object> response;
     Map<String, Integer> options;
     Integer integer;
@@ -55,7 +56,7 @@ public class Image_type_result extends AppCompatActivity {
         setContentView(R.layout.activity_image_type_result);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_response);
         View view = getSupportActionBar().getCustomView();
 
 
@@ -138,10 +139,7 @@ public class Image_type_result extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-
-        home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
-
+        poll_stats=view.findViewById(R.id.poll_stats);
         group = findViewById(R.id.options);
         response = new HashMap<>();
         options = new HashMap<>();
@@ -158,19 +156,18 @@ public class Image_type_result extends AppCompatActivity {
     }
 
     private void setActionBarFunctionality() {
-        home.setOnClickListener(new View.OnClickListener() {
+        poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Image_type_result.this, MainActivity.class);
+                Intent i=new Intent(Image_type_result.this,PercentageResult.class);
+                i.putExtra("UID",key);
+                i.putExtra("type","IMAGE POLL");
+                i.putExtra("flag","1");
                 startActivity(i);
+
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fb.signOut();
-            }
-        });
+
     }
 
     private void loadProfilePic(ImageView view, String url) {
