@@ -162,7 +162,7 @@ public class Image_type_result extends AppCompatActivity {
                 Intent i=new Intent(Image_type_result.this,PercentageResult.class);
                 i.putExtra("UID",key);
                 i.putExtra("type","IMAGE POLL");
-                i.putExtra("flag","1");
+                i.putExtra("flag",1);
                 startActivity(i);
 
             }
