@@ -1,28 +1,21 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.polls.Image_type_poll;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.PollList;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -31,20 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 
 import Utils.firebase;
 
@@ -95,11 +80,11 @@ public class HomeFeed extends Fragment {
                 if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 1 && flagFetch && !flagFirst) {
                     progressBar.setVisibility(View.VISIBLE);
                     flagFetch = false;
-                    getData(0);
+                    getData();
                 }
             }
         });
-        getData(0);
+        getData();
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +116,7 @@ public class HomeFeed extends Fragment {
 
     }
 
-    private void getData(int flag) {
+    private void getData() {
         if (lastIndex == null) {
             fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
                     limit(20).get().addOnCompleteListener(task -> {
@@ -140,14 +125,13 @@ public class HomeFeed extends Fragment {
                         viewed.setVisibility(View.VISIBLE);
                         arrayList.clear();
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS, flag);
+                            addToRecyclerView(dS);
                             lastIndex = dS;
                         }
-                        if (flag == 2 && arrayList.size() == 0) {
-                            viewed.setText("No active polls for you to vote in that span ");
-                            viewed.setVisibility(View.VISIBLE);
-                        } else
+                        if (arrayList.size() == 0) {
                             viewed.setText("You have voted all active polls");
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         flagFetch = false;
                         recyclerView.hideShimmerAdapter();
@@ -164,7 +148,7 @@ public class HomeFeed extends Fragment {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS, flag);
+                            addToRecyclerView(dS);
                             lastIndex = dS;
                         }
                     } else {
@@ -180,7 +164,7 @@ public class HomeFeed extends Fragment {
     }
 
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS, int flagi) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -194,22 +178,31 @@ public class HomeFeed extends Fragment {
                         break;
                     }
                 }
-                Log.d("TimeStamp", dS.get("timestamp").toString());
                 if (flag) {
-
-                        if (flagi == 0)
+                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Log.d("UIDCheck",task1.getResult().getId());
+                            if (task1.getResult().get("pic") != null)
+                                polldetails.setPic(task1.getResult().get("pic").toString());
+                            else
+                                polldetails.setPic(null);
+                            Log.d("usernameCheck",task1.getResult().get("username").toString());
+                            polldetails.setUsername(task1.getResult().get("username").toString());
                             arrayList.add(polldetails);
-
-                    Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
-                    viewed.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
-                    flagFetch = true;
-                    if (flagFirst) {
-                        recyclerView.hideShimmerAdapter();
-                        recyclerView.scheduleLayoutAnimation();
-                        flagFirst=false;
-                    }
+                            Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
+                            viewed.setVisibility(View.GONE);
+                            adapter.notifyDataSetChanged();
+                            progressBar.setVisibility(View.GONE);
+                            flagFetch = true;
+                            if (flagFirst) {
+                                recyclerView.hideShimmerAdapter();
+                                recyclerView.scheduleLayoutAnimation();
+                                flagFirst = false;
+                            }
+                        } else {
+                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -243,8 +236,8 @@ public class HomeFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.filter:
-                       Intent i=new Intent(getActivity(),FilterActivity.class);
-                       startActivity(i);
+                        Intent i = new Intent(getActivity(), FilterActivity.class);
+                        startActivity(i);
                         return true;
                     default:
                         return false;

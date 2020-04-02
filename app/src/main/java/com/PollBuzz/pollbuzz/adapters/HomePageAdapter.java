@@ -1,5 +1,8 @@
 package com.PollBuzz.pollbuzz.adapters;
 
+import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.PollBuzz.pollbuzz.PollDetails;
@@ -12,16 +15,24 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeViewHolder> {
@@ -38,7 +49,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     @Override
     public HomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        View view = layoutInflater.inflate(R.layout.card_layout, parent, false);
+        View view = layoutInflater.inflate(R.layout.card_layout_profile_pic, parent, false);
         return new HomeViewHolder(view);
     }
 
@@ -49,7 +60,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     }
 
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
-        holder.cardView.setOnClickListener(view -> startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type()));
+        holder.voteArea.setOnClickListener(view -> startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type()));
+        holder.pPicArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                ProfileFeed profileFeed=ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
+                Fragment profileFeed= ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
+                FragmentManager fm=((AppCompatActivity)mContext).getSupportFragmentManager();
+                fm.beginTransaction().add(R.id.container,profileFeed,"profile").addToBackStack("profile").commit();
+            }
+        });
     }
 
     private void setData(@NonNull HomeViewHolder holder, int position) {
@@ -59,12 +79,21 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_type.setText(mPollDetails.get(position).getPoll_type());
             if (mPollDetails.get(position).getQuestion() != null)
                 holder.card_query.setText(mPollDetails.get(position).getQuestion().trim());
-            if (mPollDetails.get(position).getAuthor() != null)
-                holder.card_author.setText((mPollDetails.get(position).getAuthor().trim()));
+            if (mPollDetails.get(position).getUsername() != null)
+                holder.card_author.setText((mPollDetails.get(position).getUsername().trim()));
             if (mPollDetails.get(position).getCreated_date() != null)
             {
                 String date=df.format(mPollDetails.get(position).getCreated_date());
                 holder.card_date.setText(date.trim());
+            }
+            if(mPollDetails.get(position).getPic()==null){
+                Log.d("NoPic",String.valueOf(position));
+                holder.profilePic.setImageResource(R.drawable.ic_person_black_24dp);
+            } else {
+                Glide.with(mContext)
+                        .load(mPollDetails.get(position).getPic())
+                        .transform(new CircleCrop())
+                        .into(holder.profilePic);
             }
 
         }catch (Exception e){
@@ -105,8 +134,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
     static class HomeViewHolder extends RecyclerView.ViewHolder {
 
+        private RelativeLayout pPicArea;
+        private LinearLayout voteArea;
         private TextView card_type, card_query, card_author, card_date;
-        private CardView cardView;
+        private ImageView profilePic;
 
         private HomeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,7 +149,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             card_query = itemView.findViewById(R.id.card_query);
             card_author = itemView.findViewById(R.id.card_author);
             card_date = itemView.findViewById(R.id.card_date);
-            cardView = itemView.findViewById(R.id.cardV);
+            pPicArea=itemView.findViewById(R.id.profileArea);
+            voteArea=itemView.findViewById(R.id.voteArea);
+            profilePic=itemView.findViewById(R.id.pPic);
         }
     }
 }
