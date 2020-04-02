@@ -234,7 +234,7 @@ public class FilterActivity extends AppCompatActivity {
                 }
                 if (flag)
                 {
-                    if(polldetails.getExpiry_date().before(Timestamp.now().toDate())){
+                    if(polldetails.getExpiry_date().compareTo(date)>=0){
                     arrayList.add(polldetails);
                     Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                     viewed.setVisibility(View.GONE);

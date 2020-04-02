@@ -68,9 +68,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Image_type_poll extends AppCompatActivity {
+
     Button add;
     LinearLayout l1, l2, group;
-    int c;
     ImageButton home, logout;
     Uri uri1, uri2;
     ImageView view1, view2;
@@ -79,6 +79,20 @@ public class Image_type_poll extends AppCompatActivity {
     TextInputEditText question_image;
     firebase fb;
     Date date = Calendar.getInstance().getTime();
+    Calendar c = Calendar.getInstance();
+    Date default_date;
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH,7);
+        default_date=c.getTime();
+
+    }
+
     private int requestCode = 0;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     final String formatteddate = dateFormat.format(date);
@@ -162,7 +176,7 @@ public class Image_type_poll extends AppCompatActivity {
             } else {
 
                 if(expiry.getText().toString().isEmpty())
-                    expiry.setText("No Expiry");
+                    expiry.setText(dateFormat.format(default_date));
                addToStorage();
             }
         });
@@ -224,7 +238,6 @@ public class Image_type_poll extends AppCompatActivity {
         logout = view.findViewById(R.id.logout);
         post_image = findViewById(R.id.post_imagetype);
         question_image = findViewById(R.id.question_imagetype);
-        c = group.getChildCount();
         dialog=new KAlertDialog(Image_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
     }
 
@@ -322,11 +335,7 @@ public class Image_type_poll extends AppCompatActivity {
             polldetails.setQuestion(question_image.getText().toString().trim());
             polldetails.setCreated_date(dateFormat.parse(formatteddate));
             polldetails.setPoll_type("IMAGE POLL");
-            if(expiry.getText().toString().equals("No Expiry")){
-                polldetails.setExpiry_date(dateFormat.parse("31-12-2020"));
-            }
-            else{
-                polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));}
+                polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
             polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
             polldetails.setAuthorUID(fb.getUserId());
             polldetails.setTimestamp(Timestamp.now().getSeconds());

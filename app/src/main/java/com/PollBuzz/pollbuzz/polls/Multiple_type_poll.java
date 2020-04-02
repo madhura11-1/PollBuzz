@@ -36,6 +36,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,6 +66,8 @@ public class Multiple_type_poll extends AppCompatActivity {
     ArrayList<String> uniqueoptions=new ArrayList<>();
     TextView expiry;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    Calendar cal = Calendar.getInstance();
+    Date default_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +139,20 @@ public class Multiple_type_poll extends AppCompatActivity {
             } else {
 
                if(expiry.getText().toString().isEmpty())
-                   expiry.setText("No Expiry");
-                addToDatabase(formatteddate);
+               {
+                   expiry.setText(dateFormat.format(default_date));
+                   addToDatabase(formatteddate);
+               }
+               else
+               {
+                   try {
+                       if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>0)
+                           addToDatabase(formatteddate);
+                   } catch (ParseException e) {
+                       e.printStackTrace();
+                   }
+               }
+
             }
         });
         expiry.setOnClickListener(new View.OnClickListener() {
@@ -181,11 +196,8 @@ public class Multiple_type_poll extends AppCompatActivity {
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                if(expiry.getText().toString().equals("No Expiry")){
-                    polldetails.setExpiry_date(dateFormat.parse("31-12-2020"));
-                }
-                else{
-                    polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));}
+
+                    polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
@@ -352,5 +364,9 @@ public class Multiple_type_poll extends AppCompatActivity {
         uniqueoptions.clear();
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_MONTH,7);
+        default_date=cal.getTime();
     }
+
 }
