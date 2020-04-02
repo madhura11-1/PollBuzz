@@ -194,7 +194,7 @@ public class Single_type_poll extends AppCompatActivity {
                     map.put(v.getText().toString(), 0);
                 }
                 polldetails.setMap(map);
-                polldetails.setPoll_type("SINGLE ANSWER POLL");
+                polldetails.setPoll_type("SINGLE CHOICE");
                 polldetails.setCreated_date(df.parse(formattedDate));
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();

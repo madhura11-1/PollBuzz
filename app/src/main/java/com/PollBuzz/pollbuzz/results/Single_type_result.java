@@ -127,7 +127,7 @@ public class Single_type_result extends AppCompatActivity {
            public void onClick(View v) {
                Intent i=new Intent(Single_type_result.this,PercentageResult.class);
                i.putExtra("UID",key);
-               i.putExtra("type","IMAGE POLL");
+               i.putExtra("type","SINGLE CHOICE");
                i.putExtra("flag",1);
                startActivity(i);
            }

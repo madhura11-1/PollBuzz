@@ -125,7 +125,7 @@ public class PercentageResult extends AppCompatActivity {
                                 case "RANKED":
                                     intent = new Intent(getApplicationContext(), Ranking_type_response.class);
                                     break;
-                                case "IMAGE POLL":
+                                case "PICTURE BASED":
                                     intent = new Intent(getApplicationContext(), Image_type_responses.class);
                                     break;
                                 default:

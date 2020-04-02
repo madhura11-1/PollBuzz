@@ -334,7 +334,7 @@ public class Image_type_poll extends AppCompatActivity {
             PollDetails polldetails = new PollDetails();
             polldetails.setQuestion(question_image.getText().toString().trim());
             polldetails.setCreated_date(dateFormat.parse(formatteddate));
-            polldetails.setPoll_type("IMAGE POLL");
+            polldetails.setPoll_type("PICTURE BASED");
                 polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
             polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
             polldetails.setAuthorUID(fb.getUserId());

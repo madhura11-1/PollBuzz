@@ -202,7 +202,7 @@ public class Multiple_type_result extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i=new Intent(Multiple_type_result.this,PercentageResult.class);
                 i.putExtra("UID",key);
-                i.putExtra("type","MULTI ANSWER POLL");
+                i.putExtra("type","MULTI SELECT");
                 i.putExtra("flag",1);
                 startActivity(i);
 

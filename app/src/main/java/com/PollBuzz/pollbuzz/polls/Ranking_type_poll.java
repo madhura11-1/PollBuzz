@@ -201,7 +201,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                     map.put(v.getText().toString().trim(), 0);
                 }
                 polldetails.setMap(map);
-                polldetails.setPoll_type("PRIORITY POLL");
+                polldetails.setPoll_type("RANKED");
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();
                 doc.set(polldetails)

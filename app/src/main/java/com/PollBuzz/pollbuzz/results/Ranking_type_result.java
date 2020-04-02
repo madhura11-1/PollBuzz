@@ -130,7 +130,7 @@ public class Ranking_type_result extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i=new Intent(Ranking_type_result.this,PercentageResult.class);
                 i.putExtra("UID",key);
-                i.putExtra("type","PRIORITY POLL");
+                i.putExtra("type","RANKED");
                 i.putExtra("flag",1);
                 startActivity(i);
             }
