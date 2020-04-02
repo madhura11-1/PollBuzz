@@ -65,7 +65,7 @@
         app:shimmer_demo_angle="20"
         app:shimmer_demo_view_holder_item_background="@color/white"
         app:shimmer_demo_layout_manager_type="linear_vertical"
-        app:shimmer_demo_layout="@layout/placeholder"
+        app:shimmer_demo_layout="@layout/placeholder_home"
         app:shimmer_demo_child_count="7"
         />
 

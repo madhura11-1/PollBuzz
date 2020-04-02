@@ -124,12 +124,20 @@ public class ProfileFeed extends Fragment {
 
     private void decideUserFeed() {
         if (UID.isEmpty() || UID.equals(fb.getUserId())) {
+            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList,true);
+            profileRV.setAdapter(mAdapter);
+            profileRV.setLayoutAnimation(controller);
+            profileRV.showShimmerAdapter();
             tB.setTitle("Your Polls");
             viewed.setText("You have not created any polls...");
             edit.setVisibility(View.VISIBLE);
             Uname.setText(Utils.helper.getusernamePref(getContext()));
             loadProfilePic(Utils.helper.getpPicPref(getContext()), false);
         } else {
+            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList,false);
+            profileRV.setAdapter(mAdapter);
+            profileRV.setLayoutAnimation(controller);
+            profileRV.showShimmerAdapter();
             viewed.setText("This user has not created any polls...");
             tB.setTitle("Their Polls");
             edit.setVisibility(View.GONE);
@@ -300,10 +308,6 @@ public class ProfileFeed extends Fragment {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
-        mAdapter = new ProfileFeedAdapter(getContext(), mArrayList);
-        profileRV.setAdapter(mAdapter);
-        profileRV.setLayoutAnimation(controller);
-        profileRV.showShimmerAdapter();
         progressBar = view.findViewById(R.id.pBar);
     }
 

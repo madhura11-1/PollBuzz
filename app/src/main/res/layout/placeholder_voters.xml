@@ -18,7 +18,7 @@
         <View
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@color/grey"
+            android:background="@drawable/circular_grey_borderless"
             android:layout_margin="10dp"
             />
         <View
