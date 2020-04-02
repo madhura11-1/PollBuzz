@@ -138,7 +138,10 @@ public class ProfileFeed extends Fragment {
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         Uname.setText(task.getResult().get("username").toString());
-                        loadProfilePic(task.getResult().get("pic").toString(), false);
+                        if (task.getResult().get("pic") != null)
+                            loadProfilePic(task.getResult().get("pic").toString(), false);
+                        else
+                            loadProfilePic(null, false);
                     } else {
                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -210,8 +213,8 @@ public class ProfileFeed extends Fragment {
                                                         addToRecyclerView(dS1);
                                                     }
                                                 } else {
-                                                    if(getContext()!=null && task1.getException()!=null)
-                                                    Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                    if (getContext() != null && task1.getException() != null)
+                                                        Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         lastIndex = dS;
@@ -248,12 +251,12 @@ public class ProfileFeed extends Fragment {
                                             Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-                                lastIndex=dS;
+                                lastIndex = dS;
                             }
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
-                            flagFetch=false;
+                            flagFetch = false;
                         }
                     } else {
                         if (getContext() != null)
@@ -275,7 +278,7 @@ public class ProfileFeed extends Fragment {
         mAdapter.notifyDataSetChanged();
         progressBar.setVisibility(View.GONE);
         flagFetch = true;
-        if(flagFirst) {
+        if (flagFirst) {
             profileRV.hideShimmerAdapter();
             profileRV.scheduleLayoutAnimation();
             flagFirst = false;

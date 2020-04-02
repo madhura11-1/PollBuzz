@@ -5,7 +5,24 @@ import java.util.Map;
 
 public class PollDetails {
 
-    private String question,  poll_type, author, UID,authorUID;
+    private String question,  poll_type, author, UID,authorUID,username,pic;
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
     Date created_date, expiry_date;
     private Map<String, Integer> map;
     private Integer pollcount=0;
