@@ -169,7 +169,7 @@ public class PercentageResult extends AppCompatActivity {
             dialog.dismiss();
             linearLayout.removeAllViews();
             data.clear();
-            if (type.equals("IMAGE POLL")) {
+            if (type.equals("PICTURE BASED")) {
                 for (Map.Entry<String, Integer> entry : map.entrySet()) {
                     Integer per;
                     ImageView imageView = new ImageView(this);
