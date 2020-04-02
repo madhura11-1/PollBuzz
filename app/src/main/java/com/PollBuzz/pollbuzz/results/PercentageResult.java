@@ -18,12 +18,17 @@ import com.PollBuzz.pollbuzz.R;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -38,6 +43,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +54,8 @@ import Utils.firebase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 public class PercentageResult extends AppCompatActivity {
@@ -66,6 +76,7 @@ public class PercentageResult extends AppCompatActivity {
     public static Map<String, Integer> data = new HashMap<>();
     public static String question;
     Boolean flagVoted = true;
+    ImageView shareButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +147,19 @@ public class PercentageResult extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        shareButton.setOnClickListener(v -> {
+            //Toast.makeText(getApplicationContext(), "Taking screenshot", Toast.LENGTH_SHORT).show();
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+            else if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+            else{
+                takeAndShareScreenShot();
             }
         });
     }
@@ -369,12 +393,51 @@ public class PercentageResult extends AppCompatActivity {
             dialog = new Dialog(PercentageResult.this);
             typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
             pie_charts = findViewById(R.id.pie);
+            shareButton = findViewById(R.id.share_button);
         }
 
         @Override
         protected void onStart () {
             super.onStart();
 
+        }
+
+        private void takeAndShareScreenShot(){
+            Long now = new Date().getTime();
+            try{
+                String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now.toString() + ".jpg";
+                File file = new File(mPath);
+
+                View v1 = getWindow().getDecorView().getRootView();
+                v1.setDrawingCacheEnabled(true);
+                Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+                v1.setDrawingCacheEnabled(false);
+
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                int quality = 100;
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+
+                shareScreenshot(file.getAbsolutePath());
+            }
+            catch (Throwable e){
+                e.printStackTrace();
+            }
+        }
+
+        private void shareScreenshot(String imageFile){
+            //Toast.makeText(this, imageFile, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageFile));
+            intent.setType("image/jpeg");
+            intent.setPackage("com.whatsapp");
+            if(intent.resolveActivity(getPackageManager()) != null){
+                startActivity(intent);
+            }
+            else{
+                Toast.makeText(this, "Whatsapp is not installed in your phone!", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
