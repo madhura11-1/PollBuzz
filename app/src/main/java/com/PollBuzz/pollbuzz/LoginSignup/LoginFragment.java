@@ -108,7 +108,7 @@ public class LoginFragment extends Fragment {
                                 DocumentSnapshot dS = task1.getResult();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("user_id", fb.getUserId());
-                                if (dS.get("username") != null)
+                                if (dS != null && dS.exists() && dS.get("username") != null)
                                     bundle.putString("username", dS.get("username").toString());
                                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                 mFirebaseAnalytics.logEvent("login", bundle);
@@ -193,7 +193,7 @@ public class LoginFragment extends Fragment {
                                     DocumentSnapshot dS = task1.getResult();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("user_id", fb.getUserId());
-                                    if (dS.get("username") != null)
+                                    if (dS != null && dS.exists() && dS.get("username") != null)
                                         bundle.putString("username", dS.get("username").toString());
                                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                     mFirebaseAnalytics.logEvent("gLogin", bundle);
