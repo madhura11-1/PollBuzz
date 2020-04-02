@@ -108,7 +108,8 @@ public class LoginFragment extends Fragment {
                                 DocumentSnapshot dS = task1.getResult();
                                 Bundle bundle = new Bundle();
                                 bundle.putString("user_id", fb.getUserId());
-                                bundle.putString("username", dS.get("username").toString());
+                                if (dS.get("username") != null)
+                                    bundle.putString("username", dS.get("username").toString());
                                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                 mFirebaseAnalytics.logEvent("login", bundle);
                                 Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
@@ -192,7 +193,8 @@ public class LoginFragment extends Fragment {
                                     DocumentSnapshot dS = task1.getResult();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("user_id", fb.getUserId());
-                                    bundle.putString("username", dS.get("username").toString());
+                                    if (dS.get("username") != null)
+                                        bundle.putString("username", dS.get("username").toString());
                                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                     mFirebaseAnalytics.logEvent("gLogin", bundle);
                                     Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
