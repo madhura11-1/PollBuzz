@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -233,12 +234,15 @@ public class FilterActivity extends AppCompatActivity {
                 }
                 if (flag)
                 {
+                    if(polldetails.getExpiry_date().before(Timestamp.now().toDate())){
                     arrayList.add(polldetails);
                     Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                     viewed.setVisibility(View.GONE);
                     recyclerView.hideShimmerAdapter();
                     adapter.notifyDataSetChanged();
-                    recyclerView.scheduleLayoutAnimation();
+                    recyclerView.scheduleLayoutAnimation();}
+                    else
+                        Toast.makeText(this, "Expired polls", Toast.LENGTH_SHORT).show();
                 }
 
 
