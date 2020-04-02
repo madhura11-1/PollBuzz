@@ -6,7 +6,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -96,11 +95,11 @@ public class HomeFeed extends Fragment {
                 if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 1 && flagFetch && !flagFirst) {
                     progressBar.setVisibility(View.VISIBLE);
                     flagFetch = false;
-                    getData();
+                    getData(0);
                 }
             }
         });
-        getData();
+        getData(0);
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,22 +107,47 @@ public class HomeFeed extends Fragment {
                 showPopup(view);
             }
         });
+/*        search_type.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                arrayList.clear();
+                adapter.notifyDataSetChanged();
+                if(!charSequence.toString().isEmpty()){
+                    getData(1,charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+
+            }
+        });*/
 
     }
 
-    private void getData() {
+    private void getData(int flag) {
         if (lastIndex == null) {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING)
-                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
-                .limit(20).get().addOnCompleteListener(task -> {
+            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
+                    limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         viewed.setVisibility(View.VISIBLE);
                         arrayList.clear();
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS);
+                            addToRecyclerView(dS, flag);
                             lastIndex = dS;
                         }
+                        if (flag == 2 && arrayList.size() == 0) {
+                            viewed.setText("No active polls for you to vote in that span ");
+                            viewed.setVisibility(View.VISIBLE);
+                        } else
+                            viewed.setText("You have voted all active polls");
                     } else {
                         flagFetch = false;
                         recyclerView.hideShimmerAdapter();
@@ -135,13 +159,12 @@ public class HomeFeed extends Fragment {
                 }
             });
         } else {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING)
-                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
-                    .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
+                    startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS);
+                            addToRecyclerView(dS, flag);
                             lastIndex = dS;
                         }
                     } else {
@@ -157,7 +180,7 @@ public class HomeFeed extends Fragment {
     }
 
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS, int flagi) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -173,6 +196,8 @@ public class HomeFeed extends Fragment {
                 }
                 Log.d("TimeStamp", dS.get("timestamp").toString());
                 if (flag) {
+
+                        if (flagi == 0)
                             arrayList.add(polldetails);
 
                     Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
