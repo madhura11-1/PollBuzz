@@ -134,12 +134,19 @@ public class Multiple_type_poll extends AppCompatActivity {
             } else if (group.getChildCount() <2) {
                 Toast.makeText(Multiple_type_poll.this, "Please add at least two options", Toast.LENGTH_SHORT).show();
             } else {
+
+               if(expiry.getText().toString().isEmpty())
+                   expiry.setText("No Expiry");
                 addToDatabase(formatteddate);
             }
         });
         expiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                int mYear = c.get(Calendar.YEAR);
+                int mMonth = c.get(Calendar.MONTH);
+                int mDay = c.get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog datePickerDialog = new DatePickerDialog(Multiple_type_poll.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
@@ -148,7 +155,8 @@ public class Multiple_type_poll extends AppCompatActivity {
                                 expiry.setText(date);
 
                             }
-                        }, 0, 0, 0);
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
         });
@@ -173,7 +181,11 @@ public class Multiple_type_poll extends AppCompatActivity {
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
+                if(expiry.getText().toString().equals("No Expiry")){
+                    polldetails.setExpiry_date(dateFormat.parse("31-12-2020"));
+                }
+                else{
+                    polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));}
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
