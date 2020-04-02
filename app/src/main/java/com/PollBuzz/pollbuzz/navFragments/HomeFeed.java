@@ -2,7 +2,15 @@ package com.PollBuzz.pollbuzz.navFragments;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.polls.Image_type_poll;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -13,6 +21,7 @@ import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -118,32 +127,36 @@ public class HomeFeed extends Fragment {
 
     private void getData() {
         if (lastIndex == null) {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
-                    limit(20).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
-                        arrayList.clear();
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS);
-                            lastIndex = dS;
-                        }
-                        if (arrayList.size() == 0) {
-                            viewed.setText("You have voted all active polls");
+            fb.getPollsCollection()
+                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
+                    .orderBy("expiry_date")
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
+                    limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
+                            viewed.setVisibility(View.VISIBLE);
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                addToRecyclerView(dS);
+                                lastIndex = dS;
+                            }
+                        } else {
+                            flagFetch = false;
+                            recyclerView.hideShimmerAdapter();
                             viewed.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        flagFetch = false;
                         recyclerView.hideShimmerAdapter();
-                        viewed.setVisibility(View.VISIBLE);
+                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    recyclerView.hideShimmerAdapter();
-                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
+            fb.getPollsCollection()
+                    .whereGreaterThanOrEqualTo("expiry_date",Timestamp.now().toDate())
+                    .orderBy("expiry_date")
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
                     startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
