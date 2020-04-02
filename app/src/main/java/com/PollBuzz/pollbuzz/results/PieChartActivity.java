@@ -1,15 +1,22 @@
 package com.PollBuzz.pollbuzz.results;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -25,16 +32,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Utils.firebase;
+
 public class PieChartActivity extends AppCompatActivity {
     TextView voters,question;
     Dialog dialog;
     AnyChartView anyChartView;
+    ImageButton home,logout;
+    firebase fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pie_chart);
-        setGlobals();
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.action_bar);
+        View view =getSupportActionBar().getCustomView();
+        setGlobals(view);
+        setActionBarFunctionality();
         showDialog();
         createPieChart();
 
@@ -90,7 +106,7 @@ public class PieChartActivity extends AppCompatActivity {
 
     }
 
-    private void setGlobals() {
+    private void setGlobals(View view) {
         anyChartView= findViewById(R.id.any_chart_view);
         voters=findViewById(R.id.voters);
         question=findViewById(R.id.question);
@@ -98,6 +114,9 @@ public class PieChartActivity extends AppCompatActivity {
         String voter="Total Voters : "+String.valueOf(PercentageResult.total);
         voters.setText(voter);
         dialog=new Dialog(PieChartActivity.this);
+        logout=view.findViewById(R.id.logout);
+        home=view.findViewById(R.id.home);
+        fb = new firebase();
 
     }
 
@@ -114,5 +133,18 @@ public class PieChartActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
         window.setAttributes(lp);
+    }
+    private void setActionBarFunctionality() {
+        home.setOnClickListener(v -> {
+            Intent i = new Intent(PieChartActivity.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        });
+        logout.setOnClickListener(v -> {
+            fb.signOut();
+            Intent i = new Intent(PieChartActivity.this, LoginSignupActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        });
     }
 }

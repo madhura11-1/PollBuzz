@@ -57,7 +57,7 @@ public class Single_type_result extends AppCompatActivity {
         setContentView(R.layout.activity_single_type_result);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_response);
         View view = getSupportActionBar().getCustomView();
 
         setGlobals(view);
@@ -161,6 +161,7 @@ public class Single_type_result extends AppCompatActivity {
 
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Single_type_result.this);
+        poll_stats=view.findViewById(R.id.poll_stats);
     }
 
     private void showDialog() {
