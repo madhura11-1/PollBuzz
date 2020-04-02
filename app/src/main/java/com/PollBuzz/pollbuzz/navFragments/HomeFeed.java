@@ -2,10 +2,13 @@ package com.PollBuzz.pollbuzz.navFragments;
 
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.polls.Image_type_poll;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -17,6 +20,7 @@ import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -95,11 +99,11 @@ public class HomeFeed extends Fragment {
                 if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 1 && flagFetch && !flagFirst) {
                     progressBar.setVisibility(View.VISIBLE);
                     flagFetch = false;
-                    getData(0);
+                    getData();
                 }
             }
         });
-        getData(0);
+        getData();
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,40 +135,45 @@ public class HomeFeed extends Fragment {
 
     }
 
-    private void getData(int flag) {
+    private void getData() {
         if (lastIndex == null) {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
-                    limit(20).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
-                        arrayList.clear();
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS, flag);
-                            lastIndex = dS;
-                        }
-                        if (flag == 2 && arrayList.size() == 0) {
-                            viewed.setText("No active polls for you to vote in that span ");
+            fb.getPollsCollection()
+                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
+                    .orderBy("expiry_date")
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
+                    limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
                             viewed.setVisibility(View.VISIBLE);
-                        } else
-                            viewed.setText("You have voted all active polls");
+                            arrayList.clear();
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                HomeFeed.this.addToRecyclerView(dS);
+                                lastIndex = dS;
+                            }
+                        } else {
+                            flagFetch = false;
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     } else {
-                        flagFetch = false;
+                        Log.d("hello",task.getException().toString());
                         recyclerView.hideShimmerAdapter();
-                        viewed.setVisibility(View.VISIBLE);
+                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    recyclerView.hideShimmerAdapter();
-                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            fb.getPollsCollection().orderBy("timestamp", Query.Direction.DESCENDING).
+            fb.getPollsCollection()
+                    .whereGreaterThanOrEqualTo("expiry_date",Timestamp.now().toDate())
+                    .orderBy("expiry_date")
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
                     startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS, flag);
+                            addToRecyclerView(dS);
                             lastIndex = dS;
                         }
                     } else {
@@ -180,7 +189,7 @@ public class HomeFeed extends Fragment {
     }
 
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS, int flagi) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -196,8 +205,6 @@ public class HomeFeed extends Fragment {
                 }
                 Log.d("TimeStamp", dS.get("timestamp").toString());
                 if (flag) {
-
-                        if (flagi == 0)
                             arrayList.add(polldetails);
 
                     Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
