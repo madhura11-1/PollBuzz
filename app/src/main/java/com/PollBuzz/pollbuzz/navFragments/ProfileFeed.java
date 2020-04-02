@@ -1,5 +1,6 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
@@ -440,7 +441,6 @@ public class ProfileFeed extends Fragment {
             if (url != null && getActivity() != null) {
                 Glide.with(getActivity().getApplicationContext())
                         .load(url)
-                        .transform(new CircleCrop())
                         .into(pPic);
                 if (update) {
                     Utils.helper.setpPicPref(getContext(), url);
