@@ -131,8 +131,6 @@ public class HomeFeed extends Fragment {
     private void getData() {
         if (lastIndex == null) {
             fb.getPollsCollection()
-                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
-                    .orderBy("expiry_date")
                     .orderBy("timestamp", Query.Direction.DESCENDING).
                     limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
@@ -157,8 +155,6 @@ public class HomeFeed extends Fragment {
             });
         } else {
             fb.getPollsCollection()
-                    .whereGreaterThanOrEqualTo("expiry_date",date)
-                    .orderBy("expiry_date")
                     .orderBy("timestamp", Query.Direction.DESCENDING).
                     startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -195,30 +191,30 @@ public class HomeFeed extends Fragment {
                     }
                 }
                 if (flag) {
-                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            Log.d("UIDCheck",task1.getResult().getId());
-                            if (task1.getResult().get("pic") != null)
-                                polldetails.setPic(task1.getResult().get("pic").toString());
-                            else
-                                polldetails.setPic(null);
-                            Log.d("usernameCheck",task1.getResult().get("username").toString());
-                            polldetails.setUsername(task1.getResult().get("username").toString());
-                            arrayList.add(polldetails);
-                            Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
-                            viewed.setVisibility(View.GONE);
-                            adapter.notifyDataSetChanged();
-                            progressBar.setVisibility(View.GONE);
-                            flagFetch = true;
-                            if (flagFirst) {
-                                recyclerView.hideShimmerAdapter();
-                                recyclerView.scheduleLayoutAnimation();
-                                flagFirst = false;
+                    if (polldetails.getExpiry_date().compareTo(date) >= 0) {
+                        fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful() && task1.getResult() != null) {
+                                if (task1.getResult().get("pic") != null)
+                                    polldetails.setPic(task1.getResult().get("pic").toString());
+                                else
+                                    polldetails.setPic(null);
+                                polldetails.setUsername(task1.getResult().get("username").toString());
+                                arrayList.add(polldetails);
+                                Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
+                                viewed.setVisibility(View.GONE);
+                                adapter.notifyDataSetChanged();
+                                progressBar.setVisibility(View.GONE);
+                                flagFetch = true;
+                                if (flagFirst) {
+                                    recyclerView.hideShimmerAdapter();
+                                    recyclerView.scheduleLayoutAnimation();
+                                    flagFirst = false;
+                                }
+                            } else {
+                                Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
