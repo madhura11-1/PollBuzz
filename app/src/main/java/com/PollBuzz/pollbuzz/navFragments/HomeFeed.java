@@ -38,7 +38,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 
 import Utils.firebase;
 
@@ -60,6 +62,7 @@ public class HomeFeed extends Fragment {
     private ImageButton search;
     private DocumentSnapshot lastIndex;
     ProgressBar progressBar;
+    Date date = Calendar.getInstance().getTime();
     Boolean flagFirst = true, flagFetch = true;
 
     public HomeFeed() {
@@ -154,7 +157,7 @@ public class HomeFeed extends Fragment {
             });
         } else {
             fb.getPollsCollection()
-                    .whereGreaterThanOrEqualTo("expiry_date",Timestamp.now().toDate())
+                    .whereGreaterThanOrEqualTo("expiry_date",date)
                     .orderBy("expiry_date")
                     .orderBy("timestamp", Query.Direction.DESCENDING).
                     startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
