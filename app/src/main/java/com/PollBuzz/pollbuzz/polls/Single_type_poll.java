@@ -85,7 +85,6 @@ public class Single_type_poll extends AppCompatActivity {
         setListeners(formattedDate);
 
     }
-
     private void setActionBarFunctionality() {
         home.setOnClickListener(v -> {
             Intent i = new Intent(Single_type_poll.this, MainActivity.class);

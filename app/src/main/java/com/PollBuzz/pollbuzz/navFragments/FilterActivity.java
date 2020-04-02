@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -172,7 +173,9 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void getArrayListByAuthor(String name) {
-        fb.getPollsCollection().whereEqualTo("author",name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fb.getPollsCollection()
+                .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
+                .whereEqualTo("author",name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -199,7 +202,9 @@ public class FilterActivity extends AppCompatActivity {
         else
             if(start==null)
                 start=dateFormat.parse("21-03-2020");
-            fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date",start)
+            fb.getPollsCollection().orderBy("created_date")
+                    .whereGreaterThanOrEqualTo("expiry_date", Timestamp.now().toDate())
+                    .whereGreaterThanOrEqualTo("created_date",start)
                     .whereLessThanOrEqualTo("created_date",end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
