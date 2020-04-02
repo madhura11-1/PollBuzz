@@ -56,7 +56,7 @@ public class Ranking_type_result extends AppCompatActivity {
         setContentView(R.layout.activity_ranking_type_result);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_response);
         View view = getSupportActionBar().getCustomView();
 
 
@@ -109,7 +109,6 @@ public class Ranking_type_result extends AppCompatActivity {
                                             DocumentSnapshot documentSnapshot = task.getResult();
                                             if (documentSnapshot != null) {
                                                 response = documentSnapshot.getData();
-
                                                 setAccordingToPriority();
 
 
@@ -175,18 +174,21 @@ public class Ranking_type_result extends AppCompatActivity {
         options.putAll(response);
         for(Map.Entry<String,Object> entry : options.entrySet())
         {
+            if(!entry.getKey().equals("timestamp"))
+            {
+                TextView v=new TextView(getApplicationContext());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(8, 20, 5, 20);
+                v.setLayoutParams(layoutParams);
+                v.setTypeface(typeface);
+                v.setText(entry.getKey());
+                v.setTextSize(20.0f);
+                v.setTextColor(getResources().getColor(R.color.black));
+                group.addView(v);
+                String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
+                v.setText(s);
+            }
 
-            TextView v=new TextView(getApplicationContext());
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(8, 20, 5, 20);
-            v.setLayoutParams(layoutParams);
-            v.setTypeface(typeface);
-            v.setText(entry.getKey());
-            v.setTextSize(20.0f);
-            v.setTextColor(getResources().getColor(R.color.black));
-            group.addView(v);
-            String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
-            v.setText(s);
 
 
         }
