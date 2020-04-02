@@ -44,6 +44,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,6 +76,8 @@ public class Single_type_poll extends AppCompatActivity {
     ArrayList<String> uniqueoptions=new ArrayList<>();
     TextView expiry;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+    Calendar cal = Calendar.getInstance();
+    Date default_date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +134,21 @@ public class Single_type_poll extends AppCompatActivity {
             } else {
 
                 if(expiry.getText().toString().isEmpty())
-                    expiry.setText("No Expiry");
-                addToDatabase(formattedDate);
+                {
+                    expiry.setText(df.format(default_date));
+                    addToDatabase(formattedDate);
+                }
+                else
+                {
+                    try {
+                        if(df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate))>0)
+                            addToDatabase(formattedDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
             }
         });
         expiry.setOnClickListener(new View.OnClickListener() {
@@ -169,11 +185,9 @@ public class Single_type_poll extends AppCompatActivity {
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                if(expiry.getText().toString().equals("No Expiry")){
-                    polldetails.setExpiry_date(df.parse("31-12-2020"));
-                }
-                else{
-                    polldetails.setExpiry_date(df.parse(expiry.getText().toString()));}
+
+
+                    polldetails.setExpiry_date(df.parse(expiry.getText().toString()));
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
@@ -371,5 +385,8 @@ public class Single_type_poll extends AppCompatActivity {
         uniqueoptions.clear();
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_MONTH,7);
+        default_date=cal.getTime();
     }
 }
