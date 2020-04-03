@@ -1,5 +1,6 @@
 package com.PollBuzz.pollbuzz.results;
 
+import com.PollBuzz.pollbuzz.BuildConfig;
 import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -56,6 +59,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.content.res.ResourcesCompat;
 
 public class PercentageResult extends AppCompatActivity {
@@ -153,294 +157,322 @@ public class PercentageResult extends AppCompatActivity {
         shareButton.setOnClickListener(v -> {
             shareButton.setEnabled(false);
             //Toast.makeText(getApplicationContext(), "Taking screenshot", Toast.LENGTH_SHORT).show();
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 shareButton.setEnabled(true);
-            }
-            else if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 shareButton.setEnabled(true);
-            }
-            else{
+            } else {
                 takeAndShareScreenShot();
             }
         });
     }
 
-        private void retrievedata (firebase fb){
+    private void retrievedata(firebase fb) {
 
-            showDialog();
-            fb.getPollsCollection().document(uid).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-                                PollDetails pollDetails = documentSnapshot.toObject(PollDetails.class);
-                                question_percentage.setText(pollDetails.getQuestion());
-                                question = pollDetails.getQuestion();
-                                String d = "Created on: " + pollDetails.getCreated_date();
-                                date_percentage.setText(d);
-                                map = pollDetails.getMap();
-                                total = Double.valueOf(pollDetails.getPollcount());
-                                String vote = "Total Voters:" + pollDetails.getPollcount();
-                                vote_count.setText(vote);
-                                setProgressbar(map);
-                            } else
-                                Log.d("hello", "hii");
-                        }
-                    });
-        }
-
-        private void setProgressbar (Map < String, Integer > map){
-            dialog.dismiss();
-            linearLayout.removeAllViews();
-            data.clear();
-            if (type.equals("PICTURE BASED")) {
-                for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                    Integer per;
-                    ImageView imageView = new ImageView(this);
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
-                    layoutParams.setMargins(30, 10, 10, 10);
-                    imageView.setLayoutParams(layoutParams);
-                    loadProfilePic(imageView, entry.getKey());
-                    LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
-                    linearLayout1.setOrientation(LinearLayout.VERTICAL);
-                    LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams1.setMargins(30, 40, 10, 40);
-                    linearLayout1.setLayoutParams(layoutParams1);
-                    LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams2.setMargins(30, 10, 10, 10);
-                    RoundCornerProgressBar progressBar = new RoundCornerProgressBar(PercentageResult.this, null, android.R.attr.progressBarStyleHorizontal);
-                    //progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-                    progressBar.setProgressColor(Color.parseColor("#56d2c2"));
-                    progressBar.setProgressBackgroundColor(getResources().getColor(R.color.grey));
-                    LinearLayout wrap_bar = new LinearLayout(getApplicationContext());
-                    wrap_bar.setOrientation(LinearLayout.VERTICAL);
-                    progressBar.setPadding(5, 20, 10, 20);
-                    progressBar.setRadius(20);
-                    LinearLayout.LayoutParams layoutParams3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams3.setMargins(10, 30, 10, 30);
-                    wrap_bar.setLayoutParams(layoutParams2);
-                    wrap_bar.setBackgroundColor(getResources().getColor(R.color.grey));
-                    ;
-                    progressBar.setLayoutParams(layoutParams3);
-                    progressBar.setScaleY(15);
-
-                    TextView textView = new TextView(this);
-                    TextView voted_by = new TextView(this);
-                    textView.setTypeface(typeface);
-                    voted_by.setTypeface(typeface);
-                    int v_by;
-                    if (total != 0) {
-                        per = (int) ((entry.getValue() / total) * 100);
-                        textView.setText(per + "%");
-                        progressBar.setProgress(per);
-                        v_by = entry.getValue();
-                        String text = "Voted by: " + v_by;
-                        voted_by.setText(text);
-
-                    } else {
-                        per = 0;
-                        textView.setText(per + "%");
-                        String text = "Voted by: " + 0;
-                        voted_by.setText(text);
-                        progressBar.setProgress(per);
-
+        showDialog();
+        fb.getPollsCollection().document(uid).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            PollDetails pollDetails = documentSnapshot.toObject(PollDetails.class);
+                            question_percentage.setText(pollDetails.getQuestion());
+                            question = pollDetails.getQuestion();
+                            String d = "Created on: " + pollDetails.getCreated_date();
+                            date_percentage.setText(d);
+                            map = pollDetails.getMap();
+                            total = Double.valueOf(pollDetails.getPollcount());
+                            String vote = "Total Voters:" + pollDetails.getPollcount();
+                            vote_count.setText(vote);
+                            setProgressbar(map);
+                        } else
+                            Log.d("hello", "hii");
                     }
-                    data.put(entry.getKey(), entry.getValue());
-                    textView.setLayoutParams(layoutParams2);
-                    voted_by.setLayoutParams(layoutParams2);
-                    textView.setTextSize(20.0f);
-                    voted_by.setTextSize(20.0f);
-                    textView.setTextColor(getResources().getColor(R.color.black));
-                    voted_by.setTextColor(getResources().getColor(R.color.black));
-                    linearLayout1.addView(imageView);
-                    linearLayout1.addView(textView);
-                    linearLayout1.addView(wrap_bar);
-                    wrap_bar.addView(progressBar);
-                    linearLayout1.addView(voted_by);
-                    linearLayout.addView(linearLayout1);
+                });
+    }
+
+    private void setProgressbar(Map<String, Integer> map) {
+        dialog.dismiss();
+        linearLayout.removeAllViews();
+        data.clear();
+        if (type.equals("PICTURE BASED")) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                Integer per;
+                ImageView imageView = new ImageView(this);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(200, 200);
+                layoutParams.setMargins(30, 10, 10, 10);
+                imageView.setLayoutParams(layoutParams);
+                loadProfilePic(imageView, entry.getKey());
+                LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
+                linearLayout1.setOrientation(LinearLayout.VERTICAL);
+                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams1.setMargins(30, 40, 10, 40);
+                linearLayout1.setLayoutParams(layoutParams1);
+                LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams2.setMargins(30, 10, 10, 10);
+                RoundCornerProgressBar progressBar = new RoundCornerProgressBar(PercentageResult.this, null, android.R.attr.progressBarStyleHorizontal);
+                //progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                progressBar.setProgressColor(Color.parseColor("#56d2c2"));
+                progressBar.setProgressBackgroundColor(getResources().getColor(R.color.grey));
+                LinearLayout wrap_bar = new LinearLayout(getApplicationContext());
+                wrap_bar.setOrientation(LinearLayout.VERTICAL);
+                progressBar.setPadding(5, 20, 10, 20);
+                progressBar.setRadius(20);
+                LinearLayout.LayoutParams layoutParams3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams3.setMargins(10, 30, 10, 30);
+                wrap_bar.setLayoutParams(layoutParams2);
+                wrap_bar.setBackgroundColor(getResources().getColor(R.color.grey));
+                ;
+                progressBar.setLayoutParams(layoutParams3);
+                progressBar.setScaleY(15);
+
+                TextView textView = new TextView(this);
+                TextView voted_by = new TextView(this);
+                textView.setTypeface(typeface);
+                voted_by.setTypeface(typeface);
+                int v_by;
+                if (total != 0) {
+                    per = (int) ((entry.getValue() / total) * 100);
+                    textView.setText(per + "%");
+                    progressBar.setProgress(per);
+                    v_by = entry.getValue();
+                    String text = "Voted by: " + v_by;
+                    voted_by.setText(text);
+
+                } else {
+                    per = 0;
+                    textView.setText(per + "%");
+                    String text = "Voted by: " + 0;
+                    voted_by.setText(text);
+                    progressBar.setProgress(per);
 
                 }
+                data.put(entry.getKey(), entry.getValue());
+                textView.setLayoutParams(layoutParams2);
+                voted_by.setLayoutParams(layoutParams2);
+                textView.setTextSize(20.0f);
+                voted_by.setTextSize(20.0f);
+                textView.setTextColor(getResources().getColor(R.color.black));
+                voted_by.setTextColor(getResources().getColor(R.color.black));
+                linearLayout1.addView(imageView);
+                linearLayout1.addView(textView);
+                linearLayout1.addView(wrap_bar);
+                wrap_bar.addView(progressBar);
+                linearLayout1.addView(voted_by);
+                linearLayout.addView(linearLayout1);
 
-            } else {
+            }
 
-                for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                    LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
-                    linearLayout1.setOrientation(LinearLayout.VERTICAL);
-                    RoundCornerProgressBar progressBar = new RoundCornerProgressBar(PercentageResult.this, null, android.R.attr.progressBarStyleHorizontal);
-                    //progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-                    progressBar.setProgressColor(Color.parseColor("#56d2c2"));
-                    progressBar.setProgressBackgroundColor(getResources().getColor(R.color.grey));
-                    LinearLayout wrap_bar = new LinearLayout(getApplicationContext());
-                    wrap_bar.setOrientation(LinearLayout.VERTICAL);
-                    progressBar.setPadding(5, 20, 10, 20);
-                    progressBar.setRadius(20);
-                    LinearLayout.LayoutParams layoutParams3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams3.setMargins(10, 30, 10, 30);
+        } else {
+
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
+                linearLayout1.setOrientation(LinearLayout.VERTICAL);
+                RoundCornerProgressBar progressBar = new RoundCornerProgressBar(PercentageResult.this, null, android.R.attr.progressBarStyleHorizontal);
+                //progressBar.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                progressBar.setProgressColor(Color.parseColor("#56d2c2"));
+                progressBar.setProgressBackgroundColor(getResources().getColor(R.color.grey));
+                LinearLayout wrap_bar = new LinearLayout(getApplicationContext());
+                wrap_bar.setOrientation(LinearLayout.VERTICAL);
+                progressBar.setPadding(5, 20, 10, 20);
+                progressBar.setRadius(20);
+                LinearLayout.LayoutParams layoutParams3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams3.setMargins(10, 30, 10, 30);
 
 
-                    LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams.setMargins(30, 20, 10, 20);
-                    LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    layoutParams1.setMargins(30, 40, 10, 40);
-                    linearLayout1.setLayoutParams(layoutParams1);
-                    wrap_bar.setLayoutParams(layoutParams);
-                    wrap_bar.setBackgroundColor(getResources().getColor(R.color.grey));
-                    ;
-                    progressBar.setLayoutParams(layoutParams3);
-                    progressBar.setScaleY(15);
-                    TextView textView = new TextView(this);
-                    TextView voted_by = new TextView(this);
-                    int v_by;
-                    Integer per;
-                    Log.d("option", entry.getKey());
-                    if (total != 0) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(30, 20, 10, 20);
+                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams1.setMargins(30, 40, 10, 40);
+                linearLayout1.setLayoutParams(layoutParams1);
+                wrap_bar.setLayoutParams(layoutParams);
+                wrap_bar.setBackgroundColor(getResources().getColor(R.color.grey));
+                ;
+                progressBar.setLayoutParams(layoutParams3);
+                progressBar.setScaleY(15);
+                TextView textView = new TextView(this);
+                TextView voted_by = new TextView(this);
+                int v_by;
+                Integer per;
+                Log.d("option", entry.getKey());
+                if (total != 0) {
 
-                        per = (int) ((entry.getValue() / total) * 100);
-                        v_by = entry.getValue();
-                        String text = "Voted by: " + v_by;
-                        voted_by.setText(text);
-                        textView.setText(entry.getKey() + " - " + per + "%");
-                        progressBar.setProgress(per);
-                    } else {
-                        per = 0;
-                        textView.setText(entry.getKey() + " - " + per + "%");
-                        String text = "Voted by: " + 0;
-                        voted_by.setText(text);
-                        progressBar.setProgress(per);
-                    }
-                    data.put(entry.getKey(), entry.getValue());
-                    textView.setLayoutParams(layoutParams);
-                    voted_by.setLayoutParams(layoutParams);
-                    textView.setGravity(Gravity.START);
-                    voted_by.setGravity(Gravity.START);
-                    textView.setTextSize(20.0f);
-                    voted_by.setTextSize(20.0f);
-                    textView.setTextColor(getResources().getColor(R.color.black));
-                    textView.setTypeface(typeface);
-                    voted_by.setTypeface(typeface);
-                    voted_by.setTextColor(getResources().getColor(R.color.black));
-                    linearLayout1.addView(textView);
-                    wrap_bar.addView(progressBar);
-                    linearLayout1.addView(wrap_bar);
-                    linearLayout1.addView(voted_by);
-                    linearLayout.addView(linearLayout1);
+                    per = (int) ((entry.getValue() / total) * 100);
+                    v_by = entry.getValue();
+                    String text = "Voted by: " + v_by;
+                    voted_by.setText(text);
+                    textView.setText(entry.getKey() + " - " + per + "%");
+                    progressBar.setProgress(per);
+                } else {
+                    per = 0;
+                    textView.setText(entry.getKey() + " - " + per + "%");
+                    String text = "Voted by: " + 0;
+                    voted_by.setText(text);
+                    progressBar.setProgress(per);
                 }
+                data.put(entry.getKey(), entry.getValue());
+                textView.setLayoutParams(layoutParams);
+                voted_by.setLayoutParams(layoutParams);
+                textView.setGravity(Gravity.START);
+                voted_by.setGravity(Gravity.START);
+                textView.setTextSize(20.0f);
+                voted_by.setTextSize(20.0f);
+                textView.setTextColor(getResources().getColor(R.color.black));
+                textView.setTypeface(typeface);
+                voted_by.setTypeface(typeface);
+                voted_by.setTextColor(getResources().getColor(R.color.black));
+                linearLayout1.addView(textView);
+                wrap_bar.addView(progressBar);
+                linearLayout1.addView(wrap_bar);
+                linearLayout1.addView(voted_by);
+                linearLayout.addView(linearLayout1);
             }
         }
+    }
 
-        private void loadProfilePic (ImageView view, String url){
-            if (url != null) {
-                Glide.with(this)
-                        .load(url)
-                        .into(view);
-            } else {
-                view.setImageResource(R.drawable.place_holder);
-            }
+    private void loadProfilePic(ImageView view, String url) {
+        if (url != null) {
+            Glide.with(this)
+                    .load(url)
+                    .into(view);
+        } else {
+            view.setImageResource(R.drawable.place_holder);
         }
+    }
 
 
-        private void setActionBarFunctionality () {
-            home.setOnClickListener(v -> {
-                Intent i = new Intent(PercentageResult.this, MainActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            });
-            logout.setOnClickListener(v -> {
-                fb.signOut();
-                Intent i = new Intent(PercentageResult.this, LoginSignupActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-            });
-        }
+    private void setActionBarFunctionality() {
+        home.setOnClickListener(v -> {
+            Intent i = new Intent(PercentageResult.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        });
+        logout.setOnClickListener(v -> {
+            fb.signOut();
+            Intent i = new Intent(PercentageResult.this, LoginSignupActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        });
+    }
 
-        private void showDialog () {
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.loading_dialog);
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            Window window = dialog.getWindow();
-            lp.copyFrom(window.getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+    private void showDialog() {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loading_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
-            dialog.setCancelable(false);
-            dialog.show();
-            window.setAttributes(lp);
-        }
+        dialog.setCancelable(false);
+        dialog.show();
+        window.setAttributes(lp);
+    }
 
-        private void getIntentExtras (Intent intent){
-            uid = intent.getExtras().getString("UID");
-            type = intent.getExtras().getString("type");
-            flag = intent.getIntExtra("flag", 0);
-            if (flag == 1) {
-                result.setVisibility(View.GONE);
-                selfVote.setVisibility(View.GONE);
-            }
-
-        }
-
-        private void setGlobals (View view){
-            linearLayout = findViewById(R.id.percentage);
-            fb = new firebase();
-            home = view.findViewById(R.id.home);
-            logout = view.findViewById(R.id.logout);
-            question_percentage = findViewById(R.id.question_percentage);
-            date_percentage = findViewById(R.id.date_percentage);
-            result = findViewById(R.id.result);
-            selfVote = findViewById(R.id.selfVote);
-            map = new HashMap<>();
-            vote_count = findViewById(R.id.vote_count);
-            dialog = new Dialog(PercentageResult.this);
-            typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
-            pie_charts = findViewById(R.id.pie);
-            shareButton = findViewById(R.id.share_button);
-        }
-
-        @Override
-        protected void onStart () {
-            super.onStart();
-
-        }
-
-        private void takeAndShareScreenShot(){
-            Long now = new Date().getTime();
-            try{
-                String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now.toString() + ".jpg";
-                File file = new File(mPath);
-
-                View v1 = getWindow().getDecorView().getRootView();
-                v1.setDrawingCacheEnabled(true);
-                Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-                v1.setDrawingCacheEnabled(false);
-
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-                int quality = 100;
-                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
-                fileOutputStream.flush();
-                fileOutputStream.close();
-                shareButton.setEnabled(true);
-                shareScreenshot(file.getAbsolutePath());
-            }
-            catch (Throwable e){
-                e.printStackTrace();
-            }
-        }
-
-        private void shareScreenshot(String imageFile){
-            //Toast.makeText(this, imageFile, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageFile));
-            intent.setType("image/jpeg");
-            intent.setPackage("com.whatsapp");
-            if(intent.resolveActivity(getPackageManager()) != null){
-                startActivity(Intent.createChooser(intent,"Share Result Using"));
-            }
-            else{
-                Toast.makeText(this, "Whatsapp is not installed in your phone!", Toast.LENGTH_SHORT).show();
-            }
+    private void getIntentExtras(Intent intent) {
+        uid = intent.getExtras().getString("UID");
+        type = intent.getExtras().getString("type");
+        flag = intent.getIntExtra("flag", 0);
+        if (flag == 1) {
+            result.setVisibility(View.GONE);
+            selfVote.setVisibility(View.GONE);
         }
 
     }
+
+    private void setGlobals(View view) {
+        linearLayout = findViewById(R.id.percentage);
+        fb = new firebase();
+        home = view.findViewById(R.id.home);
+        logout = view.findViewById(R.id.logout);
+        question_percentage = findViewById(R.id.question_percentage);
+        date_percentage = findViewById(R.id.date_percentage);
+        result = findViewById(R.id.result);
+        selfVote = findViewById(R.id.selfVote);
+        map = new HashMap<>();
+        vote_count = findViewById(R.id.vote_count);
+        dialog = new Dialog(PercentageResult.this);
+        typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
+        pie_charts = findViewById(R.id.pie);
+        shareButton = findViewById(R.id.share_button);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    private void takeAndShareScreenShot() {
+        Long now = new Date().getTime();
+        try {
+            View v1 = getWindow().getDecorView().getRootView();
+            v1.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            String mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
+            File file = new File(mPath);
+
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            shareButton.setEnabled(true);
+            shareScreenshot(file);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void shareScreenshot(File imageFile) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        Uri imageuri;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            imageuri = Uri.fromFile(imageFile);
+        } else {
+            imageuri = FileProvider.getUriForFile(PercentageResult.this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    imageFile);
+        }
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_TEXT, "Result for " + question_percentage.getText());
+        intent.putExtra(Intent.EXTRA_STREAM, imageuri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        try {
+            startActivity(Intent.createChooser(intent, "Share Result Using"));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, "No sharing app is installed in your phone!", Toast.LENGTH_SHORT).show();
+        }
+        deleteCache();
+    }
+
+    private void deleteCache() {
+        deleteDir(getApplicationContext().getCacheDir());
+        deleteDir(getApplicationContext().getExternalCacheDir());
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String child : children) {
+                    boolean success = deleteDir(new File(dir, child));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+            return dir.delete();
+        } else if (dir != null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+}
