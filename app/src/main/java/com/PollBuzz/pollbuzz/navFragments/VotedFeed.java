@@ -17,6 +17,7 @@ import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -152,6 +154,7 @@ public class VotedFeed extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
                 viewed.setVisibility(View.GONE);
                 lastIndex = null;
                 showPopup(view);
@@ -453,5 +456,16 @@ public class VotedFeed extends Fragment {
         back1 = view.findViewById(R.id.back1);
         back2 = view.findViewById(R.id.back2);
         userVotedRef = fb.getUserDocument().collection("Voted");
+    }
+    private void closeKeyboard() {
+        if (getActivity() != null) {
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputManager != null) {
+                    inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        }
     }
 }
