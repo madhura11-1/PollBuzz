@@ -151,15 +151,17 @@ public class PercentageResult extends AppCompatActivity {
         });
 
         shareButton.setOnClickListener(v -> {
+            shareButton.setEnabled(false);
             //Toast.makeText(getApplicationContext(), "Taking screenshot", Toast.LENGTH_SHORT).show();
             if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                shareButton.setEnabled(true);
             }
             else if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                shareButton.setEnabled(true);
             }
             else{
-                shareButton.setEnabled(false);
                 takeAndShareScreenShot();
             }
         });
@@ -432,9 +434,9 @@ public class PercentageResult extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageFile));
             intent.setType("image/jpeg");
-//            intent.setPackage("com.whatsapp");
+            intent.setPackage("com.whatsapp");
             if(intent.resolveActivity(getPackageManager()) != null){
-                startActivity(Intent.createChooser(intent,"Share Result"));
+                startActivity(Intent.createChooser(intent,"Share Result Using"));
             }
             else{
                 Toast.makeText(this, "Whatsapp is not installed in your phone!", Toast.LENGTH_SHORT).show();
