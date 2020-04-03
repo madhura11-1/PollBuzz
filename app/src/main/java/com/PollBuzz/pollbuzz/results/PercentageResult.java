@@ -266,8 +266,40 @@ public class PercentageResult extends AppCompatActivity {
 
             }
 
+        } else if (type.equals("RANKED")) {
+            pie_charts.setVisibility(View.GONE);
+            LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
+            linearLayout1.setOrientation(LinearLayout.VERTICAL);
+            fb.getPollsCollection()
+                    .document(uid)
+                    .collection("OptionsCount")
+                    .document("count")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            linearLayout.removeAllViews();
+                            Map<String,Object> map1=task.getResult().getData();
+                            Map<String, Long> map2 = new HashMap<>();
+                            if (map1 != null) {
+                                for(Map.Entry<String,Object> entry : map1.entrySet()){
+                                    map2=(Map<String,Long>) entry.getValue();
+                                    LinearLayout linearLayout2=new LinearLayout(getApplicationContext());
+                                    linearLayout2.setOrientation(LinearLayout.VERTICAL);
+                                    TextView tV_main =new TextView(getApplicationContext());
+                                    tV_main.setText(entry.getKey());
+                                    linearLayout1.addView(tV_main);
+                                    for(Map.Entry<String,Long> entry1 : map2.entrySet()){
+                                        TextView tV=new TextView(getApplicationContext());
+                                        tV.setText(entry1.getKey()+ ": " + entry1.getValue());
+                                        linearLayout2.addView(tV);
+                                    }
+                                    linearLayout1.addView(linearLayout2);
+                                }
+                                linearLayout.addView(linearLayout1);
+                            }
+                        }
+                    });
         } else {
-
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
                 linearLayout1.setOrientation(LinearLayout.VERTICAL);
@@ -290,7 +322,6 @@ public class PercentageResult extends AppCompatActivity {
                 linearLayout1.setLayoutParams(layoutParams1);
                 wrap_bar.setLayoutParams(layoutParams);
                 wrap_bar.setBackgroundColor(getResources().getColor(R.color.grey));
-                ;
                 progressBar.setLayoutParams(layoutParams3);
                 progressBar.setScaleY(15);
                 TextView textView = new TextView(this);

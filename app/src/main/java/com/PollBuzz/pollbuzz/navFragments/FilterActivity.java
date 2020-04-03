@@ -89,6 +89,7 @@ public class FilterActivity extends AppCompatActivity {
                 showPopup(view);
             }
         });
+
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
