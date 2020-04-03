@@ -3,6 +3,8 @@ package com.PollBuzz.pollbuzz.adapters;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.PollBuzz.pollbuzz.PollDetails;
@@ -15,6 +17,7 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +38,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import Utils.firebase;
+
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeViewHolder> {
 
     private ArrayList<PollDetails> mPollDetails;
     private Context mContext;
+    FirebaseAnalytics mFirebaseAnalytics;
+    firebase fb;
 
     public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
+        fb = new firebase();
     }
 
     @NonNull
@@ -60,15 +69,23 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     }
 
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
-        holder.voteArea.setOnClickListener(view -> startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type()));
-        holder.pPicArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                ProfileFeed profileFeed=ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
-                Fragment profileFeed= ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
-                FragmentManager fm=((AppCompatActivity)mContext).getSupportFragmentManager();
-                fm.beginTransaction().add(R.id.container,profileFeed,"profile").addToBackStack("profile").commit();
-            }
+        holder.voteArea.setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("user_id", fb.getUserId());
+            bundle.putString("poll_id", mPollDetails.get(position).getUID());
+            bundle.putString("timestamp", Timestamp.now().toDate().toString());
+            mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
+            startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+        });
+        holder.pPicArea.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("user_id", fb.getUserId());
+            bundle.putString("poll_id", mPollDetails.get(position).getUID());
+            bundle.putString("timestamp", Timestamp.now().toDate().toString());
+            mFirebaseAnalytics.logEvent("home_card_user_clicked", bundle);
+            Fragment profileFeed = ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
+            FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
+            fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
         });
     }
 
@@ -81,13 +98,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_query.setText(mPollDetails.get(position).getQuestion().trim());
             if (mPollDetails.get(position).getUsername() != null)
                 holder.card_author.setText((mPollDetails.get(position).getUsername().trim()));
-            if (mPollDetails.get(position).getCreated_date() != null)
-            {
-                String date=df.format(mPollDetails.get(position).getCreated_date());
+            if (mPollDetails.get(position).getCreated_date() != null) {
+                String date = df.format(mPollDetails.get(position).getCreated_date());
                 holder.card_date.setText(date.trim());
             }
-            if(mPollDetails.get(position).getPic()==null){
-                Log.d("NoPic",String.valueOf(position));
+            if (mPollDetails.get(position).getPic() == null) {
+                Log.d("NoPic", String.valueOf(position));
                 holder.profilePic.setImageResource(R.drawable.ic_person_black_24dp);
             } else {
                 Glide.with(mContext)
@@ -96,15 +112,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                         .into(holder.profilePic);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
 
     private void startIntent(String uid, String pollType) {
         Intent intent;
-        switch (pollType)
-        {
+        switch (pollType) {
             case "SINGLE CHOICE":
                 intent = new Intent(mContext, Single_type_response.class);
                 break;
@@ -146,9 +161,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             card_query = itemView.findViewById(R.id.card_query);
             card_author = itemView.findViewById(R.id.card_author);
             card_date = itemView.findViewById(R.id.card_date);
-            pPicArea=itemView.findViewById(R.id.profileArea);
-            voteArea=itemView.findViewById(R.id.voteArea);
-            profilePic=itemView.findViewById(R.id.pPic);
+            pPicArea = itemView.findViewById(R.id.profileArea);
+            voteArea = itemView.findViewById(R.id.voteArea);
+            profilePic = itemView.findViewById(R.id.pPic);
         }
     }
 }
