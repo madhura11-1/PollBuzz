@@ -18,11 +18,12 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
-         <activity android:name=".SplashScreen"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+         <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".navFragments.FilterActivity"></activity>
         <activity android:name=".results.PieChartActivity" />
