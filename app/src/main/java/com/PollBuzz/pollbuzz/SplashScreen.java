@@ -6,7 +6,12 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import Utils.AuthCheck;
 
@@ -21,6 +26,8 @@ public class SplashScreen extends AppCompatActivity {
 
         splashProgress = findViewById(R.id.splashProgress);
         playProgress();
+        fade();
+        tvanim();
 
         
         new Handler().postDelayed(new Runnable() {
@@ -41,7 +48,28 @@ public class SplashScreen extends AppCompatActivity {
     
     private void playProgress() {
         ObjectAnimator.ofInt(splashProgress, "progress", 100)
-                .setDuration(1500)
+                .setDuration(3000)
                 .start();
+    }
+
+    public void fade(){
+        ImageView image = (ImageView)findViewById(R.id.imagee);
+        Animation animation1 =
+                AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.fade);
+        image.startAnimation(animation1);
+    }
+
+    public void tvanim(){
+        TextView tv = (TextView) findViewById(R.id.txt);
+        Animation animation1 =
+                AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.txt_animation_1);
+        tv.startAnimation(animation1);
+        Animation animation2 =
+                AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.txt_animation_2);
+        tv.startAnimation(animation2);
+
     }
 }
