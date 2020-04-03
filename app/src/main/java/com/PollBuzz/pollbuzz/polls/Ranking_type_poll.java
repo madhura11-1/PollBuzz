@@ -126,6 +126,7 @@ public class Ranking_type_poll extends AppCompatActivity {
         option1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyboard();
                 v.showContextMenu();
                 option1.setChecked(false);
             }
@@ -133,6 +134,7 @@ public class Ranking_type_poll extends AppCompatActivity {
         option2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyboard();
                 v.showContextMenu();
                 option2.setChecked(false);
             }
@@ -164,6 +166,7 @@ public class Ranking_type_poll extends AppCompatActivity {
         expiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKeyboard();
                 final Calendar c = Calendar.getInstance();
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
