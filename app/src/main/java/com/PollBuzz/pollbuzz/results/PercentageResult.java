@@ -159,6 +159,7 @@ public class PercentageResult extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
             else{
+                shareButton.setEnabled(false);
                 takeAndShareScreenShot();
             }
         });
@@ -418,7 +419,7 @@ public class PercentageResult extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
                 fileOutputStream.flush();
                 fileOutputStream.close();
-
+                shareButton.setEnabled(true);
                 shareScreenshot(file.getAbsolutePath());
             }
             catch (Throwable e){
@@ -431,9 +432,9 @@ public class PercentageResult extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(imageFile));
             intent.setType("image/jpeg");
-            intent.setPackage("com.whatsapp");
+//            intent.setPackage("com.whatsapp");
             if(intent.resolveActivity(getPackageManager()) != null){
-                startActivity(intent);
+                startActivity(Intent.createChooser(intent,"Share Result"));
             }
             else{
                 Toast.makeText(this, "Whatsapp is not installed in your phone!", Toast.LENGTH_SHORT).show();
