@@ -155,8 +155,18 @@ public class Ranking_type_poll extends AppCompatActivity {
                else
                {
                    try {
-                       if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>0)
+                       if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>=0){
+                           Calendar cali = Calendar.getInstance();
+                           int year = cali.get(Calendar.YEAR);
+                           int month = cali.get(Calendar.MONTH)+1;
+                           int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                           String sday = Integer.toString(day);
+                           String smonth = Integer.toString(month);
+                           String sint = Integer.toString(year);
+                           expiry.setText(sday+"-"+smonth+"-"+sint);
                            addToDatabase(formatteddate);
+                       }
+
                    } catch (ParseException e) {
                        e.printStackTrace();
                    }

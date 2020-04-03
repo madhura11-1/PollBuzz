@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
+import com.PollBuzz.pollbuzz.adapters.ProfileFeedAdapter;
+import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -59,8 +62,9 @@ public class FilterActivity extends AppCompatActivity {
     private ImageButton search, check;
     private LinearLayout search_layout, date_layout;
     private Button search_button;
-    private String name;
-    TextView starting, ending;
+    private  String name;
+    private int type;
+    TextView starting,ending;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayoutManager layoutManager;
     Date date = Calendar.getInstance().getTime();

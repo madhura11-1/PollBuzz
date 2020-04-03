@@ -148,6 +148,8 @@ public class HomeFeed extends Fragment {
                             viewed.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        Log.d("hello",task
+                        .getException().toString());
                         recyclerView.hideShimmerAdapter();
                         Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
