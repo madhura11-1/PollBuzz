@@ -18,6 +18,13 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
+         <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".navFragments.FilterActivity"></activity>
         <activity android:name=".results.PieChartActivity" />
         <activity android:name=".results.PercentageResult" />
@@ -63,11 +70,11 @@
         <activity
             android:name="Utils.AuthCheck"
             android:screenOrientation="unspecified">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name="Utils.ImagePickerActivity"
