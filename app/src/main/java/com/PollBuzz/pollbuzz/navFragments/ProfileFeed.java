@@ -246,8 +246,8 @@ public class ProfileFeed extends Fragment {
                         .limit(20)
                         .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
+                        Log.d("ProfielFeed", "Size: "+task.getResult().size());
                         if (!task.getResult().isEmpty()) {
-                            Log.d("ProfielFeed", userDoc.getId());
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 if (dS.get("pollId") != null)
                                     fb.getPollsCollection().document(dS.get("pollId").toString()).get().addOnCompleteListener(task1 -> {

@@ -26,8 +26,6 @@ public class AuthCheck extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_check);
-        FirebaseApp.initializeApp(getApplicationContext());
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
         mFirebaseAnalytics=FirebaseAnalytics.getInstance(this);
         firebase fb = new firebase();
         Intent i = getIntent(fb);

@@ -273,6 +273,7 @@ public class VotedFeed extends Fragment {
                 userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
                         .limit(20).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
+                        Log.d("SizeVoted","Size: "+task.getResult().size());
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 if (dS.exists()) {
