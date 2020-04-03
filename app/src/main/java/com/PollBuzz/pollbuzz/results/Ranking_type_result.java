@@ -43,12 +43,12 @@ public class Ranking_type_result extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener listener;
     String key,uid;
-    ImageButton home, logout;
     Typeface typeface;
     Dialog dialog;
     Map<String, Object> response;
     TreeMap<String, Object> options;
     Integer integer;
+    TextView poll_stats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class Ranking_type_result extends AppCompatActivity {
         setContentView(R.layout.activity_ranking_type_result);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_response);
         View view = getSupportActionBar().getCustomView();
 
 
@@ -109,7 +109,6 @@ public class Ranking_type_result extends AppCompatActivity {
                                             DocumentSnapshot documentSnapshot = task.getResult();
                                             if (documentSnapshot != null) {
                                                 response = documentSnapshot.getData();
-
                                                 setAccordingToPriority();
 
 
@@ -126,20 +125,18 @@ public class Ranking_type_result extends AppCompatActivity {
     }
 
     private void setActionBarFunctionality() {
-
-        home.setOnClickListener(new View.OnClickListener() {
+        poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Ranking_type_result.this, MainActivity.class);
+                Intent i=new Intent(Ranking_type_result.this,PercentageResult.class);
+                i.putExtra("UID",key);
+                i.putExtra("type","RANKED");
+                i.putExtra("flag",1);
                 startActivity(i);
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-            }
-        });
+
+
     }
 
     private void getIntentExtras(Intent intent) {
@@ -161,9 +158,7 @@ public class Ranking_type_result extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-
-        home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
+        poll_stats=view.findViewById(R.id.poll_stats);
         auth = FirebaseAuth.getInstance();
         options=new TreeMap<>();
         query_ranking_result = findViewById(R.id.query_ranking_result);
@@ -179,18 +174,21 @@ public class Ranking_type_result extends AppCompatActivity {
         options.putAll(response);
         for(Map.Entry<String,Object> entry : options.entrySet())
         {
+            if(!entry.getKey().equals("timestamp"))
+            {
+                TextView v=new TextView(getApplicationContext());
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(8, 20, 5, 20);
+                v.setLayoutParams(layoutParams);
+                v.setTypeface(typeface);
+                v.setText(entry.getKey());
+                v.setTextSize(20.0f);
+                v.setTextColor(getResources().getColor(R.color.black));
+                group.addView(v);
+                String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
+                v.setText(s);
+            }
 
-            TextView v=new TextView(getApplicationContext());
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(8, 20, 5, 20);
-            v.setLayoutParams(layoutParams);
-            v.setTypeface(typeface);
-            v.setText(entry.getKey());
-            v.setTextSize(20.0f);
-            v.setTextColor(getResources().getColor(R.color.black));
-            group.addView(v);
-            String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
-            v.setText(s);
 
 
         }

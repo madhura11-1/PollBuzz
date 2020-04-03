@@ -111,9 +111,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             case "MULTI SELECT":
                 intent = new Intent(mContext, Multiple_type_response.class);
                 break;
-            case "DESCRIPTIVE POLL":
-                intent = new Intent(mContext, Descriptive_type_response.class);
-                break;
             case "RANKED":
                 intent = new Intent(mContext, Ranking_type_response.class);
                 break;

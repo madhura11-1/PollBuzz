@@ -8,12 +8,14 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.kinda.alert.KAlertDialog;
 
 import android.app.Dialog;
@@ -21,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -172,19 +175,82 @@ public class Ranking_type_response extends AppCompatActivity {
     }
 
     private void setResponse(firebase fb) {
+        Map<String,Object> option=new HashMap<>();
+        DocumentReference ref= fb.getPollsCollection().document(key).collection("OptionsCount").document("count");
+        String id;
+        fb.getPollsCollection().document(key).collection("OptionsCount").document("count").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful())
+                {
+
+                    DocumentSnapshot result=task.getResult();
+                    if(result.exists())
+                    {
+                        Map<String,Object> ans=result.getData();
+                        updateRanks(ans,ref);
+                    }
+
+                }
+
+
+
+            }
+        });
+
         for(int i=0;i<c;i++)
         {
             response.put("option"+i,resp.get(i));
-
         }
+
         response.put("timestamp", Timestamp.now().getSeconds());
         submitResponse(fb);
         return;
     }
 
+    private void updateRanks(Map<String,Object> ans,DocumentReference ref) {
+        Map<String,Object> ans1=ans;
+        Map<String,Long> map;
+        System.out.println(ans);
+        for(int i=0;i<c;i++)
+        {
+
+
+              map =(Map<String, Long>)ans1.get(resp.get(i));
+              if(map.containsKey(String.valueOf(i+1)))
+              {
+
+                  Long k=map.get(String.valueOf(i+1));
+                  Log.d(resp.get(i)+" "+String.valueOf(i+1),String.valueOf(k));
+                  map.remove(String.valueOf(i+1));
+                  map.put(String.valueOf(i+1),k+1);
+
+
+                  ans.remove(resp.get(i));
+                  ans.put(resp.get(i),map);
+                  //System.out.println(ans);
+
+              }
+
+           if(i==(c-1))
+           {
+               System.out.println(ans);
+               ref.set(ans).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task) {
+                       if(task.isSuccessful())
+                           System.out.println("Updated");
+
+                   }
+               });
+           }
+
+
+        }
+    }
+
     private void submitResponse(firebase fb) {
         showKAlertDialog();
-
         fb.getPollsCollection().document(key).collection("Response").document(fb.getUserId()).set(response).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

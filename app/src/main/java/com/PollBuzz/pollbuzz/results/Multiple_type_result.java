@@ -41,7 +41,7 @@ public class Multiple_type_result extends AppCompatActivity {
     Typeface typeface;
     Dialog dialog;
     FirebaseAuth auth;
-    ImageButton home, logout;
+    TextView poll_stats;
     FirebaseAuth.AuthStateListener listener;
     Map<String, Object> response;
     Integer integer;
@@ -53,7 +53,7 @@ public class Multiple_type_result extends AppCompatActivity {
         setContentView(R.layout.activity_multiple_type_result);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_response);
         View view = getSupportActionBar().getCustomView();
 
         setGlobals(view);
@@ -191,24 +191,24 @@ public class Multiple_type_result extends AppCompatActivity {
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Multiple_type_result.this);
         auth = FirebaseAuth.getInstance();
-        home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
+        poll_stats=view.findViewById(R.id.poll_stats);
+        poll_stats.setClickable(true);
+
     }
 
     private void setActionBarFunctionality() {
-        home.setOnClickListener(new View.OnClickListener() {
+        poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Multiple_type_result.this, MainActivity.class);
+                Intent i=new Intent(Multiple_type_result.this,PercentageResult.class);
+                i.putExtra("UID",key);
+                i.putExtra("type","MULTI SELECT");
+                i.putExtra("flag",1);
                 startActivity(i);
+
             }
         });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.signOut();
-            }
-        });
+
     }
 
     private void getIntentExtras(Intent intent) {

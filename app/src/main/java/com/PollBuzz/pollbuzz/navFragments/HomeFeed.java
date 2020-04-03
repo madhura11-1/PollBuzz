@@ -131,8 +131,8 @@ public class HomeFeed extends Fragment {
     private void getData() {
         if (lastIndex == null) {
             fb.getPollsCollection()
-                    .orderBy("timestamp", Query.Direction.DESCENDING)
-                    .limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
+                    limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -157,8 +157,8 @@ public class HomeFeed extends Fragment {
             });
         } else {
             fb.getPollsCollection()
-                    .orderBy("timestamp", Query.Direction.DESCENDING)
-                    .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+                    .orderBy("timestamp", Query.Direction.DESCENDING).
+                    startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         for (QueryDocumentSnapshot dS : task.getResult()) {
@@ -193,17 +193,14 @@ public class HomeFeed extends Fragment {
                     }
                 }
                 if (flag) {
-                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            Log.d("UIDCheck",task1.getResult().getId());
-                            if (task1.getResult().get("pic") != null)
-                                polldetails.setPic(task1.getResult().get("pic").toString());
-                            else
-                                polldetails.setPic(null);
-                            Log.d("usernameCheck",polldetails.getExpiry_date().toString());
-                            Log.d("bye",date.toString());
-                            polldetails.setUsername(task1.getResult().get("username").toString());
-                            if(polldetails.getExpiry_date().compareTo(date)>=0) {
+                    if (polldetails.getExpiry_date().compareTo(date) >= 0) {
+                        fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful() && task1.getResult() != null) {
+                                if (task1.getResult().get("pic") != null)
+                                    polldetails.setPic(task1.getResult().get("pic").toString());
+                                else
+                                    polldetails.setPic(null);
+                                polldetails.setUsername(task1.getResult().get("username").toString());
                                 arrayList.add(polldetails);
                                 Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                                 viewed.setVisibility(View.GONE);
@@ -215,11 +212,11 @@ public class HomeFeed extends Fragment {
                                     recyclerView.scheduleLayoutAnimation();
                                     flagFirst = false;
                                 }
+                            } else {
+                                Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
