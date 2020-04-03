@@ -15,6 +15,7 @@ import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
 import android.app.Activity;
@@ -188,6 +189,7 @@ public class Ranking_type_poll extends AppCompatActivity {
 
     private void addToDatabase(String formatteddate) {
         try {
+            String key;
             showDialog();
             post_ranking.setEnabled(false);
             if (fb.getUser() != null) {
@@ -198,15 +200,23 @@ public class Ranking_type_poll extends AppCompatActivity {
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
                     polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
+                Map<String,Object> option=new HashMap<>();
+                Map<String,Integer> ranks=new HashMap<>();
+                for(int i=0;i<group.getChildCount();i++)
+                {
+                    ranks.put(String.valueOf(i+1),0);
+                }
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
                     map.put(v.getText().toString().trim(), 0);
+                    option.put(v.getText().toString(),ranks);
                 }
                 polldetails.setMap(map);
                 polldetails.setPoll_type("RANKED");
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();
+                 key=doc.getId();
                 doc.set(polldetails)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -231,6 +241,24 @@ public class Ranking_type_poll extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                DocumentReference ref= fb.getPollsCollection().document(key).collection("OptionsCount").document("count");
+                                fb.getPollsCollection().document(key).collection("OptionsCount").document("count").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if(task.isSuccessful())
+                                        {
+
+                                            DocumentSnapshot result=task.getResult();
+                                            if(!result.exists())
+                                            {
+                                                ref.set(option);
+                                            }
+                                        }
+
+
+
+                                    }
+                                });
                             }
                         })
                         .addOnFailureListener(e -> {
@@ -239,6 +267,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                             dialog.dismissWithAnimation();
                         });
             }
+
         }catch (Exception e){
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
