@@ -150,16 +150,15 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:layout_below="@id/date_layout"
+        android:layout_marginTop="2dp"
         android:layoutAnimation="@anim/animation_down_to_up"
-        app:shimmer_demo_shimmer_color="@color/white"
+        android:scrollbars="vertical"
         app:shimmer_demo_angle="20"
-        app:shimmer_demo_view_holder_item_background="@color/white"
-        app:shimmer_demo_layout_manager_type="linear_vertical"
-        app:shimmer_demo_layout="@layout/placeholder"
         app:shimmer_demo_child_count="7"
-        />
+        app:shimmer_demo_layout="@layout/placeholder"
+        app:shimmer_demo_layout_manager_type="linear_vertical"
+        app:shimmer_demo_shimmer_color="@color/white"
+        app:shimmer_demo_view_holder_item_background="@color/white" />
 
     <ProgressBar
         android:layout_width="wrap_content"

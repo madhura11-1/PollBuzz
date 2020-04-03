@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -67,6 +68,7 @@ public class Single_type_poll extends AppCompatActivity {
     int c;
     RadioButton b;
     TextInputEditText question;
+    DatePickerDialog datePickerDialog;
     MaterialButton button;
     Date date = Calendar.getInstance().getTime();
     firebase fb;
@@ -141,8 +143,16 @@ public class Single_type_poll extends AppCompatActivity {
                 else
                 {
                     try {
-                        if(df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate))>0)
-                            addToDatabase(formattedDate);
+                        if(df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate))>=0){
+                            Calendar cali = Calendar.getInstance();
+                            int year = cali.get(Calendar.YEAR);
+                            int month = cali.get(Calendar.MONTH)+1;
+                            int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                            String sday = Integer.toString(day);
+                            String smonth = Integer.toString(month);
+                            String sint = Integer.toString(year);
+                            expiry.setText(sday+"-"+smonth+"-"+sint);
+                            addToDatabase(formattedDate);}
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -158,7 +168,7 @@ public class Single_type_poll extends AppCompatActivity {
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Single_type_poll.this,
+                 datePickerDialog = new DatePickerDialog(Single_type_poll.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -194,7 +204,7 @@ public class Single_type_poll extends AppCompatActivity {
                     map.put(v.getText().toString(), 0);
                 }
                 polldetails.setMap(map);
-                polldetails.setPoll_type("SINGLE ANSWER POLL");
+                polldetails.setPoll_type("SINGLE CHOICE");
                 polldetails.setCreated_date(df.parse(formattedDate));
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();

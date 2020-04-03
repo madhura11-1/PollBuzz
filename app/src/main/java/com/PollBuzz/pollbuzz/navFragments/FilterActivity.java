@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
+import com.PollBuzz.pollbuzz.adapters.ProfileFeedAdapter;
+import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -57,6 +60,7 @@ public class FilterActivity extends AppCompatActivity {
     private LinearLayout search_layout,date_layout;
     private Button search_button;
     private  String name;
+    private int type;
     TextView starting,ending;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayoutManager layoutManager;
@@ -241,8 +245,6 @@ public class FilterActivity extends AppCompatActivity {
                     recyclerView.hideShimmerAdapter();
                     adapter.notifyDataSetChanged();
                     recyclerView.scheduleLayoutAnimation();}
-                    else
-                        Toast.makeText(this, "Expired polls", Toast.LENGTH_SHORT).show();
                 }
 
 

@@ -177,7 +177,18 @@ public class Image_type_poll extends AppCompatActivity {
 
                 if(expiry.getText().toString().isEmpty())
                     expiry.setText(dateFormat.format(default_date));
-               addToStorage();
+                else{
+                    Calendar cali = Calendar.getInstance();
+                    int year = cali.get(Calendar.YEAR);
+                    int month = cali.get(Calendar.MONTH)+1;
+                    int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                    String sday = Integer.toString(day);
+                    String smonth = Integer.toString(month);
+                    String sint = Integer.toString(year);
+                    expiry.setText(sday+"-"+smonth+"-"+sint);
+                    addToStorage();
+                }
+
             }
         });
         expiry.setOnClickListener(new View.OnClickListener() {
@@ -334,7 +345,7 @@ public class Image_type_poll extends AppCompatActivity {
             PollDetails polldetails = new PollDetails();
             polldetails.setQuestion(question_image.getText().toString().trim());
             polldetails.setCreated_date(dateFormat.parse(formatteddate));
-            polldetails.setPoll_type("IMAGE POLL");
+            polldetails.setPoll_type("PICTURE BASED");
                 polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
             polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
             polldetails.setAuthorUID(fb.getUserId());

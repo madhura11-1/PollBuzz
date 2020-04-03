@@ -152,8 +152,18 @@ public class Ranking_type_poll extends AppCompatActivity {
                else
                {
                    try {
-                       if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>0)
+                       if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>=0){
+                           Calendar cali = Calendar.getInstance();
+                           int year = cali.get(Calendar.YEAR);
+                           int month = cali.get(Calendar.MONTH)+1;
+                           int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                           String sday = Integer.toString(day);
+                           String smonth = Integer.toString(month);
+                           String sint = Integer.toString(year);
+                           expiry.setText(sday+"-"+smonth+"-"+sint);
                            addToDatabase(formatteddate);
+                       }
+
                    } catch (ParseException e) {
                        e.printStackTrace();
                    }
@@ -201,7 +211,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                     map.put(v.getText().toString().trim(), 0);
                 }
                 polldetails.setMap(map);
-                polldetails.setPoll_type("PRIORITY POLL");
+                polldetails.setPoll_type("RANKED");
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();
                 doc.set(polldetails)

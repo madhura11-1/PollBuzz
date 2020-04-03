@@ -105,19 +105,19 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         Intent intent;
         switch (pollType)
         {
-            case "SINGLE ANSWER POLL":
+            case "SINGLE CHOICE":
                 intent = new Intent(mContext, Single_type_response.class);
                 break;
-            case "MULTI ANSWER POLL":
+            case "MULTI SELECT":
                 intent = new Intent(mContext, Multiple_type_response.class);
                 break;
             case "DESCRIPTIVE POLL":
                 intent = new Intent(mContext, Descriptive_type_response.class);
                 break;
-            case "PRIORITY POLL":
+            case "RANKED":
                 intent = new Intent(mContext, Ranking_type_response.class);
                 break;
-            case "IMAGE POLL":
+            case "PICTURE BASED":
                 intent = new Intent(mContext, Image_type_responses.class);
                 break;
             default:
