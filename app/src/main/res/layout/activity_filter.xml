@@ -73,9 +73,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search for username"
-            android:textColorHint="@color/black"
-            android:imeOptions="actionSearch"
-            android:backgroundTint="@color/black"
             android:textColor="@color/black"
             android:layout_marginRight="10dp"
             android:layout_weight="3"/>
@@ -153,15 +150,16 @@
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="2dp"
-        android:layoutAnimation="@anim/animation_down_to_up"
         android:scrollbars="vertical"
-        app:shimmer_demo_angle="20"
-        app:shimmer_demo_child_count="7"
-        app:shimmer_demo_layout="@layout/placeholder"
-        app:shimmer_demo_layout_manager_type="linear_vertical"
+        android:layout_below="@id/date_layout"
+        android:layoutAnimation="@anim/animation_down_to_up"
         app:shimmer_demo_shimmer_color="@color/white"
-        app:shimmer_demo_view_holder_item_background="@color/white" />
+        app:shimmer_demo_angle="20"
+        app:shimmer_demo_view_holder_item_background="@color/white"
+        app:shimmer_demo_layout_manager_type="linear_vertical"
+        app:shimmer_demo_layout="@layout/placeholder"
+        app:shimmer_demo_child_count="7"
+        />
 
     <ProgressBar
         android:layout_width="wrap_content"
