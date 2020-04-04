@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             fm.beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .add(R.id.container, fragment, id)
+                    .replace(R.id.container, fragment, id)
                     .commit();
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
