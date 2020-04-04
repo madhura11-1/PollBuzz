@@ -145,7 +145,17 @@ public class Ranking_type_poll extends AppCompatActivity {
            if (question_ranking.getText().toString().isEmpty()) {
                 question_ranking.setError("Please enter the question");
                 question_ranking.requestFocus();
-            } else {
+            }
+           else if (group.getChildCount()>12)
+           {
+               Toast.makeText(getApplicationContext(),"Maximum of 12 options allowed\nDelete some options",Toast.LENGTH_LONG).show();
+           }
+           else if(group.getChildCount()<2)
+           {
+               Toast.makeText(getApplicationContext(), "Please add at least two options", Toast.LENGTH_SHORT).show();
+           }
+               else
+            {
 
                if(expiry.getText().toString().isEmpty())
                {

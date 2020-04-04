@@ -133,7 +133,11 @@ public class Single_type_poll extends AppCompatActivity {
                 question.requestFocus();
             } else if (group.getChildCount()<2) {
                 Toast.makeText(Single_type_poll.this, "Please add atleast two options", Toast.LENGTH_SHORT).show();
-            } else {
+            }
+            else if (group.getChildCount()>12)
+            {
+                Toast.makeText(getApplicationContext(),"Maximum of 12 options allowed\nDelete some options",Toast.LENGTH_LONG).show();
+            }else {
 
                 if(expiry.getText().toString().isEmpty())
                 {
