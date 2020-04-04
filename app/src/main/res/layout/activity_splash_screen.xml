@@ -24,7 +24,9 @@
         android:includeFontPadding="false"
         android:text="Welcome to PollBuzz"
         android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold"
+        android:fontFamily="@font/pacifico"
+        android:layout_marginTop="20dp"/>
 
     <ProgressBar
         android:id="@+id/splashProgress"
@@ -35,6 +37,6 @@
         android:outlineAmbientShadowColor="@color/colorPrimary"
         android:layout_centerHorizontal="true"
         android:layout_alignTop="@+id/txt"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         />
     </RelativeLayout>

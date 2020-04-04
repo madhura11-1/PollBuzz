@@ -165,7 +165,7 @@ public class HomeFeed extends Fragment {
                     } else {
                         progressBar.setVisibility(View.GONE);
                         flagFetch = false;
-                        Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
