@@ -1,7 +1,6 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
@@ -63,8 +59,8 @@ public class FilterActivity extends Fragment {
     private LayoutAnimationController controller;
     MaterialTextView viewed, viewed2;
     private TextInputEditText search_type;
-    private ImageButton search,check,home,logout;
-    private LinearLayout search_layout,date_layout;
+    private ImageButton search, check;
+    private LinearLayout search_layout, date_layout;
     private Button search_button;
     private String name;
     TextView starting, ending;
@@ -89,11 +85,9 @@ public class FilterActivity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setListeners();
-        setActionBarFunctionality();
     }
 
     private void setListeners() {
-
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,8 +300,6 @@ public class FilterActivity extends Fragment {
         check = view.findViewById(R.id.check);
         date_layout = view.findViewById(R.id.date_layout);
         date_layout.setVisibility(View.GONE);
-        home=view.findViewById(R.id.home);
-        logout=view.findViewById(R.id.logout);
     }
 
     public void showPopup(View v) {
@@ -347,19 +339,6 @@ public class FilterActivity extends Fragment {
                 }
             }
         }
-    }
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(getActivity(), LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
     }
 
 

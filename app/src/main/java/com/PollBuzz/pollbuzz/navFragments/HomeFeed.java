@@ -109,9 +109,7 @@ public class HomeFeed extends Fragment {
 /*        search_type.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 arrayList.clear();
@@ -120,11 +118,8 @@ public class HomeFeed extends Fragment {
                     getData(1,charSequence.toString());
                 }
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
-
-
             }
         });*/
 
@@ -151,7 +146,7 @@ public class HomeFeed extends Fragment {
                         }
                     } else {
                         Log.d("hello",task
-                        .getException().toString());
+                                .getException().toString());
                         recyclerView.hideShimmerAdapter();
                         Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
