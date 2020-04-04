@@ -60,6 +60,7 @@ public class Ranking_type_response extends AppCompatActivity {
     ImageButton logout,home;
     int c;
     firebase fb;
+    PollDetails polldetails;
     KAlertDialog dialog1;
     ArrayList<String> resp=new ArrayList<>();
 
@@ -103,7 +104,7 @@ public class Ranking_type_response extends AppCompatActivity {
                     if(data.exists())
                     {   group.removeAllViews();
                         dialog.dismiss();
-                        PollDetails polldetails=data.toObject(PollDetails.class);
+                        polldetails=data.toObject(PollDetails.class);
                         query_ranking.setText(polldetails.getQuestion());
                         options=polldetails.getMap();
                         c=options.size();
@@ -254,6 +255,9 @@ public class Ranking_type_response extends AppCompatActivity {
         fb.getPollsCollection().document(key).collection("Response").document(fb.getUserId()).set(response).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                Integer i = polldetails.getPollcount();
+                i++;
+                fb.getPollsCollection().document(key).update("pollcount",i);
                 Map<String, Object> mapi = new HashMap<>();
                 mapi.put("pollId", fb.getUserId());
                 mapi.put("timestamp", Timestamp.now().getSeconds());
