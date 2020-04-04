@@ -452,7 +452,6 @@ public class PercentageResult extends AppCompatActivity {
     }
 
     private void takeAndShareScreenShot() {
-        Long now = new Date().getTime();
         try {
             View v1 = getWindow().getDecorView().getRootView();
             v1.setDrawingCacheEnabled(true);
