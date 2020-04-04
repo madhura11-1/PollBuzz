@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -181,9 +182,13 @@ public class FilterActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             addToRecyclerView(dS);
-
                         }
-
+                    }
+                    else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
@@ -211,6 +216,11 @@ public class FilterActivity extends AppCompatActivity {
 
                         }
 
+                    }else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -245,6 +255,11 @@ public class FilterActivity extends AppCompatActivity {
                             recyclerView.scheduleLayoutAnimation();
                         }
                     });
+                }else{
+                    if(arrayList.isEmpty()){
+                        recyclerView.hideShimmerAdapter();
+                        viewed.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
