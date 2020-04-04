@@ -11,6 +11,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,13 +57,13 @@ public class FilterActivity extends AppCompatActivity {
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
     private firebase fb;
     private LayoutAnimationController controller;
-    MaterialTextView viewed,viewed2;
+    MaterialTextView viewed, viewed2;
     private TextInputEditText search_type;
     private ImageButton search,check,home,logout;
     private LinearLayout search_layout,date_layout;
     private Button search_button;
-    private  String name;
-    TextView starting,ending;
+    private String name;
+    TextView starting, ending;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayoutManager layoutManager;
     Date date = Calendar.getInstance().getTime();
@@ -97,12 +98,11 @@ public class FilterActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
                 recyclerView.showShimmerAdapter();
                 name = search_type.getText().toString();
-                if(!name.isEmpty()){
+                if (!name.isEmpty()) {
                     //getData(1,name,null,null);
                     getArrayListByAuthor(name);
-                }
-                else
-                    Toast.makeText(getApplicationContext(),"PLease enter the author name",Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(getApplicationContext(), "PLease enter the author name", Toast.LENGTH_LONG).show();
                 //search_type.setText("");
             }
         });
@@ -113,7 +113,7 @@ public class FilterActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 starting.setText(date);
 
                             }
@@ -128,7 +128,7 @@ public class FilterActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 ending.setText(date);
 
                             }
@@ -141,31 +141,29 @@ public class FilterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-                    if(starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
-                        Toast.makeText(getApplicationContext(),"Please atleast one of the dates",Toast.LENGTH_LONG).show();
+                    if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
+                        Toast.makeText(getApplicationContext(), "Please atleast one of the dates", Toast.LENGTH_LONG).show();
                     else {
-                        if(!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty())
-                        {
-                            Date start=dateFormat.parse(starting.getText().toString());
-                            Date end=dateFormat.parse(ending.getText().toString());
-                            if(start.compareTo(end)>0)
-                                Toast.makeText(getApplicationContext(),"Starting date can't be after the ending date",Toast.LENGTH_LONG).show();
-                            else
-                            {   arrayList.clear();
+                        if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
+                            Date start = dateFormat.parse(starting.getText().toString());
+                            Date end = dateFormat.parse(ending.getText().toString());
+                            if (start.compareTo(end) > 0)
+                                Toast.makeText(getApplicationContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                            else {
+                                arrayList.clear();
                                 adapter.notifyDataSetChanged();
                                 recyclerView.showShimmerAdapter();
-                                getArrayListByDate(dateFormat.parse(starting.getText().toString()),dateFormat.parse(ending.getText().toString()));
+                                getArrayListByDate(dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                                 //getData(2,"",dateFormat.parse(starting.getText().toString()),dateFormat.parse(ending.getText().toString()));
                             }
-                        }
-                        else
-                        {   arrayList.clear();
+                        } else {
+                            arrayList.clear();
                             adapter.notifyDataSetChanged();
                             recyclerView.showShimmerAdapter();
-                            if(starting.getText().toString().isEmpty())
-                                getArrayListByDate(null,dateFormat.parse(ending.getText().toString()));
+                            if (starting.getText().toString().isEmpty())
+                                getArrayListByDate(null, dateFormat.parse(ending.getText().toString()));
                             else
-                                getArrayListByDate(dateFormat.parse(starting.getText().toString()),null);
+                                getArrayListByDate(dateFormat.parse(starting.getText().toString()), null);
 
 
                         }
@@ -180,7 +178,7 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void getArrayListByAuthor(String name) {
-        fb.getPollsCollection().whereEqualTo("author",name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -190,9 +188,13 @@ public class FilterActivity extends AppCompatActivity {
                         adapter.notifyDataSetChanged();
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             addToRecyclerView(dS);
-
                         }
-
+                    }
+                    else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
@@ -202,13 +204,12 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void getArrayListByDate(Date start, Date end) throws ParseException {
-        if(end==null)
-            end=dateFormat.parse(formatteddate);
-        else
-        if(start==null)
-            start=dateFormat.parse("21-03-2020");
-        fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date",start)
-                .whereLessThanOrEqualTo("created_date",end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        if (end == null)
+            end = dateFormat.parse(formatteddate);
+        else if (start == null)
+            start = dateFormat.parse("21-03-2020");
+        fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
+                .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -221,13 +222,18 @@ public class FilterActivity extends AppCompatActivity {
 
                         }
 
+                    }else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
         });
     }
-    private void addToRecyclerView(DocumentSnapshot dS)
-    {
+
+    private void addToRecyclerView(DocumentSnapshot dS) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -239,22 +245,31 @@ public class FilterActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                if (flag)
-                {
-                    arrayList.add(polldetails);
-                    Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
-                    viewed.setVisibility(View.GONE);
-                    recyclerView.hideShimmerAdapter();
-                    adapter.notifyDataSetChanged();
-                    recyclerView.scheduleLayoutAnimation();
+                if (flag) {
+                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful() && task1.getResult() != null) {
+                            if (task1.getResult().get("pic") != null)
+                                polldetails.setPic(task1.getResult().get("pic").toString());
+                            else
+                                polldetails.setPic(null);
+                            polldetails.setUsername(task1.getResult().get("username").toString());
+                            arrayList.add(polldetails);
+                            Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
+                            viewed.setVisibility(View.GONE);
+                            recyclerView.hideShimmerAdapter();
+                            adapter.notifyDataSetChanged();
+                            recyclerView.scheduleLayoutAnimation();
+                        }
+                    });
+                }else{
+                    if(arrayList.isEmpty()){
+                        recyclerView.hideShimmerAdapter();
+                        viewed.setVisibility(View.VISIBLE);
+                    }
                 }
-
-
             }
         });
     }
-
-
 
     private void setGlobals() {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -262,8 +277,8 @@ public class FilterActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         View view =getSupportActionBar().getCustomView();
         arrayList = new ArrayList<>();
-        viewed=findViewById(R.id.viewed);
-        viewed2=findViewById(R.id.viewed2);
+        viewed = findViewById(R.id.viewed);
+        viewed2 = findViewById(R.id.viewed2);
         search_layout = findViewById(R.id.type_layout);
         search_layout.setVisibility(View.GONE);
         search = findViewById(R.id.search);
@@ -271,7 +286,7 @@ public class FilterActivity extends AppCompatActivity {
         controller = AnimationUtils.loadLayoutAnimation(getApplicationContext(), R.anim.animation_down_to_up);
         recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        search_button =findViewById(R.id.search_button);
+        search_button = findViewById(R.id.search_button);
         layoutManager = new LinearLayoutManager(FilterActivity.this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         adapter = new HomePageAdapter(FilterActivity.this, arrayList);
@@ -280,10 +295,10 @@ public class FilterActivity extends AppCompatActivity {
         recyclerView.setLayoutAnimation(controller);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(findViewById(R.id.text));
         fb = new firebase();
-        starting=findViewById(R.id.starting_date);
-        ending=findViewById(R.id.ending_date);
-        check=findViewById(R.id.check);
-        date_layout=findViewById(R.id.date_layout);
+        starting = findViewById(R.id.starting_date);
+        ending = findViewById(R.id.ending_date);
+        check = findViewById(R.id.check);
+        date_layout = findViewById(R.id.date_layout);
         date_layout.setVisibility(View.GONE);
         home=view.findViewById(R.id.home);
         logout=view.findViewById(R.id.logout);
@@ -315,6 +330,7 @@ public class FilterActivity extends AppCompatActivity {
 
         popup.show();
     }
+
     private void closeKeyboard() {
         if (getApplicationContext() != null) {
             View view = this.getCurrentFocus();

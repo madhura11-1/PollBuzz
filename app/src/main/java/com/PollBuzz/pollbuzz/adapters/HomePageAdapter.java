@@ -83,7 +83,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             bundle.putString("poll_id", mPollDetails.get(position).getUID());
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             mFirebaseAnalytics.logEvent("home_card_user_clicked", bundle);
-            Fragment profileFeed = ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
+            Log.d("HomeAdapter",mPollDetails.get(position).getAuthorUID());
+            Fragment profileFeed =ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
         });
