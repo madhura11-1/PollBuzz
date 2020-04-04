@@ -77,6 +77,8 @@
             android:backgroundTint="@color/black"
             android:textColorHint="@color/black"
             android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
             android:layout_marginRight="10dp"
             android:layout_weight="3"/>
 

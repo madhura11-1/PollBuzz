@@ -46,8 +46,10 @@ import Utils.firebase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -250,8 +252,10 @@ public class HomeFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.filter:
-                        Intent i = new Intent(getActivity(), FilterActivity.class);
-                        startActivity(i);
+//                        Intent i = new Intent(getActivity(), FilterActivity.class);
+//                        startActivity(i);
+                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                        fm.beginTransaction().add(R.id.container,new FilterActivity(),"Filter").hide(fm.findFragmentByTag("0")).addToBackStack("Filter").commit();
                         return true;
                     default:
                         return false;

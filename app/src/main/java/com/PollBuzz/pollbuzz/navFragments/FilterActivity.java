@@ -2,8 +2,10 @@ package com.PollBuzz.pollbuzz.navFragments;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,9 +14,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
@@ -51,7 +55,7 @@ import java.util.Date;
 
 import Utils.firebase;
 
-public class FilterActivity extends AppCompatActivity {
+public class FilterActivity extends Fragment {
     private ArrayList<PollDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
@@ -73,11 +77,17 @@ public class FilterActivity extends AppCompatActivity {
     int mDay = c.get(Calendar.DAY_OF_MONTH);
     final String formatteddate = dateFormat.format(date);
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filter);
-        setGlobals();
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_filter,container,false);
+        setGlobals(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setListeners();
         setActionBarFunctionality();
     }
@@ -102,14 +112,14 @@ public class FilterActivity extends AppCompatActivity {
                     //getData(1,name,null,null);
                     getArrayListByAuthor(name);
                 } else
-                    Toast.makeText(getApplicationContext(), "PLease enter the author name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "PLease enter the author name", Toast.LENGTH_LONG).show();
                 //search_type.setText("");
             }
         });
         starting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(FilterActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -124,7 +134,7 @@ public class FilterActivity extends AppCompatActivity {
         ending.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(FilterActivity.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -142,13 +152,13 @@ public class FilterActivity extends AppCompatActivity {
                 try {
 
                     if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
-                        Toast.makeText(getApplicationContext(), "Please atleast one of the dates", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
                     else {
                         if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
                             Date start = dateFormat.parse(starting.getText().toString());
                             Date end = dateFormat.parse(ending.getText().toString());
                             if (start.compareTo(end) > 0)
-                                Toast.makeText(getApplicationContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
                             else {
                                 arrayList.clear();
                                 adapter.notifyDataSetChanged();
@@ -271,41 +281,37 @@ public class FilterActivity extends AppCompatActivity {
         });
     }
 
-    private void setGlobals() {
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
-        View view =getSupportActionBar().getCustomView();
+    private void setGlobals(View view) {
         arrayList = new ArrayList<>();
-        viewed = findViewById(R.id.viewed);
-        viewed2 = findViewById(R.id.viewed2);
-        search_layout = findViewById(R.id.type_layout);
+        viewed = view.findViewById(R.id.viewed);
+        viewed2 = view.findViewById(R.id.viewed2);
+        search_layout = view.findViewById(R.id.type_layout);
         search_layout.setVisibility(View.GONE);
-        search = findViewById(R.id.search);
-        search_type = findViewById(R.id.search_type);
-        controller = AnimationUtils.loadLayoutAnimation(getApplicationContext(), R.anim.animation_down_to_up);
-        recyclerView = findViewById(R.id.recyclerview);
+        search = view.findViewById(R.id.search);
+        search_type = view.findViewById(R.id.search_type);
+        controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
+        recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        search_button = findViewById(R.id.search_button);
-        layoutManager = new LinearLayoutManager(FilterActivity.this);
+        search_button = view.findViewById(R.id.search_button);
+        layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        adapter = new HomePageAdapter(FilterActivity.this, arrayList);
+        adapter = new HomePageAdapter(getContext(), arrayList);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
-        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(findViewById(R.id.text));
+        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
-        starting = findViewById(R.id.starting_date);
-        ending = findViewById(R.id.ending_date);
-        check = findViewById(R.id.check);
-        date_layout = findViewById(R.id.date_layout);
+        starting = view.findViewById(R.id.starting_date);
+        ending = view.findViewById(R.id.ending_date);
+        check = view.findViewById(R.id.check);
+        date_layout = view.findViewById(R.id.date_layout);
         date_layout.setVisibility(View.GONE);
         home=view.findViewById(R.id.home);
         logout=view.findViewById(R.id.logout);
     }
 
     public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(FilterActivity.this, v);
+        PopupMenu popup = new PopupMenu(getContext(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -332,10 +338,10 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void closeKeyboard() {
-        if (getApplicationContext() != null) {
-            View view = this.getCurrentFocus();
+        if (getActivity() != null) {
+            View view = getActivity().getCurrentFocus();
             if (view != null) {
-                InputMethodManager inputManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (inputManager != null) {
                     inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
@@ -344,13 +350,13 @@ public class FilterActivity extends AppCompatActivity {
     }
     private void setActionBarFunctionality() {
         home.setOnClickListener(v -> {
-            Intent i = new Intent(FilterActivity.this, MainActivity.class);
+            Intent i = new Intent(getActivity(), MainActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
             fb.signOut();
-            Intent i = new Intent(FilterActivity.this, LoginSignupActivity.class);
+            Intent i = new Intent(getActivity(), LoginSignupActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         });
