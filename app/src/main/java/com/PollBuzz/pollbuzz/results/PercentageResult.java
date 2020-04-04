@@ -267,9 +267,12 @@ public class PercentageResult extends AppCompatActivity {
             }
 
         } else if (type.equals("RANKED")) {
-            pie_charts.setVisibility(View.GONE);
+
             LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
             linearLayout1.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(10, 100, 10, 10);
+            linearLayout1.setLayoutParams(layoutParams);
             fb.getPollsCollection()
                     .document(uid)
                     .collection("OptionsCount")
@@ -285,13 +288,21 @@ public class PercentageResult extends AppCompatActivity {
                                     map2=(Map<String,Long>) entry.getValue();
                                     LinearLayout linearLayout2=new LinearLayout(getApplicationContext());
                                     linearLayout2.setOrientation(LinearLayout.VERTICAL);
+                                    layoutParams.setMargins(12, 12, 10, 12);
+                                    linearLayout2.setLayoutParams(layoutParams);
                                     TextView tV_main =new TextView(getApplicationContext());
-                                    tV_main.setText(entry.getKey());
+                                    tV_main.setText(entry.getKey()+" : ");
+                                    tV_main.setTextColor(getResources().getColor(R.color.black));
+                                    tV_main.setTextSize(22.0f);
+                                    tV_main.setTypeface(typeface);
                                     linearLayout1.addView(tV_main);
                                     for(Map.Entry<String,Long> entry1 : map2.entrySet()){
                                         TextView tV=new TextView(getApplicationContext());
-                                        tV.setText(entry1.getKey()+ ": " + entry1.getValue());
+                                        tV.setText("Priority "+entry1.getKey()+ " : " + entry1.getValue());
                                         linearLayout2.addView(tV);
+                                        tV.setTextColor(getResources().getColor(R.color.black));
+                                        tV.setTextSize(18.0f);
+                                        tV.setTypeface(typeface);
                                     }
                                     linearLayout1.addView(linearLayout2);
                                 }
@@ -407,6 +418,8 @@ public class PercentageResult extends AppCompatActivity {
     private void getIntentExtras(Intent intent) {
         uid = intent.getExtras().getString("UID");
         type = intent.getExtras().getString("type");
+        if(type.equals("RANKED"))
+            pie_charts.setVisibility(View.GONE);
         flag = intent.getIntExtra("flag", 0);
         if (flag == 1) {
             result.setVisibility(View.GONE);
