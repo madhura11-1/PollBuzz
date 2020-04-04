@@ -12,6 +12,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -94,6 +97,24 @@ public class FilterActivity extends Fragment {
                 showPopup(view);
             }
         });
+        search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    closeKeyboard();
+                    arrayList.clear();
+                    adapter.notifyDataSetChanged();
+                    recyclerView.showShimmerAdapter();
+                    name = search_type.getText().toString();
+                    if (!name.isEmpty()) {
+                        //getData(1,name,null,null);
+                        getArrayListByAuthor(name);
+                    } else
+                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();                    return true;
+                }
+                return false;
+            }
+        });
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,7 +127,7 @@ public class FilterActivity extends Fragment {
                     //getData(1,name,null,null);
                     getArrayListByAuthor(name);
                 } else
-                    Toast.makeText(getContext(), "PLease enter the author name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
                 //search_type.setText("");
             }
         });

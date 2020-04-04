@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,9 +29,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -64,11 +67,11 @@ public class VotedFeed extends Fragment {
     private MaterialTextView viewed;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
-    private LinearLayout search_layout,date_layout;
+    private LinearLayout search_layout, date_layout;
     ProgressBar progressBar;
-    TextView starting,ending;
-    private  String name="";
-    private ImageButton search,check,back1,back2;
+    TextView starting, ending;
+    private String name = "";
+    private ImageButton search, check, back1, back2;
     private Button search_button;
     Calendar c = Calendar.getInstance();
     int mYear = c.get(Calendar.YEAR);
@@ -78,6 +81,7 @@ public class VotedFeed extends Fragment {
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     final String formatteddate = dateFormat.format(date);
     Boolean flagFirst = true, flagFetch = true;
+    int currentFlag = 0;
 
     public VotedFeed() {
     }
@@ -94,7 +98,7 @@ public class VotedFeed extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setListeners();
-        getData(0,"",null,null);
+        getData(0, "", null, null);
     }
 
 
@@ -109,20 +113,20 @@ public class VotedFeed extends Fragment {
                     case R.id.by_author:
                         mArrayList.clear();
                         mAdapter.notifyDataSetChanged();
-                        lastIndex=null;
+                        lastIndex = null;
                         search_layout.setVisibility(View.VISIBLE);
                         date_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0,"",null,null);
+                        getData(0, "", null, null);
                         return true;
                     case R.id.by_date:
                         mArrayList.clear();
                         mAdapter.notifyDataSetChanged();
-                        lastIndex=null;
+                        lastIndex = null;
                         date_layout.setVisibility(View.VISIBLE);
                         search_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0,"",null,null);
+                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;
@@ -146,7 +150,8 @@ public class VotedFeed extends Fragment {
                 if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 1 && flagFetch && !flagFirst) {
                     progressBar.setVisibility(View.VISIBLE);
                     flagFetch = false;
-                    getData(0,"",null,null);
+                    if (currentFlag == 0)
+                        getData(currentFlag, "", null, null);
                 }
             }
         });
@@ -160,7 +165,24 @@ public class VotedFeed extends Fragment {
                 showPopup(view);
             }
         });
-
+        search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    lastIndex = null;
+                    votedRV.setVisibility(View.VISIBLE);
+                    mArrayList.clear();
+                    mAdapter.notifyDataSetChanged();
+                    name = search_type.getText().toString();
+                    if (!name.isEmpty()) {
+                        getData(1, name, null, null);
+                        currentFlag = 1;
+                    } else
+                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,11 +191,10 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 name = search_type.getText().toString();
-                if(!name.isEmpty()){
-                    getData(1,name,null,null);
-                }
-                else
-                    Toast.makeText(getContext(),"PLease enter the author name",Toast.LENGTH_LONG).show();
+                if (!name.isEmpty()) {
+                    getData(1, name, null, null);
+                } else
+                    Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -184,7 +205,7 @@ public class VotedFeed extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 starting.setText(date);
 
                             }
@@ -199,14 +220,14 @@ public class VotedFeed extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 ending.setText(date);
 
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
-            });
+        });
 
         check.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,30 +235,30 @@ public class VotedFeed extends Fragment {
                 try {
                     viewed.setVisibility(View.GONE);
                     lastIndex = null;
-                    if(starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
-                        Toast.makeText(getContext(),"Please atleast one of the dates",Toast.LENGTH_LONG).show();
+                    if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
+                        Toast.makeText(getContext(), "Please atleast one of the dates", Toast.LENGTH_LONG).show();
                     else {
-                        if(!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty())
-                        {
-                            Date start=dateFormat.parse(starting.getText().toString());
-                            Date end=dateFormat.parse(ending.getText().toString());
-                            if(start.compareTo(end)>0)
-                                Toast.makeText(getContext(),"Starting date can't be after the ending date",Toast.LENGTH_LONG).show();
-                            else
-                            {   mArrayList.clear();
+                        if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
+                            Date start = dateFormat.parse(starting.getText().toString());
+                            Date end = dateFormat.parse(ending.getText().toString());
+                            if (start.compareTo(end) > 0)
+                                Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                            else {
+                                mArrayList.clear();
                                 mAdapter.notifyDataSetChanged();
                                 votedRV.showShimmerAdapter();
-                                getData(2,"",dateFormat.parse(starting.getText().toString()),dateFormat.parse(ending.getText().toString()));
+                                currentFlag = 2;
+                                getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                             }
-                        }
-                        else
-                        {   mArrayList.clear();
+                        } else {
+                            mArrayList.clear();
                             mAdapter.notifyDataSetChanged();
                             votedRV.showShimmerAdapter();
-                            if(starting.getText().toString().isEmpty())
-                                getData(2,"",null,dateFormat.parse(ending.getText().toString()));
+                            if (starting.getText().toString().isEmpty())
+                                getData(2, "", null, dateFormat.parse(ending.getText().toString()));
                             else
-                                getData(2,"",dateFormat.parse(starting.getText().toString()),null);
+                                getData(2, "", dateFormat.parse(starting.getText().toString()), null);
+                            currentFlag = 2;
                         }
 
                     }
@@ -253,8 +274,9 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
-                lastIndex=null;
-                getData(0,"",null,null);
+                lastIndex = null;
+                getData(0, "", null, null);
+                currentFlag = 0;
                 search_layout.setVisibility(View.GONE);
             }
         });
@@ -263,36 +285,26 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
-                lastIndex=null;
-                getData(0,"",null,null);
+                lastIndex = null;
+                getData(0, "", null, null);
+                currentFlag = 0;
                 date_layout.setVisibility(View.GONE);
             }
         });
     }
 
-    private void getData(int flagi , String name , Date start , Date end) {
-        try {
-            if (lastIndex == null) {
-                userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
-                        .limit(20).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Log.d("SizeVoted","Size: "+task.getResult().size());
-                        if (!task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot dS : task.getResult()) {
-                                if (dS.exists()) {
-                                    long timestamp = (long) dS.get("timestamp");
-                                    if (flagi == 1) {
-                                        getArrayListByAuthor(name,dS.getId(),timestamp);
-                                    }
-                                    else if (flagi == 2){
-                                        try {
-                                            getArrayListByDate(start,end,timestamp, dS.getId());
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else
-                                    {
+    private void getData(int flagi, String name, Date start, Date end) {
+        if (flagi == 0) {
+            try {
+                if (lastIndex == null) {
+                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                            .limit(20).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            Log.d("SizeVoted", "Size: " + task.getResult().size());
+                            if (!task.getResult().isEmpty()) {
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    if (dS.exists()) {
+                                        long timestamp = (long) dS.get("timestamp");
                                         fb.getPollsCollection().document(dS.getId())
                                                 .get().addOnCompleteListener(task1 -> {
                                             if (task1.isSuccessful() && task1.getResult() != null) {
@@ -300,22 +312,52 @@ public class VotedFeed extends Fragment {
                                             }
                                         });
                                     }
+                                    lastIndex = dS;
                                 }
-                                lastIndex = dS;
+                            } else {
+                                flagFetch = false;
+                                votedRV.hideShimmerAdapter();
+                                viewed.setVisibility(View.VISIBLE);
                             }
                         } else {
-                            flagFetch=false;
                             votedRV.hideShimmerAdapter();
-                            viewed.setVisibility(View.VISIBLE);
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        votedRV.hideShimmerAdapter();
-                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
+                    });
+                } else {
+                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                            .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    if (dS.exists()) {
+                                        long timestamp = (long) dS.get("timestamp");
+                                        fb.getPollsCollection().document(dS.getId())
+                                                .get().addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful() && task1.getResult() != null) {
+                                                addToRecyclerView(task1.getResult(), timestamp);
+                                            }
+                                        });
+                                    }
+                                    lastIndex = dS;
+                                }
+                            } else {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
+                                flagFetch = false;
+                            }
+                        } else {
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
+            }
+        } else {
+            try {
                 userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
-                        .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+                        .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
@@ -323,21 +365,12 @@ public class VotedFeed extends Fragment {
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
                                         getArrayListByAuthor(name, dS.getId(), timestamp);
-                                    } else if(flagi == 2){
+                                    } else if (flagi == 2) {
                                         try {
-                                            getArrayListByDate(start,end,timestamp, dS.getId());
+                                            getArrayListByDate(start, end, timestamp, dS.getId());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
-                                    }
-                                        else
-                                     {
-                                        fb.getPollsCollection().document(dS.getId())
-                                                .get().addOnCompleteListener(task1 -> {
-                                            if (task1.isSuccessful() && task1.getResult() != null) {
-                                                addToRecyclerView(task1.getResult(), timestamp);
-                                            }
-                                        });
                                     }
                                 }
                                 lastIndex = dS;
@@ -345,34 +378,33 @@ public class VotedFeed extends Fragment {
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
-                            flagFetch=false;
+                            flagFetch = false;
                         }
                     } else {
                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
-        } catch (Exception e) {
-            FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
 
-    private void getArrayListByDate(Date start, Date end,long timestamp,String docu_id) throws ParseException {
-        if(end==null)
-            end=dateFormat.parse(formatteddate);
-        else
-        if(start==null)
-            start=dateFormat.parse("21-03-2020");
-        fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date",start)
-                .whereLessThanOrEqualTo("created_date",end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void getArrayListByDate(Date start, Date end, long timestamp, String docu_id) throws ParseException {
+        if (end == null)
+            end = dateFormat.parse(formatteddate);
+        else if (start == null)
+            start = dateFormat.parse("21-03-2020");
+        fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
+                .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         viewed.setVisibility(View.VISIBLE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
-                              if(docu_id.equals(dS.getId()))
-                            addToRecyclerView(dS,timestamp);
+                            if (docu_id.equals(dS.getId()))
+                                addToRecyclerView(dS, timestamp);
 
                         }
 
@@ -382,8 +414,8 @@ public class VotedFeed extends Fragment {
         });
     }
 
-    private void getArrayListByAuthor(String name,String docu_id,long timestamp) {
-        fb.getPollsCollection().whereEqualTo("author",name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void getArrayListByAuthor(String name, String docu_id, long timestamp) {
+        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
@@ -391,9 +423,9 @@ public class VotedFeed extends Fragment {
                         viewed.setVisibility(View.VISIBLE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             PollDetails pollDetails = dS.toObject(PollDetails.class);
-                            if(docu_id.equals(dS.getId())) {
-                                Log.d("name",name);
-                                addToRecyclerView(dS,timestamp);
+                            if (docu_id.equals(dS.getId())) {
+                                Log.d("name", name);
+                                addToRecyclerView(dS, timestamp);
                             }
 
                         }
@@ -412,7 +444,7 @@ public class VotedFeed extends Fragment {
             polldetails.setUID(dS1.getId());
             polldetails.setTimestamp(timestamp);
             mArrayList.add(polldetails);
-            Log.d("added",Integer.toString(mArrayList.size()));
+            Log.d("added", Integer.toString(mArrayList.size()));
             try {
                 Collections.sort(mArrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
             } catch (Exception e) {
@@ -457,6 +489,7 @@ public class VotedFeed extends Fragment {
         back2 = view.findViewById(R.id.back2);
         userVotedRef = fb.getUserDocument().collection("Voted");
     }
+
     private void closeKeyboard() {
         if (getActivity() != null) {
             View view = getActivity().getCurrentFocus();
