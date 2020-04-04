@@ -29,9 +29,6 @@
         </activity>
 
         <activity
-            android:name=".navFragments.FilterActivity"
-            android:screenOrientation="unspecified" />
-        <activity
             android:name=".results.PieChartActivity"
             android:screenOrientation="unspecified" />
         <activity
