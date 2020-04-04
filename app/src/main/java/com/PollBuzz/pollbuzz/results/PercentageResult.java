@@ -10,6 +10,7 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
@@ -48,6 +49,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -183,7 +185,9 @@ public class PercentageResult extends AppCompatActivity {
                             PollDetails pollDetails = documentSnapshot.toObject(PollDetails.class);
                             question_percentage.setText(pollDetails.getQuestion());
                             question = pollDetails.getQuestion();
-                            String d = "Created on: " + pollDetails.getCreated_date();
+                            int l="at 00:00:00 UTC+5:30".length();
+                            String date=pollDetails.getCreated_date().toString();
+                            String d = "Created on: " + date.substring(0,date.length()-l-3);
                             date_percentage.setText(d);
                             map = pollDetails.getMap();
                             total = Double.valueOf(pollDetails.getPollcount());
@@ -276,7 +280,7 @@ public class PercentageResult extends AppCompatActivity {
 
         } else if (type.equals("RANKED")) {
 
-            LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
+            /*LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
             linearLayout1.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(10, 100, 10, 10);
@@ -317,7 +321,21 @@ public class PercentageResult extends AppCompatActivity {
                                 linearLayout.addView(linearLayout1);
                             }
                         }
-                    });
+                    });*/
+            fb.getPollsCollection()
+                    .document(uid)
+                    .collection("OptionsCount")
+                    .document("count")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Map<String,Object> map1=task.getResult().getData();
+                                    sortRanking(map1);
+
+                                }
+                            });
+
+
         } else {
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
@@ -382,6 +400,113 @@ public class PercentageResult extends AppCompatActivity {
             }
         }
     }
+
+    private void sortRanking(Map<String, Object> map1) {
+        Map<String, Long> map2 = new HashMap<>();
+        int r=map1.size();
+        int c=r+1;
+        long arr[][]=new long[r][c];
+        String names[]=new String[r];
+        int i=0;
+
+        for(Map.Entry<String,Object> entry : map1.entrySet()){
+            map2=(Map<String,Long>) entry.getValue();
+            names[i]=entry.getKey();
+            arr[i][0]=i;
+            for(int j=1;j<c;j++)
+           {
+               arr[i][j]=map2.get(String.valueOf(j));
+
+            }
+            i++;
+
+        }
+        for(int k=c-1;k>0;k--)
+        {   final int j=k;
+            Arrays.sort(arr, new Comparator<long[]>() {
+
+                @Override
+                // Compare values according to columns
+                public int compare(final long[] entry1,
+                                   final long[] entry2) {
+
+                    // To sort in descending order revert
+                    // the '>' Operator
+                    if (entry1[j] <=entry2[j])
+                    {
+                        if(j==1)
+                            return 1;
+                        else
+                        {
+                            int ans=check(entry1,entry2,j-1);
+                            return ans;
+                            /*if(entry2[j-1]>entry1[j-1])
+                                return 1;
+                            else if(entry1[j-1]==entry2[j-1])
+                            {
+                                if(j>1)
+                                {
+                                    int ans=check(entry1,entry2,j-1);
+                                    return ans;
+                                }
+                                return 0;
+                            }
+                            else
+                                return -1;*/
+                        }
+                    }
+
+                    else
+                        return -1;
+                }
+            });
+        }
+        System.out.println(arr);
+        LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
+        linearLayout1.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 100, 10, 10);
+        linearLayout1.setLayoutParams(layoutParams);
+        for(i=0;i<r;i++)
+        {
+            LinearLayout linearLayout2=new LinearLayout(getApplicationContext());
+            linearLayout2.setOrientation(LinearLayout.VERTICAL);
+            layoutParams.setMargins(12, 12, 10, 12);
+            linearLayout2.setLayoutParams(layoutParams);
+            TextView tV_main =new TextView(getApplicationContext());
+            int index=(int)arr[i][0];
+            tV_main.setText(names[index]);
+            linearLayout1.addView(tV_main);
+
+            for(int j=1;j<c;j++)
+            {
+                TextView tV=new TextView(getApplicationContext());
+                tV.setText("Priority "+j+ " : " + arr[i][j]);
+                linearLayout2.addView(tV);
+            }
+            linearLayout1.addView(linearLayout2);
+        }
+        linearLayout.addView(linearLayout1);
+
+    }
+    public static int check(long arr1[],long arr2[], int k)
+    {
+        if(k>0)
+        {
+            if(arr1[k]<=arr2[k])
+                if(k==1)
+                return 1;
+                else
+                    check(arr1,arr2,k-1);
+            else
+                return -1;
+
+
+        }
+        return -1;
+    }
+
+
 
     private void loadProfilePic(ImageView view, String url) {
         if (url != null) {
