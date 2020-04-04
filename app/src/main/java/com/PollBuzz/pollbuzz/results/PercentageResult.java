@@ -48,8 +48,10 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import Utils.firebase;
@@ -194,7 +196,13 @@ public class PercentageResult extends AppCompatActivity {
                 });
     }
 
-    private void setProgressbar(Map<String, Integer> map) {
+    private void setProgressbar(Map<String, Integer> mapip) {
+
+        LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+        mapip.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .forEachOrdered(x -> map.put(x.getKey(), x.getValue()));
         dialog.dismiss();
         linearLayout.removeAllViews();
         data.clear();
