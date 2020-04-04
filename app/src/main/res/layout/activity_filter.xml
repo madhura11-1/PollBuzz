@@ -74,6 +74,9 @@
             android:layout_height="wrap_content"
             android:hint="Search for username"
             android:textColor="@color/black"
+            android:backgroundTint="@color/black"
+            android:textColorHint="@color/black"
+            android:imeOptions="actionSearch"
             android:layout_marginRight="10dp"
             android:layout_weight="3"/>
 
