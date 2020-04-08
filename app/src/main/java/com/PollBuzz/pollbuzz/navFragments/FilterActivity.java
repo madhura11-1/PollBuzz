@@ -40,6 +40,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.common.base.CharMatcher;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -66,6 +67,7 @@ public class FilterActivity extends Fragment {
     private LinearLayout search_layout, date_layout;
     private Button search_button;
     private String name;
+    String name_1u,name_u,name_l,name_1s_rl;
     TextView starting, ending;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayoutManager layoutManager;
@@ -105,10 +107,33 @@ public class FilterActivity extends Fragment {
                     arrayList.clear();
                     adapter.notifyDataSetChanged();
                     recyclerView.showShimmerAdapter();
-                    name = search_type.getText().toString();
+
+                    name = search_type.getText().toString().trim();
+
                     if (!name.isEmpty()) {
                         //getData(1,name,null,null);
+                        name_1u=name.substring(0,1).toUpperCase()+name.substring(1);
+                        name_l=name.toLowerCase();
+                        name_u=name.toUpperCase();
+                        name_1s_rl=name.substring(0,1)+name.substring(1).toLowerCase();
                         getArrayListByAuthor(name);
+
+                        if(CharMatcher.javaUpperCase().matchesAllOf(name))
+                        {
+                            getArrayListByAuthor(name_l);
+                            getArrayListByAuthor(name_1s_rl);
+                        }
+                        else if(CharMatcher.javaLowerCase().matchesAllOf(name)){
+                            getArrayListByAuthor(name_1u);
+                            getArrayListByAuthor(name_u);
+                        }
+                        else
+                        {
+                            getArrayListByAuthor(name_l);
+                            getArrayListByAuthor(name_1s_rl);
+                            getArrayListByAuthor(name_1u);
+                            getArrayListByAuthor(name_u);
+                        }
                     } else
                         Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();                    return true;
                 }
@@ -122,11 +147,33 @@ public class FilterActivity extends Fragment {
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
                 recyclerView.showShimmerAdapter();
-                name = search_type.getText().toString();
+                name = search_type.getText().toString().trim();
                 if (!name.isEmpty()) {
                     //getData(1,name,null,null);
+                    name_1u=name.substring(0,1).toUpperCase()+name.substring(1);
+                    name_l=name.toLowerCase();
+                    name_u=name.toUpperCase();
+                    name_1s_rl=name.substring(0,1)+name.substring(1).toLowerCase();
                     getArrayListByAuthor(name);
-                } else
+
+                    if(CharMatcher.javaUpperCase().matchesAllOf(name))
+                    {
+                        getArrayListByAuthor(name_l);
+                        getArrayListByAuthor(name_1s_rl);
+                    }
+                    else if(CharMatcher.javaLowerCase().matchesAllOf(name)){
+                        getArrayListByAuthor(name_1u);
+                        getArrayListByAuthor(name_u);
+                    }
+                    else
+                        {
+                            getArrayListByAuthor(name_l);
+                            getArrayListByAuthor(name_1s_rl);
+                            getArrayListByAuthor(name_1u);
+                            getArrayListByAuthor(name_u);
+                        }
+                }
+                else
                     Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
                 //search_type.setText("");
             }
@@ -203,6 +250,7 @@ public class FilterActivity extends Fragment {
     }
 
     private void getArrayListByAuthor(String name) {
+        //.startAt(name.toUpperCase()).endAt(name.toLowerCase()+"\uf8ff")
         fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
