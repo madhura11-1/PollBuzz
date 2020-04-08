@@ -146,20 +146,7 @@ public class Single_type_poll extends AppCompatActivity {
                 }
                 else
                 {
-                    try {
-                        if(df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate))>=0){
-                            Calendar cali = Calendar.getInstance();
-                            int year = cali.get(Calendar.YEAR);
-                            int month = cali.get(Calendar.MONTH)+1;
-                            int day = cali.get(Calendar.DAY_OF_MONTH)+1;
-                            String sday = Integer.toString(day);
-                            String smonth = Integer.toString(month);
-                            String sint = Integer.toString(year);
-                            expiry.setText(sday+"-"+smonth+"-"+sint);
-                            addToDatabase(formattedDate);}
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    addToDatabase(formattedDate);
                 }
 
 

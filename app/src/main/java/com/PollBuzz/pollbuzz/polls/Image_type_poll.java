@@ -79,7 +79,7 @@ public class Image_type_poll extends AppCompatActivity {
     TextInputEditText question_image;
     firebase fb;
     Date date = Calendar.getInstance().getTime();
-    Calendar c = Calendar.getInstance();
+    Calendar cal = Calendar.getInstance();
     Date default_date;
 
 
@@ -87,9 +87,9 @@ public class Image_type_poll extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        c.setTime(date);
-        c.add(Calendar.DAY_OF_MONTH,7);
-        default_date=c.getTime();
+        cal.setTime(date);
+        cal.add(Calendar.DAY_OF_MONTH,7);
+        default_date=cal.getTime();
 
     }
 
@@ -176,17 +176,14 @@ public class Image_type_poll extends AppCompatActivity {
             } else {
 
                 if(expiry.getText().toString().isEmpty())
+                {
                     expiry.setText(dateFormat.format(default_date));
-                else{
-                    Calendar cali = Calendar.getInstance();
-                    int year = cali.get(Calendar.YEAR);
-                    int month = cali.get(Calendar.MONTH)+1;
-                    int day = cali.get(Calendar.DAY_OF_MONTH)+1;
-                    String sday = Integer.toString(day);
-                    String smonth = Integer.toString(month);
-                    String sint = Integer.toString(year);
-                    expiry.setText(sday+"-"+smonth+"-"+sint);
                     addToStorage();
+                }
+
+                else{
+                    addToStorage();
+
                 }
 
             }
