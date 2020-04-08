@@ -85,7 +85,7 @@ public class ProfileSetUp extends AppCompatActivity {
                     (view1, year, monthOfYear, dayOfMonth) -> {
                         date.getEditText().setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                         age = yearT - year;
-                        isDateValid(year, monthOfYear, dayOfMonth, yearT, monthT, dayT);
+                        isDateValid(age, monthOfYear, dayOfMonth, monthT, dayT);
                     }, yearT, monthT, dayT);
             mDatePickerDialog.show();
         });
@@ -160,18 +160,21 @@ public class ProfileSetUp extends AppCompatActivity {
         gender = "male";
     }
 
-    private void isDateValid(int year, int monthOfYear, int dayOfMonth, int yearT, int monthT, int dayT) {
-        if (yearT < year) {
+    private void isDateValid(int age, int monthOfYear, int dayOfMonth, int monthT, int dayT) {
+        if (age<0) {
             flag = 0;
-        } else if (yearT == year) {
+        }
+        else if (age==0) {
             if (monthT < monthOfYear)
                 flag = 0;
-            else if (monthT == monthOfYear + 1) {
+            else if (monthT == monthOfYear) {
                 if (dayT < dayOfMonth)
                     flag = 0;
                 else flag = 1;
-            } else flag = 1;
-        } else flag = 1;
+            }
+            else flag = 1;
+        }
+        else flag = 1;
     }
 
     private void setGlobals() {
