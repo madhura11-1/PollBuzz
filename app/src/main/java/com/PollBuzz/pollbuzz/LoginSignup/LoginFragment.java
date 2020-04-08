@@ -33,6 +33,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
+import java.util.Objects;
+
 import Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -118,13 +120,15 @@ public class LoginFragment extends Fragment {
                             } else {
                                 dialog.dismissWithAnimation();
                                 Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                password.getEditText().getText().clear();
+                                //password.getEditText().getText().clear();
+                                ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
                             }
                         });
                     }
                 } else {
                     Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    password.getEditText().getText().clear();
+                    //password.getEditText().getText().clear();
+                    ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
                 }
             });
         }
