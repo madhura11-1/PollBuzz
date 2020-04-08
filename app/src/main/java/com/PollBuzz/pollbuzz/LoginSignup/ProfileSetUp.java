@@ -3,6 +3,7 @@ package com.PollBuzz.pollbuzz.LoginSignup;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -54,6 +55,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileSetUp extends AppCompatActivity {
+    FirebaseAuth mAuth;
     TextInputLayout name, Uname, date;
     ImageView pPic;
     ImageButton edit;
@@ -72,6 +74,8 @@ public class ProfileSetUp extends AppCompatActivity {
         setContentView(R.layout.activity_profile_set_up);
         setGlobals();
         setListeners();
+
+        mAuth=FirebaseAuth.getInstance();
     }
 
     private void setListeners() {
@@ -467,6 +471,18 @@ public class ProfileSetUp extends AppCompatActivity {
         dialog.setTitleText("Creating profile...");
         dialog.setCancelable(false);
         dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        mAuth.signOut();
+       finish();
+        Intent myIntent = new Intent(this, LoginSignupActivity.class);
+        startActivity(myIntent);
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 
 }
