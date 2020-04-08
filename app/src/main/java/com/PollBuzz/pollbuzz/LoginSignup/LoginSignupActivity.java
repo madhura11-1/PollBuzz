@@ -65,4 +65,9 @@ public class LoginSignupActivity extends AppCompatActivity {
             login.setElevation(-0.5f);
         }
     }
+
+    public void refreshUI() {
+        finish();
+        startActivity(getIntent());
+    }
 }
