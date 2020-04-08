@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -61,6 +62,7 @@ import Utils.firebase;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,6 +86,7 @@ public class ProfileFeed extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     ProgressBar progressBar;
     Boolean flagFirst = true, flagFetch = true;
+    private Typeface typeface;
 
     public ProfileFeed() {
     }
@@ -295,10 +298,11 @@ public class ProfileFeed extends Fragment {
     }
 
     private void setGlobals(@NonNull View view) {
-        ToolbarSetup(view);
+       // ToolbarSetup(view);
         tB = view.findViewById(R.id.htab_toolbar2);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
+        viewed.setTypeface(typeface);
         fb = new firebase();
         Uname = view.findViewById(R.id.username);
         edit = view.findViewById(R.id.edit);
@@ -310,6 +314,7 @@ public class ProfileFeed extends Fragment {
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
         progressBar = view.findViewById(R.id.pBar);
+        typeface= ResourcesCompat.getFont(getActivity(), R.font.maven_pro);
     }
 
     private void ToolbarSetup(@NonNull View view) {

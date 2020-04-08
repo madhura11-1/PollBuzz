@@ -32,7 +32,7 @@
         android:text="Participated Polls"
         android:textColor="@color/colorPrimaryDark"
         android:fontFamily="@font/pacifico"
-        android:textSize="30sp"
+        android:textSize="40sp"
         android:id="@+id/text"
         android:textAlignment="center"
         android:gravity="center"
