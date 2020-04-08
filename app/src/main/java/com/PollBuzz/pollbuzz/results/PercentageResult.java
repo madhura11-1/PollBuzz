@@ -591,7 +591,7 @@ public class PercentageResult extends AppCompatActivity {
             Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
             v1.setDrawingCacheEnabled(false);
 
-            String mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots.jpeg";
+            String mPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Screenshots";
             File file = new File(mPath);
 
             FileOutputStream fileOutputStream = new FileOutputStream(file);
