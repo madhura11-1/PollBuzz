@@ -1,177 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".polls.Image_type_poll">
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".polls.Image_type_poll"
-        android:orientation="vertical">
-    <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="10dp"
-            app:cardCornerRadius="10dp"
-            app:strokeColor="@color/colorPrimary"
-            app:strokeWidth="1dp"
-            android:layout_margin="10dp"
-            app:cardBackgroundColor="#f2e2ff"
-            app:cardElevation="20dp"
-            >
-        <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+        android:layout_margin="10dp"
+        android:elevation="10dp"
+        app:cardBackgroundColor="#f2e2ff"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="20dp"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="1dp">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
 
                 <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Image based Two Choices Poll"
-                        android:layout_margin="10dp"
-                        android:textSize="30sp"
-                        android:fontFamily="@font/maven_pro"
-                        android:textStyle="bold"
-                        />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/maven_pro"
+                    android:text="Image based Two Choices Poll"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/query"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:paddingVertical="5dp"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxCornerRadiusBottomEnd="0dp"
+                    app:boxCornerRadiusBottomStart="0dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeColor="@color/white"
+                    app:boxStrokeWidth="0dp"
+
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/question_imagetype"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeColor="@color/white"
-                        android:id="@+id/query"
-                        android:layout_marginHorizontal="10dp"
-                        app:boxBackgroundColor="@color/white"
-                        android:layout_marginVertical="10dp"
-                        app:boxCornerRadiusTopStart="10dp"
-                        app:boxCornerRadiusTopEnd="10dp"
-                        app:boxCornerRadiusBottomEnd="0dp"
-                        app:boxCornerRadiusBottomStart="0dp"
-                        android:paddingVertical="5dp"
-
-                        >
-                    <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/question_imagetype"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Your Query"/>
+                        android:hint="Your Query" />
                 </com.google.android.material.textfield.TextInputLayout>
-                <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Options"
-                        android:layout_margin="10dp"
-                        android:textSize="25sp"
-                        android:fontFamily="@font/maven_pro"
-                        android:textStyle="bold"
-                        />
 
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/maven_pro"
+                    android:text="Options"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
 
 
                 <LinearLayout
+                    android:id="@+id/options"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="10dp"
+                    android:orientation="vertical"
+
+                    android:tag="Options">
+
+                    <LinearLayout
+                        android:id="@+id/l1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:id="@+id/options"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginVertical="10dp"
+                        android:layout_marginVertical="7dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                        android:tag="Options"
-                        >
-                    <LinearLayout
+                        <RadioButton
+                            android:id="@+id/option1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginVertical="7dp"
-                            android:id="@+id/l1">
-                        <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Option 1"
-                                android:id="@+id/option1"/>
+                            android:text="Option 1" />
+
                         <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:layout_marginVertical="3dp"
-                                android:background="@drawable/circle"
-                                android:id="@+id/image1"
-                                android:src="@drawable/place_holder"/>
+                            android:id="@+id/image1"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginVertical="3dp"
+                            android:background="@drawable/circle"
+                            android:src="@drawable/place_holder" />
 
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/l2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="7dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/option2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginVertical="7dp"
-                            android:id="@+id/l2">
-                        <RadioButton
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Option 2"
-                                android:id="@+id/option2"/>
+                            android:text="Option 2" />
 
 
                         <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="200dp"
-                                android:background="@drawable/circle"
-                                android:layout_marginVertical="3dp"
-                                android:id="@+id/image2"
-                                android:src="@drawable/place_holder"/>
+                            android:id="@+id/image2"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginVertical="3dp"
+                            android:background="@drawable/circle"
+                            android:src="@drawable/place_holder" />
                     </LinearLayout>
-
-
 
 
                 </LinearLayout>
 
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Set Poll Expiry Date"
-                        android:textSize="25sp"
-                        android:fontFamily="@font/maven_pro"
-                        android:textStyle="bold"
-                        android:layout_margin="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:fontFamily="@font/maven_pro"
+                    android:text="Set Poll Expiry Date"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
 
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/expiry_date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/maven_pro"
-                    android:id="@+id/expiry_date"
-                    android:textSize="20sp"
-                    android:layout_margin="10dp"
-                    android:padding="10dp"
                     android:layout_gravity="center"
-                    android:textAlignment="center"
+                    android:layout_margin="10dp"
+                    android:background="@color/white"
+                    android:fontFamily="@font/maven_pro"
                     android:hint="Expiry Date"
+                    android:padding="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    app:drawableEndCompat="@drawable/ic_date_range_black_24dp"/>
+                    app:drawableEndCompat="@drawable/ic_date_range_black_24dp" />
 
                 <com.google.android.material.button.MaterialButton
-                        android:id="@+id/post_imagetype"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cornerRadius="20dp"
-                        android:layout_gravity="center"
-                        android:text="POST"
-                        android:fontFamily="@font/maven_pro"
-                        android:textStyle="bold"
-                        android:layout_marginTop="50dp"
-                        android:padding="10dp"
-                        android:textSize="15sp"
-                        app:elevation="10dp"
-                        android:stateListAnimator="@animator/button_anim"/>
+                    android:id="@+id/post_imagetype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="50dp"
+                    android:fontFamily="@font/maven_pro"
+                    android:padding="10dp"
+                    android:stateListAnimator="@animator/button_anim"
+                    android:text="POST"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="20dp"
+                    app:elevation="10dp" />
 
 
             </LinearLayout>

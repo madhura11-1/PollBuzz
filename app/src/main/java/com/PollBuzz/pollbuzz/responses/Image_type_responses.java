@@ -1,6 +1,7 @@
 package com.PollBuzz.pollbuzz.responses;
 
 import com.PollBuzz.pollbuzz.polls.Descriptive_type_poll;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -247,6 +248,7 @@ public class Image_type_responses extends AppCompatActivity {
         if (url != null) {
             Glide.with(this)
                     .load(url)
+                    .transform(new RoundedCorners(50))
                     .into(view);
         } else {
             view.setImageResource(R.drawable.place_holder);

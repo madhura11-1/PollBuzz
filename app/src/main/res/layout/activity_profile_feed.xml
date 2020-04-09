@@ -163,12 +163,4 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
-    <ProgressBar
-        android:id="@+id/pBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -68,7 +68,6 @@ public class VotedFeed extends Fragment {
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     private LinearLayout search_layout, date_layout;
-    ProgressBar progressBar;
     TextView starting, ending;
     private String name = "";
     private ImageButton search, check, back1, back2;
@@ -147,8 +146,7 @@ public class VotedFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 1 && flagFetch && !flagFirst) {
-                    progressBar.setVisibility(View.VISIBLE);
+                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
                         getData(currentFlag, "", null, null);
@@ -169,6 +167,7 @@ public class VotedFeed extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    closeKeyboard();
                     lastIndex = null;
                     votedRV.setVisibility(View.VISIBLE);
                     mArrayList.clear();
@@ -186,6 +185,7 @@ public class VotedFeed extends Fragment {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
                 lastIndex = null;
                 votedRV.setVisibility(View.VISIBLE);
                 mArrayList.clear();
@@ -275,9 +275,12 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 search_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
         back2.setOnClickListener(new View.OnClickListener() {
@@ -286,15 +289,20 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 date_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
     }
 
     private void getData(int flagi, String name, Date start, Date end) {
         if (flagi == 0) {
+            viewed.setVisibility(View.GONE);
+            votedRV.hideShimmerAdapter();
             try {
                 if (lastIndex == null) {
                     userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -302,6 +310,7 @@ public class VotedFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("SizeVoted", "Size: " + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
+
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     if (dS.exists()) {
                                         long timestamp = (long) dS.get("timestamp");
@@ -318,6 +327,7 @@ public class VotedFeed extends Fragment {
                                 flagFetch = false;
                                 votedRV.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
+                                viewed.setText("You haven't voted yet...");
                             }
                         } else {
                             votedRV.hideShimmerAdapter();
@@ -342,8 +352,6 @@ public class VotedFeed extends Fragment {
                                     lastIndex = dS;
                                 }
                             } else {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                                 flagFetch = false;
                             }
                         } else {
@@ -364,9 +372,11 @@ public class VotedFeed extends Fragment {
                                 if (dS.exists()) {
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
+                                        votedRV.showShimmerAdapter();
                                         getArrayListByAuthor(name, dS.getId(), timestamp);
                                     } else if (flagi == 2) {
                                         try {
+                                            votedRV.showShimmerAdapter();
                                             getArrayListByDate(start, end, timestamp, dS.getId());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -376,8 +386,6 @@ public class VotedFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                             flagFetch = false;
                         }
                     } else {
@@ -401,7 +409,7 @@ public class VotedFeed extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
+                        viewed.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             if (docu_id.equals(dS.getId()))
                                 addToRecyclerView(dS, timestamp);
@@ -410,17 +418,23 @@ public class VotedFeed extends Fragment {
 
                     }
                 }
+                else {
+                    votedRV.hideShimmerAdapter();
+                    viewed.setVisibility(View.VISIBLE);
+                    viewed.setText("You have no voted polls created in the date span");
+
+                }
             }
         });
     }
 
     private void getArrayListByAuthor(String name, String docu_id, long timestamp) {
-        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fb.getPollsCollection().whereEqualTo("author_lc", name.toLowerCase().trim()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
+                        viewed.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             PollDetails pollDetails = dS.toObject(PollDetails.class);
                             if (docu_id.equals(dS.getId())) {
@@ -430,6 +444,11 @@ public class VotedFeed extends Fragment {
 
                         }
 
+                    }
+                    else  {
+                        viewed.setVisibility(View.VISIBLE);
+                        votedRV.hideShimmerAdapter();
+                        viewed.setText("You haven't voted any polls of that author");
                     }
                 }
 
@@ -451,7 +470,6 @@ public class VotedFeed extends Fragment {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
             mAdapter.notifyDataSetChanged();
-            progressBar.setVisibility(View.GONE);
             flagFetch = true;
             if (flagFirst) {
                 votedRV.hideShimmerAdapter();
@@ -466,7 +484,6 @@ public class VotedFeed extends Fragment {
     private void setGlobals(@NonNull View view) {
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
-        progressBar = view.findViewById(R.id.pBar);
         votedRV = view.findViewById(R.id.votedrecyclerview);
         votedRV.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());

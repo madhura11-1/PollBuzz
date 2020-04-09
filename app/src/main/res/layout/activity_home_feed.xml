@@ -179,14 +179,6 @@
         app:shimmer_demo_child_count="7"
         />
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:visibility="gone"
-        android:id="@+id/pBar" />
 
 
 

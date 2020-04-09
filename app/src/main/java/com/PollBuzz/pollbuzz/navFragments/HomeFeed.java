@@ -83,7 +83,6 @@ public class HomeFeed extends Fragment {
     private DocumentSnapshot lastIndex;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayout search_layout, date_layout;
-    ProgressBar progressBar;
     Date date = Calendar.getInstance().getTime();
     Boolean flagFirst = true, flagFetch = true;
     Calendar c = Calendar.getInstance();
@@ -117,8 +116,7 @@ public class HomeFeed extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 Log.d("Size", String.valueOf(arrayList.size()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
-                if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 1 && flagFetch && !flagFirst) {
-                    progressBar.setVisibility(View.VISIBLE);
+                if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
                         getData(currentFlag, "", null, null);
@@ -441,6 +439,7 @@ public class HomeFeed extends Fragment {
                         }
                     } else {
                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        flagFetch = false;
                     }
                 });
             }
@@ -479,7 +478,6 @@ public class HomeFeed extends Fragment {
                                 Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                                 viewed.setVisibility(View.GONE);
                                 adapter.notifyDataSetChanged();
-                                progressBar.setVisibility(View.GONE);
                                 flagFetch = true;
                                 if (flagFirst) {
                                     recyclerView.hideShimmerAdapter();
@@ -497,7 +495,6 @@ public class HomeFeed extends Fragment {
     }
 
     private void setGlobals(@NonNull View view) {
-        progressBar = view.findViewById(R.id.pBar);
         arrayList = new ArrayList<>();
         viewed = view.findViewById(R.id.viewed);
         search = view.findViewById(R.id.search);
