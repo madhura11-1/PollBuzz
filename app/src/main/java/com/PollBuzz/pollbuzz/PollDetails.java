@@ -5,7 +5,28 @@ import java.util.Map;
 
 public class PollDetails {
 
-    private String question,  poll_type, author, UID,authorUID,username,pic;
+    private String question;
+    private String poll_type;
+    private String author;
+    private String UID;
+    private String authorUID;
+    private String username;
+    private String pic;
+    private String author_lc;
+    private Date created_date, expiry_date;
+    private Map<String, Integer> map;
+    private Integer pollcount=0;
+
+
+    public String getAuthor_lc() {
+        return author_lc;
+    }
+
+    public void setAuthor_lc(String author_lc) {
+        this.author_lc = author_lc;
+    }
+
+
 
     public void setUsername(String username) {
         this.username = username;
@@ -23,9 +44,6 @@ public class PollDetails {
         return pic;
     }
 
-    Date created_date, expiry_date;
-    private Map<String, Integer> map;
-    private Integer pollcount=0;
 
     public Integer getPollcount() {
         return pollcount;

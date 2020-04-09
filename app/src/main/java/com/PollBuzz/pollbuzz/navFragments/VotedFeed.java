@@ -275,9 +275,12 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 search_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
         back2.setOnClickListener(new View.OnClickListener() {
@@ -286,15 +289,20 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 date_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
     }
 
     private void getData(int flagi, String name, Date start, Date end) {
         if (flagi == 0) {
+            viewed.setVisibility(View.GONE);
+            votedRV.hideShimmerAdapter();
             try {
                 if (lastIndex == null) {
                     userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -302,6 +310,7 @@ public class VotedFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("SizeVoted", "Size: " + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
+
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     if (dS.exists()) {
                                         long timestamp = (long) dS.get("timestamp");
@@ -318,6 +327,7 @@ public class VotedFeed extends Fragment {
                                 flagFetch = false;
                                 votedRV.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
+                                viewed.setText("You haven't voted yet...");
                             }
                         } else {
                             votedRV.hideShimmerAdapter();
@@ -362,9 +372,11 @@ public class VotedFeed extends Fragment {
                                 if (dS.exists()) {
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
+                                        votedRV.showShimmerAdapter();
                                         getArrayListByAuthor(name, dS.getId(), timestamp);
                                     } else if (flagi == 2) {
                                         try {
+                                            votedRV.showShimmerAdapter();
                                             getArrayListByDate(start, end, timestamp, dS.getId());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -397,7 +409,7 @@ public class VotedFeed extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
+                        viewed.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             if (docu_id.equals(dS.getId()))
                                 addToRecyclerView(dS, timestamp);
@@ -406,17 +418,23 @@ public class VotedFeed extends Fragment {
 
                     }
                 }
+                else {
+                    votedRV.hideShimmerAdapter();
+                    viewed.setVisibility(View.VISIBLE);
+                    viewed.setText("You have no voted polls created in the date span");
+
+                }
             }
         });
     }
 
     private void getArrayListByAuthor(String name, String docu_id, long timestamp) {
-        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fb.getPollsCollection().whereEqualTo("author_lc", name.toLowerCase().trim()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
+                        viewed.setVisibility(View.GONE);
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             PollDetails pollDetails = dS.toObject(PollDetails.class);
                             if (docu_id.equals(dS.getId())) {
@@ -426,6 +444,11 @@ public class VotedFeed extends Fragment {
 
                         }
 
+                    }
+                    else  {
+                        viewed.setVisibility(View.VISIBLE);
+                        votedRV.hideShimmerAdapter();
+                        viewed.setText("You haven't voted any polls of that author");
                     }
                 }
 

@@ -423,12 +423,14 @@ public class Image_type_poll extends AppCompatActivity {
                                                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                            startActivity(i);
                                                        }else{
+                                                           post_image.setEnabled(true);
                                                            dialog.dismissWithAnimation();
                                                            Toast.makeText(Image_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                                        }
                                                     });
                                                 }).addOnFailureListener(exception -> {
                                                     exception.printStackTrace();
+                                                    post_image.setEnabled(true);
                                                     Log.d("Exception", exception.toString());
                                                 });
                                             })
@@ -481,6 +483,7 @@ public class Image_type_poll extends AppCompatActivity {
                                     if (task1.isSuccessful()) {
                                         addToStorage(task.getResult().getId(),polldetails);
                                     } else {
+                                        post_image.setEnabled(true);
                                         dialog.dismissWithAnimation();
                                         Toast.makeText(Image_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
@@ -488,6 +491,7 @@ public class Image_type_poll extends AppCompatActivity {
                             });
 
                         } else {
+                            post_image.setEnabled(true);
                             Toast.makeText(Image_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             Log.d("Exception", task.getException().toString());
                         }
