@@ -275,9 +275,12 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 search_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
         back2.setOnClickListener(new View.OnClickListener() {
@@ -286,15 +289,20 @@ public class VotedFeed extends Fragment {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
                 lastIndex = null;
+                closeKeyboard();
                 getData(0, "", null, null);
                 currentFlag = 0;
                 date_layout.setVisibility(View.GONE);
+                votedRV.showShimmerAdapter();
+
             }
         });
     }
 
     private void getData(int flagi, String name, Date start, Date end) {
         if (flagi == 0) {
+            viewed.setVisibility(View.GONE);
+            votedRV.hideShimmerAdapter();
             try {
                 if (lastIndex == null) {
                     userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -302,6 +310,7 @@ public class VotedFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("SizeVoted", "Size: " + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
+
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     if (dS.exists()) {
                                         long timestamp = (long) dS.get("timestamp");
@@ -318,6 +327,7 @@ public class VotedFeed extends Fragment {
                                 flagFetch = false;
                                 votedRV.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
+                                viewed.setText("You haven't voted yet...");
                             }
                         } else {
                             votedRV.hideShimmerAdapter();
@@ -409,8 +419,10 @@ public class VotedFeed extends Fragment {
                     }
                 }
                 else {
-                    viewed.setVisibility(View.VISIBLE);
                     votedRV.hideShimmerAdapter();
+                    viewed.setVisibility(View.VISIBLE);
+                    viewed.setText("You have no voted polls created in the date span");
+
                 }
             }
         });
@@ -436,6 +448,7 @@ public class VotedFeed extends Fragment {
                     else  {
                         viewed.setVisibility(View.VISIBLE);
                         votedRV.hideShimmerAdapter();
+                        viewed.setText("You haven't voted any polls of that author");
                     }
                 }
 
