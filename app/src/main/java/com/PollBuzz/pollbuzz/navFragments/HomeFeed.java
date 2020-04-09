@@ -74,11 +74,11 @@ public class HomeFeed extends Fragment {
     private firebase fb;
     private LayoutAnimationController controller;
     MaterialTextView viewed;
-    private ImageButton search,check,back1,back2;
+    private ImageButton search, check, back1, back2;
     private String name = "";
     private Button search_button;
     TextView starting, ending;
-    private String name_1u,name_u,name_l,name_1s_rl;
+    private String name_1u, name_u, name_l, name_1s_rl;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -128,8 +128,7 @@ public class HomeFeed extends Fragment {
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 closeKeyboard();
                 viewed.setVisibility(View.GONE);
                 lastIndex = null;
@@ -140,6 +139,7 @@ public class HomeFeed extends Fragment {
         back1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                flagFirst = true;
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
                 lastIndex = null;
@@ -152,6 +152,7 @@ public class HomeFeed extends Fragment {
         back2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                flagFirst = true;
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
                 lastIndex = null;
@@ -163,6 +164,7 @@ public class HomeFeed extends Fragment {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                flagFirst = true;
                 lastIndex = null;
                 recyclerView.setVisibility(View.VISIBLE);
                 arrayList.clear();
@@ -210,8 +212,9 @@ public class HomeFeed extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                           viewed.setVisibility(View.GONE);
-                           lastIndex = null;
+                    flagFirst = true;
+                    viewed.setVisibility(View.GONE);
+                    lastIndex = null;
                     arrayList.clear();
                     adapter.notifyDataSetChanged();
                     recyclerView.showShimmerAdapter();
@@ -228,7 +231,7 @@ public class HomeFeed extends Fragment {
                                 adapter.notifyDataSetChanged();
                                 recyclerView.showShimmerAdapter();
                                 currentFlag = 2;
-                                getData(2,"",dateFormat.parse(starting.getText().toString()),dateFormat.parse(ending.getText().toString()));
+                                getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                             }
                         } else {
                             arrayList.clear();
@@ -281,17 +284,17 @@ public class HomeFeed extends Fragment {
 
     }*/
 
-    private void getArrayListByDate(Date start, Date end,long timestamp,QueryDocumentSnapshot id) throws ParseException {
+    private void getArrayListByDate(Date start, Date end, long timestamp, QueryDocumentSnapshot id) throws ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
         else if (start == null)
             start = dateFormat.parse("21-03-2020");
-         PollDetails pollDetails = id.toObject(PollDetails.class);
-          if(pollDetails.getCreated_date().compareTo(start)>=0 && pollDetails.getCreated_date().compareTo(end)<=0){
-              Log.d("okay","fitted");
-              addToRecyclerView(id,pollDetails.getTimestamp());
-              Log.d("HomeFeedSize1",Integer.toString(arrayList.size()));
-          }
+        PollDetails pollDetails = id.toObject(PollDetails.class);
+        if (pollDetails.getCreated_date().compareTo(start) >= 0 && pollDetails.getCreated_date().compareTo(end) <= 0) {
+            Log.d("okay", "fitted");
+            addToRecyclerView(id, pollDetails.getTimestamp());
+            Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
+        }
 
     /*    fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
                 .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -319,7 +322,7 @@ public class HomeFeed extends Fragment {
     }
 
     private void getData(int flagi, String name, Date start, Date end) {
-        if(flagi==0) {
+        if (flagi == 0) {
             if (lastIndex == null) {
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
@@ -331,7 +334,7 @@ public class HomeFeed extends Fragment {
                                 viewed.setVisibility(View.VISIBLE);
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     long timestamp = (long) dS.get("timestamp");
-                                    addToRecyclerView(dS,timestamp);
+                                    addToRecyclerView(dS, timestamp);
                                     lastIndex = dS;
                                 }
                             } else {
@@ -355,7 +358,7 @@ public class HomeFeed extends Fragment {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 long timestamp = (long) dS.get("timestamp");
-                                addToRecyclerView(dS,timestamp);
+                                addToRecyclerView(dS, timestamp);
                                 lastIndex = dS;
                             }
                         } else {
@@ -368,8 +371,7 @@ public class HomeFeed extends Fragment {
                     }
                 });
             }
-        }
-        else {
+        } else {
             if (lastIndex == null) {
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
@@ -383,12 +385,12 @@ public class HomeFeed extends Fragment {
                                     PollDetails pollDetails = dS.toObject(PollDetails.class);
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
-                                        if(pollDetails.getAuthor().equals(name)){
-                                            addToRecyclerView(dS,pollDetails.getTimestamp());
+                                        if (pollDetails.getAuthor().equals(name)) {
+                                            addToRecyclerView(dS, pollDetails.getTimestamp());
                                         }
                                     } else if (flagi == 2) {
                                         try {
-                                            Log.d("name",pollDetails.getAuthor());
+                                            Log.d("name", pollDetails.getAuthor());
                                             getArrayListByDate(start, end, timestamp, dS);
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -409,8 +411,7 @@ public class HomeFeed extends Fragment {
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
                         startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
@@ -420,12 +421,12 @@ public class HomeFeed extends Fragment {
                                 PollDetails pollDetails = dS.toObject(PollDetails.class);
                                 long timestamp = (long) dS.get("timestamp");
                                 if (flagi == 1) {
-                                    if(pollDetails.getAuthor().equals(name))
-                                        addToRecyclerView(dS,pollDetails.getTimestamp());
-                                  //  getArrayListByAuthor(name, dS.getId(), timestamp);
+                                    if (pollDetails.getAuthor().equals(name))
+                                        addToRecyclerView(dS, pollDetails.getTimestamp());
+                                    //  getArrayListByAuthor(name, dS.getId(), timestamp);
                                 } else if (flagi == 2) {
                                     try {
-                                        Log.d("name",pollDetails.getAuthor());
+                                        Log.d("name", pollDetails.getAuthor());
                                         getArrayListByDate(start, end, timestamp, dS);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
@@ -447,7 +448,7 @@ public class HomeFeed extends Fragment {
     }
 
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS,long timestamp) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS, long timestamp) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -471,7 +472,7 @@ public class HomeFeed extends Fragment {
                                     polldetails.setPic(null);
                                 polldetails.setUsername(task1.getResult().get("username").toString());
                                 arrayList.add(polldetails);
-                                Log.d("HomeFeedSize2",Integer.toString(arrayList.size()));
+                                Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
 //                                if(currentFlag == 2){
 //                                    Log.d("name1",polldetails.getAuthor());
 //                                }
