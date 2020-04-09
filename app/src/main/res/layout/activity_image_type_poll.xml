@@ -102,7 +102,6 @@
                             android:layout_height="200dp"
                             android:layout_marginVertical="3dp"
                             android:background="@drawable/circle"
-                            android:scaleType="fitCenter"
                             android:src="@drawable/place_holder" />
 
                     </LinearLayout>
