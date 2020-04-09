@@ -158,7 +158,6 @@ public class VotedFeed extends Fragment {
             @Override
             public void onClick(View view) {
                 closeKeyboard();
-                viewed.setVisibility(View.GONE);
                 lastIndex = null;
                 showPopup(view);
             }
