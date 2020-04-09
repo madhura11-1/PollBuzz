@@ -10,6 +10,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.common.base.CharMatcher;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -23,9 +24,12 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,10 +37,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -61,10 +74,23 @@ public class HomeFeed extends Fragment {
     private firebase fb;
     private LayoutAnimationController controller;
     MaterialTextView viewed;
-    private ImageButton search;
+    private ImageButton search, check, back1, back2;
+    private String name = "";
+    private Button search_button;
+    TextView starting, ending;
+    private String name_1u, name_u, name_l, name_1s_rl;
+    private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private LinearLayout search_layout, date_layout;
     Date date = Calendar.getInstance().getTime();
     Boolean flagFirst = true, flagFetch = true;
+    Calendar c = Calendar.getInstance();
+    int mYear = c.get(Calendar.YEAR);
+    int mMonth = c.get(Calendar.MONTH);
+    int mDay = c.get(Calendar.DAY_OF_MONTH);
+    final String formatteddate = dateFormat.format(date);
+    int currentFlag = 0;
 
     public HomeFeed() {
     }
@@ -92,86 +118,334 @@ public class HomeFeed extends Fragment {
                 Log.d("Size", String.valueOf(arrayList.size()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
                 if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
-                    getData();
+                    if (currentFlag == 0)
+                        getData(currentFlag, "", null, null);
                 }
             }
         });
-        getData();
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
+                viewed.setVisibility(View.GONE);
+                lastIndex = null;
                 showPopup(view);
             }
         });
-/*        search_type.addTextChangedListener(new TextWatcher() {
+
+        back1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onClick(View view) {
+                flagFirst = true;
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
-                if(!charSequence.toString().isEmpty()){
-                    getData(1,charSequence.toString());
+                lastIndex = null;
+                currentFlag = 0;
+                getData(0, "", null, null);
+                search_layout.setVisibility(View.GONE);
+                search_type.setText("");
+            }
+        });
+        back2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flagFirst = true;
+                arrayList.clear();
+                adapter.notifyDataSetChanged();
+                lastIndex = null;
+                currentFlag = 0;
+                getData(0, "", null, null);
+                date_layout.setVisibility(View.GONE);
+            }
+        });
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flagFirst = true;
+                lastIndex = null;
+                recyclerView.setVisibility(View.VISIBLE);
+                arrayList.clear();
+                adapter.notifyDataSetChanged();
+                name = search_type.getText().toString();
+                if (!name.isEmpty()) {
+                    currentFlag = 1;
+                    getData(1, name, null, null);
+                } else
+                    Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        starting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                String date = day + "-" + (month + 1) + "-" + year;
+                                starting.setText(date);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+        ending.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                String date = day + "-" + (month + 1) + "-" + year;
+                                ending.setText(date);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    flagFirst = true;
+                    viewed.setVisibility(View.GONE);
+                    lastIndex = null;
+                    arrayList.clear();
+                    adapter.notifyDataSetChanged();
+                    recyclerView.showShimmerAdapter();
+                    if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
+                        Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
+                    else {
+                        if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
+                            Date start = dateFormat.parse(starting.getText().toString());
+                            Date end = dateFormat.parse(ending.getText().toString());
+                            if (start.compareTo(end) > 0)
+                                Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                            else {
+                                arrayList.clear();
+                                adapter.notifyDataSetChanged();
+                                recyclerView.showShimmerAdapter();
+                                currentFlag = 2;
+                                getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
+                            }
+                        } else {
+                            arrayList.clear();
+                            adapter.notifyDataSetChanged();
+                            recyclerView.showShimmerAdapter();
+                            if (starting.getText().toString().isEmpty())
+                                getData(2, "", null, dateFormat.parse(ending.getText().toString()));
+                            else
+                                getData(2, "", dateFormat.parse(starting.getText().toString()), null);
+                            currentFlag = 2;
+
+                        }
+
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
             }
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });*/
+        });
+
+        getData(0, "", null, null);
 
     }
 
-    private void getData() {
-        if (lastIndex == null) {
-            fb.getPollsCollection()
-                    .orderBy("timestamp", Query.Direction.DESCENDING).
-                    limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+/*    private void getArrayListByAuthor(String name,String id,long timestamp) {
+        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    if (!task.getResult().isEmpty()) {
+                        viewed.setVisibility(View.VISIBLE);
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        for (QueryDocumentSnapshot dS : task.getResult()) {
+                            if(id.equals(dS.getId()))
+                            addToRecyclerView(dS,timestamp);
+                        }
+                    }
+                    else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+
+            }
+        });
+
+    }*/
+
+    private void getArrayListByDate(Date start, Date end, long timestamp, QueryDocumentSnapshot id) throws ParseException {
+        if (end == null)
+            end = dateFormat.parse(formatteddate);
+        else if (start == null)
+            start = dateFormat.parse("21-03-2020");
+        PollDetails pollDetails = id.toObject(PollDetails.class);
+        if (pollDetails.getCreated_date().compareTo(start) >= 0 && pollDetails.getCreated_date().compareTo(end) <= 0) {
+            Log.d("okay", "fitted");
+            addToRecyclerView(id, pollDetails.getTimestamp());
+            Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
+        }
+
+    /*    fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
+                .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    if (!task.getResult().isEmpty()) {
+                        viewed.setVisibility(View.VISIBLE);
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        for (QueryDocumentSnapshot dS : task.getResult()) {
+                                addToRecyclerView(dS, timestamp);
+
+                        }
+
+                    }else{
+                        if(arrayList.isEmpty()){
+                            recyclerView.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        });*/
+    }
+
+    private void getData(int flagi, String name, Date start, Date end) {
+        if (flagi == 0) {
+            if (lastIndex == null) {
+                fb.getPollsCollection()
+                        .orderBy("timestamp", Query.Direction.DESCENDING).
+                        limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                viewed.setVisibility(View.VISIBLE);
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    long timestamp = (long) dS.get("timestamp");
+                                    addToRecyclerView(dS, timestamp);
+                                    lastIndex = dS;
+                                }
+                            } else {
+                                flagFetch = false;
+                                recyclerView.hideShimmerAdapter();
+                                viewed.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            Log.d("hello", task
+                                    .getException().toString());
+                            recyclerView.hideShimmerAdapter();
+                            Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else {
+                fb.getPollsCollection()
+                        .orderBy("timestamp", Query.Direction.DESCENDING).
+                        startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
-                            viewed.setVisibility(View.GONE);
                             for (QueryDocumentSnapshot dS : task.getResult()) {
-                                addToRecyclerView(dS);
+                                long timestamp = (long) dS.get("timestamp");
+                                addToRecyclerView(dS, timestamp);
                                 lastIndex = dS;
                             }
                         } else {
                             flagFetch = false;
-                            recyclerView.hideShimmerAdapter();
-                            viewed.setVisibility(View.VISIBLE);
+                            //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Log.d("hello",task
-                                .getException().toString());
-                        recyclerView.hideShimmerAdapter();
-                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
+                });
+            }
         } else {
-            fb.getPollsCollection()
-                    .orderBy("timestamp", Query.Direction.DESCENDING).
-                    startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                            addToRecyclerView(dS);
-                            lastIndex = dS;
+            if (lastIndex == null) {
+                fb.getPollsCollection()
+                        .orderBy("timestamp", Query.Direction.DESCENDING).
+                        limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                viewed.setVisibility(View.VISIBLE);
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    PollDetails pollDetails = dS.toObject(PollDetails.class);
+                                    long timestamp = (long) dS.get("timestamp");
+                                    if (flagi == 1) {
+                                        if (pollDetails.getAuthor().equals(name)) {
+                                            addToRecyclerView(dS, pollDetails.getTimestamp());
+                                        }
+                                    } else if (flagi == 2) {
+                                        try {
+                                            Log.d("name", pollDetails.getAuthor());
+                                            getArrayListByDate(start, end, timestamp, dS);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    lastIndex = dS;
+                                }
+                            } else {
+                                flagFetch = false;
+                                recyclerView.hideShimmerAdapter();
+                                viewed.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            Log.d("hello", task
+                                    .getException().toString());
+                            recyclerView.hideShimmerAdapter();
+                            Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } else {
+                fb.getPollsCollection()
+                        .orderBy("timestamp", Query.Direction.DESCENDING).
+                        startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                PollDetails pollDetails = dS.toObject(PollDetails.class);
+                                long timestamp = (long) dS.get("timestamp");
+                                if (flagi == 1) {
+                                    if (pollDetails.getAuthor().equals(name))
+                                        addToRecyclerView(dS, pollDetails.getTimestamp());
+                                    //  getArrayListByAuthor(name, dS.getId(), timestamp);
+                                } else if (flagi == 2) {
+                                    try {
+                                        Log.d("name", pollDetails.getAuthor());
+                                        getArrayListByDate(start, end, timestamp, dS);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                lastIndex = dS;
+                            }
+                        } else {
+                            flagFetch = false;
+                            //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                         }
                     } else {
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         flagFetch = false;
                     }
-                } else {
-                    Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                });
+            }
         }
     }
 
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS, long timestamp) {
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
@@ -195,6 +469,10 @@ public class HomeFeed extends Fragment {
                                     polldetails.setPic(null);
                                 polldetails.setUsername(task1.getResult().get("username").toString());
                                 arrayList.add(polldetails);
+                                Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
+//                                if(currentFlag == 2){
+//                                    Log.d("name1",polldetails.getAuthor());
+//                                }
                                 Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                                 viewed.setVisibility(View.GONE);
                                 adapter.notifyDataSetChanged();
@@ -218,6 +496,8 @@ public class HomeFeed extends Fragment {
         arrayList = new ArrayList<>();
         viewed = view.findViewById(R.id.viewed);
         search = view.findViewById(R.id.search);
+        search_layout = view.findViewById(R.id.type_layout);
+        date_layout = view.findViewById(R.id.date_layout);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -228,6 +508,13 @@ public class HomeFeed extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
         recyclerView.showShimmerAdapter();
+        check = view.findViewById(R.id.check);
+        search_button = view.findViewById(R.id.search_button);
+        starting = view.findViewById(R.id.starting_date);
+        ending = view.findViewById(R.id.ending_date);
+        back1 = view.findViewById(R.id.back1);
+        back2 = view.findViewById(R.id.back2);
+        search_type = view.findViewById(R.id.search_type);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
     }
@@ -235,16 +522,28 @@ public class HomeFeed extends Fragment {
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(getActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.option, popup.getMenu());
+        inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.filter:
-//                        Intent i = new Intent(getActivity(), FilterActivity.class);
-//                        startActivity(i);
-                        FragmentManager fm = getActivity().getSupportFragmentManager();
-                        fm.beginTransaction().add(R.id.container,new FilterActivity(),"Filter").hide(fm.findFragmentByTag("0")).addToBackStack("Filter").commit();
+                    case R.id.by_author:
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        lastIndex = null;
+                        search_layout.setVisibility(View.VISIBLE);
+                        date_layout.setVisibility(View.GONE);
+                        viewed.setVisibility(View.GONE);
+                        getData(0, "", null, null);
+                        return true;
+                    case R.id.by_date:
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        lastIndex = null;
+                        date_layout.setVisibility(View.VISIBLE);
+                        search_layout.setVisibility(View.GONE);
+                        viewed.setVisibility(View.GONE);
+                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;
@@ -253,6 +552,18 @@ public class HomeFeed extends Fragment {
         });
 
         popup.show();
+    }
+
+    private void closeKeyboard() {
+        if (getActivity() != null) {
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputManager != null) {
+                    inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        }
     }
 
 

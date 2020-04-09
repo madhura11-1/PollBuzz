@@ -1,6 +1,7 @@
 package com.PollBuzz.pollbuzz.results;
 
 import com.PollBuzz.pollbuzz.BuildConfig;
+import com.PollBuzz.pollbuzz.polls.Image_type_poll;
 import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
@@ -11,6 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
@@ -19,8 +21,14 @@ import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -33,6 +41,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -54,6 +63,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import Utils.firebase;
@@ -160,17 +170,52 @@ public class PercentageResult extends AppCompatActivity {
 
         shareButton.setOnClickListener(v -> {
             shareButton.setEnabled(false);
-            //Toast.makeText(getApplicationContext(), "Taking screenshot", Toast.LENGTH_SHORT).show();
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                shareButton.setEnabled(true);
-            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                shareButton.setEnabled(true);
-            } else {
-                takeAndShareScreenShot();
+            try {
+                Dexter.withActivity(this)
+                        .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                if (report.areAllPermissionsGranted()) {
+                                    takeAndShareScreenShot();
+                                }
+
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    showSettingsDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        }).check();
+            } catch (Exception e) {
+                e.printStackTrace();
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         });
+    }
+
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Grant Permissions");
+        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
+        builder.setPositiveButton("Go to settings", (dialog, which) -> {
+            dialog.cancel();
+            openSettings();
+        });
+        builder.setNegativeButton(getString(android.R.string.cancel), (dialog, which) -> dialog.cancel());
+        builder.show();
+
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
     }
 
     private void retrievedata(firebase fb) {
@@ -185,9 +230,9 @@ public class PercentageResult extends AppCompatActivity {
                             PollDetails pollDetails = documentSnapshot.toObject(PollDetails.class);
                             question_percentage.setText(pollDetails.getQuestion());
                             question = pollDetails.getQuestion();
-                            int l="at 00:00:00 UTC+5:30".length();
-                            String date=pollDetails.getCreated_date().toString();
-                            String d = "Created on: " + date.substring(0,date.length()-l-3);
+                            int l = "at 00:00:00 UTC+5:30".length();
+                            String date = pollDetails.getCreated_date().toString();
+                            String d = "Created on: " + date.substring(0, date.length() - l - 3);
                             date_percentage.setText(d);
                             map = pollDetails.getMap();
                             total = Double.valueOf(pollDetails.getPollcount());
@@ -328,12 +373,12 @@ public class PercentageResult extends AppCompatActivity {
                     .document("count")
                     .get()
                     .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    Map<String,Object> map1=task.getResult().getData();
-                                    sortRanking(map1);
+                        if (task.isSuccessful()) {
+                            Map<String, Object> map1 = task.getResult().getData();
+                            sortRanking(map1);
 
-                                }
-                            });
+                        }
+                    });
 
 
         } else {
@@ -403,26 +448,25 @@ public class PercentageResult extends AppCompatActivity {
 
     private void sortRanking(Map<String, Object> map1) {
         Map<String, Long> map2 = new HashMap<>();
-        int r=map1.size();
-        int c=r+1;
-        long arr[][]=new long[r][c];
-        String names[]=new String[r];
-        int i=0;
+        int r = map1.size();
+        int c = r + 1;
+        long arr[][] = new long[r][c];
+        String names[] = new String[r];
+        int i = 0;
 
-        for(Map.Entry<String,Object> entry : map1.entrySet()){
-            map2=(Map<String,Long>) entry.getValue();
-            names[i]=entry.getKey();
-            arr[i][0]=i;
-            for(int j=1;j<c;j++)
-           {
-               arr[i][j]=map2.get(String.valueOf(j));
+        for (Map.Entry<String, Object> entry : map1.entrySet()) {
+            map2 = (Map<String, Long>) entry.getValue();
+            names[i] = entry.getKey();
+            arr[i][0] = i;
+            for (int j = 1; j < c; j++) {
+                arr[i][j] = map2.get(String.valueOf(j));
 
             }
             i++;
 
         }
-        for(int k=c-1;k>0;k--)
-        {   final int j=k;
+        for (int k = c - 1; k > 0; k--) {
+            final int j = k;
             Arrays.sort(arr, new Comparator<long[]>() {
 
                 @Override
@@ -432,13 +476,11 @@ public class PercentageResult extends AppCompatActivity {
 
                     // To sort in descending order revert
                     // the '>' Operator
-                    if (entry1[j] <=entry2[j])
-                    {
-                        if(j==1)
+                    if (entry1[j] <= entry2[j]) {
+                        if (j == 1)
                             return 1;
-                        else
-                        {
-                            int ans=check(entry1,entry2,j-1);
+                        else {
+                            int ans = check(entry1, entry2, j - 1);
                             return ans;
                             /*if(entry2[j-1]>entry1[j-1])
                                 return 1;
@@ -454,34 +496,30 @@ public class PercentageResult extends AppCompatActivity {
                             else
                                 return -1;*/
                         }
-                    }
-
-                    else
+                    } else
                         return -1;
                 }
             });
         }
         System.out.println(arr);
-        LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
+        LinearLayout linearLayout1 = new LinearLayout(getApplicationContext());
         linearLayout1.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 100, 10, 10);
         linearLayout1.setLayoutParams(layoutParams);
-        for(i=0;i<r;i++)
-        {
-            LinearLayout linearLayout2=new LinearLayout(getApplicationContext());
+        for (i = 0; i < r; i++) {
+            LinearLayout linearLayout2 = new LinearLayout(getApplicationContext());
             linearLayout2.setOrientation(LinearLayout.VERTICAL);
             layoutParams.setMargins(12, 12, 10, 12);
             linearLayout2.setLayoutParams(layoutParams);
-            TextView tV_main =new TextView(getApplicationContext());
-            int index=(int)arr[i][0];
+            TextView tV_main = new TextView(getApplicationContext());
+            int index = (int) arr[i][0];
             tV_main.setText(names[index]);
             linearLayout1.addView(tV_main);
 
-            for(int j=1;j<c;j++)
-            {
-                TextView tV=new TextView(getApplicationContext());
-                tV.setText("Priority "+j+ " : " + arr[i][j]);
+            for (int j = 1; j < c; j++) {
+                TextView tV = new TextView(getApplicationContext());
+                tV.setText("Priority " + j + " : " + arr[i][j]);
                 linearLayout2.addView(tV);
             }
             linearLayout1.addView(linearLayout2);
@@ -489,15 +527,14 @@ public class PercentageResult extends AppCompatActivity {
         linearLayout.addView(linearLayout1);
 
     }
-    public static int check(long arr1[],long arr2[], int k)
-    {
-        if(k>0)
-        {
-            if(arr1[k]<=arr2[k])
-                if(k==1)
-                return 1;
+
+    public static int check(long arr1[], long arr2[], int k) {
+        if (k > 0) {
+            if (arr1[k] <= arr2[k])
+                if (k == 1)
+                    return 1;
                 else
-                    check(arr1,arr2,k-1);
+                    check(arr1, arr2, k - 1);
             else
                 return -1;
 
@@ -505,7 +542,6 @@ public class PercentageResult extends AppCompatActivity {
         }
         return -1;
     }
-
 
 
     private void loadProfilePic(ImageView view, String url) {
@@ -551,7 +587,7 @@ public class PercentageResult extends AppCompatActivity {
     private void getIntentExtras(Intent intent) {
         uid = intent.getExtras().getString("UID");
         type = intent.getExtras().getString("type");
-        if(type.equals("RANKED"))
+        if (type.equals("RANKED"))
             pie_charts.setVisibility(View.GONE);
         flag = intent.getIntExtra("flag", 0);
         if (flag == 1) {
