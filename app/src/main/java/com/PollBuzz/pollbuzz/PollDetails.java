@@ -12,6 +12,11 @@ public class PollDetails {
     private String authorUID;
     private String username;
     private String pic;
+    private String author_lc;
+    private Date created_date, expiry_date;
+    private Map<String, Integer> map;
+    private Integer pollcount=0;
+
 
     public String getAuthor_lc() {
         return author_lc;
@@ -21,10 +26,6 @@ public class PollDetails {
         this.author_lc = author_lc;
     }
 
-    private String author_lc;
-    Date created_date, expiry_date;
-    private Map<String, Integer> map;
-    private Integer pollcount=0;
 
 
     public void setUsername(String username) {

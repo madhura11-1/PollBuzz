@@ -429,7 +429,7 @@ public class VotedFeed extends Fragment {
     }
 
     private void getArrayListByAuthor(String name, String docu_id, long timestamp) {
-        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        fb.getPollsCollection().whereEqualTo("author_lc", name.toLowerCase().trim()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful() && task.getResult() != null) {
