@@ -56,6 +56,12 @@ public class ImagePickerActivity extends AppCompatActivity {
 
         void defaultPic();
     }
+    public interface PollPickerOptionListener {
+        void onTakeCameraSelected();
+
+        void onChooseGallerySelected();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +107,29 @@ public class ImagePickerActivity extends AppCompatActivity {
                     break;
                 case 2:
                     listener.defaultPic();
+            }
+        });
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public static void showPollImagePickerOptions(Context context, PollPickerOptionListener listener) {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose Image");
+
+        // add a list
+        String[] methods = {"Camera", "Gallery"};
+        builder.setItems(methods, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    listener.onTakeCameraSelected();
+                    break;
+                case 1:
+                    listener.onChooseGallerySelected();
+                    break;
             }
         });
 
