@@ -168,6 +168,7 @@ public class VotedFeed extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     closeKeyboard();
+                    flagFirst=true;
                     lastIndex = null;
                     votedRV.setVisibility(View.VISIBLE);
                     mArrayList.clear();
@@ -186,6 +187,7 @@ public class VotedFeed extends Fragment {
             @Override
             public void onClick(View view) {
                 closeKeyboard();
+                flagFirst=true;
                 lastIndex = null;
                 votedRV.setVisibility(View.VISIBLE);
                 mArrayList.clear();
@@ -234,6 +236,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View v) {
                 try {
                     viewed.setVisibility(View.GONE);
+                    flagFirst=true;
                     lastIndex = null;
                     if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
                         Toast.makeText(getContext(), "Please atleast one of the dates", Toast.LENGTH_LONG).show();
@@ -274,6 +277,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
+                flagFirst=true;
                 lastIndex = null;
                 closeKeyboard();
                 getData(0, "", null, null);
@@ -288,6 +292,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
+                flagFirst=true;
                 lastIndex = null;
                 closeKeyboard();
                 getData(0, "", null, null);
