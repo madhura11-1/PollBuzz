@@ -132,7 +132,7 @@ public class HomeFeed extends Fragment {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
-                            viewed.setVisibility(View.VISIBLE);
+                            viewed.setVisibility(View.GONE);
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 addToRecyclerView(dS);
                                 lastIndex = dS;
