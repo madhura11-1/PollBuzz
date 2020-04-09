@@ -123,13 +123,11 @@ public class HomeFeed extends Fragment {
                 }
             }
         });
-
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeKeyboard();
                 viewed.setVisibility(View.GONE);
-                lastIndex = null;
                 showPopup(view);
             }
         });
@@ -159,18 +157,45 @@ public class HomeFeed extends Fragment {
                 date_layout.setVisibility(View.GONE);
             }
         });
+        search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    if (!search_type.getText().toString().isEmpty()) {
+                        closeKeyboard();
+                        recyclerView.showShimmerAdapter();
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        currentFlag = 1;
+                        flagFirst = true;
+                        lastIndex = null;
+                        name = search_type.getText().toString();
+                        getData(1, name, null, null);
+//                        recyclerView.setVisibility(View.VISIBLE);
+//                        arrayList.clear();
+//                        adapter.notifyDataSetChanged();
+                    } else
+                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+                }
+                return false;
+            }
+        });
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flagFirst = true;
-                lastIndex = null;
-                recyclerView.setVisibility(View.VISIBLE);
-                arrayList.clear();
-                adapter.notifyDataSetChanged();
-                name = search_type.getText().toString();
-                if (!name.isEmpty()) {
+                if (!search_type.getText().toString().isEmpty()) {
+                    closeKeyboard();
+                    recyclerView.showShimmerAdapter();
+                    arrayList.clear();
+                    adapter.notifyDataSetChanged();
                     currentFlag = 1;
+                    flagFirst = true;
+                    lastIndex = null;
+                    name = search_type.getText().toString();
                     getData(1, name, null, null);
+//                        recyclerView.setVisibility(View.VISIBLE);
+//                        arrayList.clear();
+//                        adapter.notifyDataSetChanged();
                 } else
                     Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
             }
@@ -293,6 +318,9 @@ public class HomeFeed extends Fragment {
             addToRecyclerView(id, pollDetails.getTimestamp());
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
         }
+        else{
+            recyclerView.hideShimmerAdapter();
+        }
 
     /*    fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
                 .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -328,6 +356,7 @@ public class HomeFeed extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
+                            Log.d("HomeFeedEmpty", "" + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
                                 viewed.setVisibility(View.VISIBLE);
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
@@ -376,6 +405,7 @@ public class HomeFeed extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
+                            Log.d("HomeFeedEmpty", "" + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
                                 viewed.setVisibility(View.VISIBLE);
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
@@ -384,6 +414,9 @@ public class HomeFeed extends Fragment {
                                     if (flagi == 1) {
                                         if (pollDetails.getAuthor().equals(name)) {
                                             addToRecyclerView(dS, pollDetails.getTimestamp());
+                                        }
+                                        else{
+                                            recyclerView.hideShimmerAdapter();
                                         }
                                     } else if (flagi == 2) {
                                         try {
@@ -528,22 +561,22 @@ public class HomeFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        lastIndex = null;
+//                        arrayList.clear();
+//                        adapter.notifyDataSetChanged();
+//                        lastIndex = null;
                         search_layout.setVisibility(View.VISIBLE);
                         date_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0, "", null, null);
+//                        getData(0, "", null, null);
                         return true;
                     case R.id.by_date:
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        lastIndex = null;
+//                        arrayList.clear();
+//                        adapter.notifyDataSetChanged();
+//                        lastIndex = null;
                         date_layout.setVisibility(View.VISIBLE);
                         search_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0, "", null, null);
+//                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;

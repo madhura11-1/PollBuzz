@@ -110,22 +110,22 @@ public class VotedFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-                        mArrayList.clear();
-                        mAdapter.notifyDataSetChanged();
-                        lastIndex = null;
+//                        mArrayList.clear();
+//                        mAdapter.notifyDataSetChanged();
+//                        lastIndex = null;
                         search_layout.setVisibility(View.VISIBLE);
                         date_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0, "", null, null);
+//                        getData(0, "", null, null);
                         return true;
                     case R.id.by_date:
-                        mArrayList.clear();
-                        mAdapter.notifyDataSetChanged();
-                        lastIndex = null;
+//                        mArrayList.clear();
+//                        mAdapter.notifyDataSetChanged();
+//                        lastIndex = null;
                         date_layout.setVisibility(View.VISIBLE);
                         search_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-                        getData(0, "", null, null);
+//                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;
@@ -158,7 +158,6 @@ public class VotedFeed extends Fragment {
             @Override
             public void onClick(View view) {
                 closeKeyboard();
-                lastIndex = null;
                 showPopup(view);
             }
         });
@@ -166,16 +165,18 @@ public class VotedFeed extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    closeKeyboard();
-                    flagFirst=true;
-                    lastIndex = null;
-                    votedRV.setVisibility(View.VISIBLE);
-                    mArrayList.clear();
-                    mAdapter.notifyDataSetChanged();
-                    name = search_type.getText().toString();
-                    if (!name.isEmpty()) {
-                        getData(1, name, null, null);
+                    if (!search_type.getText().toString().isEmpty()) {
+                        closeKeyboard();
+                        votedRV.showShimmerAdapter();
+                        mArrayList.clear();
+                        mAdapter.notifyDataSetChanged();
                         currentFlag = 1;
+                        flagFirst = true;
+                        lastIndex = null;
+                        name = search_type.getText().toString();
+                        getData(1, name, null, null);
+//                        recyclerView.setVisibility(View.VISIBLE);
+//
                     } else
                         Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
                 }
@@ -185,14 +186,15 @@ public class VotedFeed extends Fragment {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeKeyboard();
-                flagFirst=true;
-                lastIndex = null;
-                votedRV.setVisibility(View.VISIBLE);
-                mArrayList.clear();
-                mAdapter.notifyDataSetChanged();
-                name = search_type.getText().toString();
-                if (!name.isEmpty()) {
+                if (!search_type.getText().toString().isEmpty()) {
+                    closeKeyboard();
+                    votedRV.showShimmerAdapter();
+                    mArrayList.clear();
+                    mAdapter.notifyDataSetChanged();
+                    currentFlag = 1;
+                    flagFirst = true;
+                    lastIndex = null;
+                    name = search_type.getText().toString();
                     getData(1, name, null, null);
                 } else
                     Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
@@ -235,7 +237,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View v) {
                 try {
                     viewed.setVisibility(View.GONE);
-                    flagFirst=true;
+                    flagFirst = true;
                     lastIndex = null;
                     if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
                         Toast.makeText(getContext(), "Please atleast one of the dates", Toast.LENGTH_LONG).show();
@@ -276,7 +278,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
-                flagFirst=true;
+                flagFirst = true;
                 lastIndex = null;
                 closeKeyboard();
                 getData(0, "", null, null);
@@ -291,7 +293,7 @@ public class VotedFeed extends Fragment {
             public void onClick(View view) {
                 mArrayList.clear();
                 mAdapter.notifyDataSetChanged();
-                flagFirst=true;
+                flagFirst = true;
                 lastIndex = null;
                 closeKeyboard();
                 getData(0, "", null, null);
@@ -305,8 +307,6 @@ public class VotedFeed extends Fragment {
 
     private void getData(int flagi, String name, Date start, Date end) {
         if (flagi == 0) {
-            viewed.setVisibility(View.GONE);
-            votedRV.hideShimmerAdapter();
             try {
                 if (lastIndex == null) {
                     userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
@@ -314,7 +314,6 @@ public class VotedFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("SizeVoted", "Size: " + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
-
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     if (dS.exists()) {
                                         long timestamp = (long) dS.get("timestamp");
@@ -329,6 +328,7 @@ public class VotedFeed extends Fragment {
                                 }
                             } else {
                                 flagFetch = false;
+                                votedRV.hideShimmerAdapter();
                                 votedRV.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
                                 viewed.setText("You haven't voted yet...");
@@ -376,11 +376,9 @@ public class VotedFeed extends Fragment {
                                 if (dS.exists()) {
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
-                                        votedRV.showShimmerAdapter();
                                         getArrayListByAuthor(name, dS.getId(), timestamp);
                                     } else if (flagi == 2) {
                                         try {
-                                            votedRV.showShimmerAdapter();
                                             getArrayListByDate(start, end, timestamp, dS.getId());
                                         } catch (ParseException e) {
                                             e.printStackTrace();
@@ -421,8 +419,7 @@ public class VotedFeed extends Fragment {
                         }
 
                     }
-                }
-                else {
+                } else {
                     votedRV.hideShimmerAdapter();
                     viewed.setVisibility(View.VISIBLE);
                     viewed.setText("You have no voted polls created in the date span");
@@ -448,8 +445,7 @@ public class VotedFeed extends Fragment {
 
                         }
 
-                    }
-                    else  {
+                    } else {
                         viewed.setVisibility(View.VISIBLE);
                         votedRV.hideShimmerAdapter();
                         viewed.setText("You haven't voted any polls of that author");
