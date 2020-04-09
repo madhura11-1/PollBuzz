@@ -169,6 +169,7 @@ public class VotedFeed extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    closeKeyboard();
                     lastIndex = null;
                     votedRV.setVisibility(View.VISIBLE);
                     mArrayList.clear();
@@ -186,6 +187,7 @@ public class VotedFeed extends Fragment {
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
                 lastIndex = null;
                 votedRV.setVisibility(View.VISIBLE);
                 mArrayList.clear();
