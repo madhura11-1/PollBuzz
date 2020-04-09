@@ -8,16 +8,16 @@
     >
 
     <TextView
+        android:id="@+id/page_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/page_title"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:textSize="27sp"
+        android:fontFamily="@font/fascinate_inline"
         android:gravity="center_vertical"
-        android:textColor="@color/white"
-        android:fontFamily="@font/pacifico"
         android:text="Poll Buzz"
+        android:textColor="@color/white"
+        android:textSize="27sp"
 
 
         />

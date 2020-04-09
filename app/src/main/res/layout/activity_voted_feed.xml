@@ -31,7 +31,7 @@
         android:layout_alignParentTop="true"
         android:text="Participated Polls"
         android:textColor="@color/colorPrimaryDark"
-        android:fontFamily="@font/pacifico"
+        android:fontFamily="@font/fascinate_inline"
         android:textSize="40sp"
         android:id="@+id/text"
         android:textAlignment="center"

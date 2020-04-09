@@ -24,19 +24,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/linear_search">
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_alignParentTop="true"
-        android:text="@string/home_feed_title"
-        android:textColor="@color/colorPrimaryDark"
-        android:fontFamily="@font/pacifico"
-        android:textSize="40sp"
-        android:id="@+id/text"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:layout_weight="2"
-        />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_alignParentTop="true"
+            android:layout_weight="2"
+            android:fontFamily="@font/fascinate_inline"
+            android:gravity="center"
+            android:text="@string/home_feed_title"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp" />
 
         <ImageButton
             android:id="@+id/search"
