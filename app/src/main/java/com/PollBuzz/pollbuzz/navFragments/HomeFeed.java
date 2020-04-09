@@ -360,7 +360,6 @@ public class HomeFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
                             flagFetch = false;
                             //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                         }
@@ -433,7 +432,6 @@ public class HomeFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
                             flagFetch = false;
                             //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                         }
