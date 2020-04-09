@@ -84,7 +84,6 @@ public class ProfileFeed extends Fragment {
     private Toolbar tB;
     private DocumentSnapshot lastIndex;
     private LinearLayoutManager linearLayoutManager;
-    ProgressBar progressBar;
     Boolean flagFirst = true, flagFetch = true;
     private Typeface typeface;
 
@@ -197,8 +196,7 @@ public class ProfileFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mArrayList.isEmpty() && linearLayoutManager.findLastVisibleItemPosition() == mArrayList.size() - 1 && flagFetch && !flagFirst) {
-                    progressBar.setVisibility(View.VISIBLE);
+                if (!mArrayList.isEmpty() && linearLayoutManager.findLastVisibleItemPosition() == mArrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     getData();
                 }
@@ -266,8 +264,6 @@ public class ProfileFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                             flagFetch = false;
                         }
                     } else {
@@ -288,7 +284,6 @@ public class ProfileFeed extends Fragment {
         mArrayList.add(polldetails);
         Collections.sort(mArrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
         mAdapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
         flagFetch = true;
         if (flagFirst) {
             profileRV.hideShimmerAdapter();
@@ -313,7 +308,6 @@ public class ProfileFeed extends Fragment {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
-        progressBar = view.findViewById(R.id.pBar);
         typeface= ResourcesCompat.getFont(getActivity(), R.font.maven_pro);
     }
 
