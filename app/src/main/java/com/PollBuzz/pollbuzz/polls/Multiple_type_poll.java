@@ -197,6 +197,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                 polldetails.setCreated_date(dateFormat.parse(formatteddate));
                 polldetails.setPoll_type("MULTI SELECT");
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
+                polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
 
