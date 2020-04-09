@@ -68,7 +68,6 @@ public class VotedFeed extends Fragment {
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     private LinearLayout search_layout, date_layout;
-    ProgressBar progressBar;
     TextView starting, ending;
     private String name = "";
     private ImageButton search, check, back1, back2;
@@ -147,8 +146,7 @@ public class VotedFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 1 && flagFetch && !flagFirst) {
-                    progressBar.setVisibility(View.VISIBLE);
+                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
                         getData(currentFlag, "", null, null);
@@ -342,8 +340,6 @@ public class VotedFeed extends Fragment {
                                     lastIndex = dS;
                                 }
                             } else {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                                 flagFetch = false;
                             }
                         } else {
@@ -376,8 +372,6 @@ public class VotedFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                             flagFetch = false;
                         }
                     } else {
@@ -451,7 +445,6 @@ public class VotedFeed extends Fragment {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
             mAdapter.notifyDataSetChanged();
-            progressBar.setVisibility(View.GONE);
             flagFetch = true;
             if (flagFirst) {
                 votedRV.hideShimmerAdapter();
@@ -466,7 +459,6 @@ public class VotedFeed extends Fragment {
     private void setGlobals(@NonNull View view) {
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
-        progressBar = view.findViewById(R.id.pBar);
         votedRV = view.findViewById(R.id.votedrecyclerview);
         votedRV.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
