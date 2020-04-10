@@ -2,14 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    signingConfigs {
-        release {
-            storePassword 'fi@12345'
-            keyPassword 'fi@12345'
-            keyAlias = 'Poll Buzz'
-            storeFile file('/home/divyank/Desktop')
-        }
-    }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
