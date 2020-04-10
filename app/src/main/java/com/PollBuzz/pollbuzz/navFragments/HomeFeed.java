@@ -472,7 +472,7 @@ public class HomeFeed extends Fragment {
                                 PollDetails pollDetails = dS.toObject(PollDetails.class);
                                 long timestamp = (long) dS.get("timestamp");
                                 if (flagi == 1) {
-                                    if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim()))
+                                    if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim()))
                                         addToRecyclerView(dS, pollDetails.getTimestamp());
                                     //  getArrayListByAuthor(name, dS.getId(), timestamp);
                                 } else if (flagi == 2) {
