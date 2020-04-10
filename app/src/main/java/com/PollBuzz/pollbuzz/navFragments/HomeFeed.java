@@ -164,8 +164,8 @@ public class HomeFeed extends Fragment {
                 getData(0, "", null, null);
                 date_layout.setVisibility(View.GONE);
                 recyclerView.showShimmerAdapter();
-                starting.setText("Starting Date");
-                ending.setText("Ending Date");
+                starting.setHint("Starting Date");
+                ending.setHint("Ending Date");
             }
         });
         search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {

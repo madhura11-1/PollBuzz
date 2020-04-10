@@ -301,8 +301,8 @@ public class VotedFeed extends Fragment {
                 getData(0, "", null, null);
                 date_layout.setVisibility(View.GONE);
                 votedRV.showShimmerAdapter();
-                starting.setText("Starting Date");
-                ending.setText("Ending Date");
+                starting.setHint("Starting Date");
+                ending.setHint("Ending Date");
             }
         });
     }
