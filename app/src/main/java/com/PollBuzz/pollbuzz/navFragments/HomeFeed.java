@@ -132,7 +132,6 @@ public class HomeFeed extends Fragment {
             @Override
             public void onClick(View view) {
                 viewed.setVisibility(View.GONE);
-                closeKeyboard();
                 showPopup(view);
             }
         });
@@ -140,7 +139,6 @@ public class HomeFeed extends Fragment {
         back1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeKeyboard();
                 flagFirst = true;
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
@@ -155,7 +153,6 @@ public class HomeFeed extends Fragment {
         back2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeKeyboard();
                 flagFirst = true;
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
@@ -174,7 +171,7 @@ public class HomeFeed extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     if (!search_type.getText().toString().isEmpty()) {
                         closeKeyboard();
-                        //recyclerView.showShimmerAdapter();
+                        recyclerView.showShimmerAdapter();
                         arrayList.clear();
                         adapter.notifyDataSetChanged();
                         currentFlag = 1;
@@ -203,7 +200,6 @@ public class HomeFeed extends Fragment {
                     flagFirst = true;
                     lastIndex = null;
                     name = search_type.getText().toString();
-                    viewed.setVisibility(View.GONE);
                     getData(1, name, null, null);
 //                        recyclerView.setVisibility(View.VISIBLE);
 //                        arrayList.clear();
@@ -261,16 +257,14 @@ public class HomeFeed extends Fragment {
                             else {
                                 arrayList.clear();
                                 adapter.notifyDataSetChanged();
-                                //recyclerView.showShimmerAdapter();
+                                recyclerView.showShimmerAdapter();
                                 currentFlag = 2;
-                                viewed.setVisibility(View.GONE);
                                 getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                             }
                         } else {
                             arrayList.clear();
                             adapter.notifyDataSetChanged();
                             recyclerView.showShimmerAdapter();
-                            viewed.setVisibility(View.GONE);
                             if (starting.getText().toString().isEmpty())
                                 getData(2, "", null, dateFormat.parse(ending.getText().toString()));
                             else
@@ -328,12 +322,6 @@ public class HomeFeed extends Fragment {
         }
         else{
             recyclerView.hideShimmerAdapter();
-            if(adapter.getItemCount()==0)
-            {
-                viewed.setVisibility(View.VISIBLE);
-                viewed.setText("You have voted all active polls created in that date span.");
-            }
-
         }
 
     /*    fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
@@ -372,6 +360,7 @@ public class HomeFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("HomeFeedEmpty", "" + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
+                                viewed.setVisibility(View.VISIBLE);
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     long timestamp = (long) dS.get("timestamp");
                                     addToRecyclerView(dS, timestamp);
@@ -381,9 +370,6 @@ public class HomeFeed extends Fragment {
                                 flagFetch = false;
                                 recyclerView.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
-                                viewed.setText("You have voted all active polls.");
-
-
 
                             }
                         } else {
@@ -416,7 +402,6 @@ public class HomeFeed extends Fragment {
             }
         } else {
             if (lastIndex == null) {
-                recyclerView.showShimmerAdapter();
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
                         limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -425,19 +410,16 @@ public class HomeFeed extends Fragment {
                         if (task.isSuccessful() && task.getResult() != null) {
                             Log.d("HomeFeedEmpty", "" + task.getResult().size());
                             if (!task.getResult().isEmpty()) {
+                                viewed.setVisibility(View.VISIBLE);
                                 for (QueryDocumentSnapshot dS : task.getResult()) {
                                     PollDetails pollDetails = dS.toObject(PollDetails.class);
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
-                                        if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
+                                        if (pollDetails.getAuthor().equals(name)) {
                                             addToRecyclerView(dS, pollDetails.getTimestamp());
-                                            recyclerView.hideShimmerAdapter();
                                         }
                                         else{
                                             recyclerView.hideShimmerAdapter();
-
-
-
                                         }
                                     } else if (flagi == 2) {
                                         try {
@@ -472,7 +454,7 @@ public class HomeFeed extends Fragment {
                                 PollDetails pollDetails = dS.toObject(PollDetails.class);
                                 long timestamp = (long) dS.get("timestamp");
                                 if (flagi == 1) {
-                                    if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim()))
+                                    if (pollDetails.getAuthor().equals(name))
                                         addToRecyclerView(dS, pollDetails.getTimestamp());
                                     //  getArrayListByAuthor(name, dS.getId(), timestamp);
                                 } else if (flagi == 2) {
@@ -506,16 +488,15 @@ public class HomeFeed extends Fragment {
             if (task.isSuccessful() && task.getResult() != null) {
                 Boolean flag = Boolean.TRUE;
                 for (QueryDocumentSnapshot dS1 : task.getResult()) {
-                        if (dS1.getId().equals(fb.getUserId())) {
-                            flag = Boolean.FALSE;
-                            if (flagFirst)
-                                recyclerView.hideShimmerAdapter();
-                            break;
-                        }
+                    if (dS1.getId().equals(fb.getUserId())) {
+                        flag = Boolean.FALSE;
+                        if (flagFirst)
+                            recyclerView.hideShimmerAdapter();
+                        break;
                     }
-
-
+                }
                 if (flag) {
+                    if (polldetails.getExpiry_date().compareTo(date) >= 0) {
                         fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful() && task1.getResult() != null) {
                                 if (task1.getResult().get("pic") != null)
@@ -538,7 +519,7 @@ public class HomeFeed extends Fragment {
                                 Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-
+                    }
                 }
             }
         });
@@ -569,7 +550,6 @@ public class HomeFeed extends Fragment {
         search_type = view.findViewById(R.id.search_type);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
-        //viewed.setVisibility(View.GONE);
     }
 
     public void showPopup(View v) {

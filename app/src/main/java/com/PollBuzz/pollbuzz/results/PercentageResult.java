@@ -590,13 +590,10 @@ public class PercentageResult extends AppCompatActivity {
         if (type.equals("RANKED"))
             pie_charts.setVisibility(View.GONE);
         flag = intent.getIntExtra("flag", 0);
-        if (flag == 1 || flag == 3) {
+        if (flag == 1) {
             result.setVisibility(View.GONE);
             selfVote.setVisibility(View.GONE);
         }
-        if(flag==2)
-            selfVote.setVisibility(View.GONE);
-
 
     }
 
