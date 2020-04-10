@@ -1,6 +1,7 @@
 package com.PollBuzz.pollbuzz.adapters;
 
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.firebase.Timestamp;
@@ -30,6 +31,8 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,12 +73,28 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
         holder.voteArea.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("user_id", fb.getUserId());
-            bundle.putString("poll_id", mPollDetails.get(position).getUID());
-            bundle.putString("timestamp", Timestamp.now().toDate().toString());
-            mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
-            startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+            if(holder.card_status.getText().toString().equals("Active"))
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString("user_id", fb.getUserId());
+                bundle.putString("poll_id", mPollDetails.get(position).getUID());
+                bundle.putString("timestamp", Timestamp.now().toDate().toString());
+                mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
+                startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+            }
+            else
+            {
+               Intent i=new Intent(mContext, PercentageResult.class);
+               i.putExtra("UID",mPollDetails.get(position).getUID());
+               i.putExtra("type",mPollDetails.get(position).getPoll_type());
+               firebase fb=new firebase();
+               if(fb.getAuth().getCurrentUser().getUid().equals(mPollDetails.get(position).getAuthorUID()))
+               i.putExtra("flag",2);
+               else
+               i.putExtra("flag",3);
+               mContext.startActivity(i);
+            }
+
         });
         holder.pPicArea.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -103,6 +122,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 String date = df.format(mPollDetails.get(position).getCreated_date());
                 holder.card_date.setText(date.trim());
             }
+            Date date = Calendar.getInstance().getTime();
+            if(mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
+                holder.card_status.setText("Active");
+            else
+                holder.card_status.setText("Expired");
             if (mPollDetails.get(position).getPic() == null) {
                 Log.d("NoPic", String.valueOf(position));
                 holder.profilePic.setImageResource(R.drawable.ic_person_black_24dp);
@@ -149,7 +173,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
         private RelativeLayout pPicArea;
         private LinearLayout voteArea;
-        private TextView card_type, card_query, card_author, card_date;
+        private TextView card_type, card_query, card_author, card_date,card_status;
         private ImageView profilePic;
 
         private HomeViewHolder(@NonNull View itemView) {
@@ -162,6 +186,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             card_query = itemView.findViewById(R.id.card_query);
             card_author = itemView.findViewById(R.id.card_author);
             card_date = itemView.findViewById(R.id.card_date);
+            card_status=itemView.findViewById(R.id.card_status);
             pPicArea = itemView.findViewById(R.id.profileArea);
             voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
