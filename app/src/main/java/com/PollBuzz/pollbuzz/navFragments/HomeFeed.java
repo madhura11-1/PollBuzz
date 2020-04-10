@@ -77,8 +77,7 @@ public class HomeFeed extends Fragment {
     private ImageButton search, check, back1, back2;
     private String name = "";
     private Button search_button;
-    TextView starting, ending;
-    private String name_1u, name_u, name_l, name_1s_rl;
+    private TextView starting, ending;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -106,6 +105,12 @@ public class HomeFeed extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setListeners();
+        getData(0, "", null, null);
+
+    }
+
+    private void setListeners() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -126,7 +131,6 @@ public class HomeFeed extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closeKeyboard();
                 viewed.setVisibility(View.GONE);
                 showPopup(view);
             }
@@ -142,6 +146,7 @@ public class HomeFeed extends Fragment {
                 currentFlag = 0;
                 getData(0, "", null, null);
                 search_layout.setVisibility(View.GONE);
+                recyclerView.showShimmerAdapter();
                 search_type.setText("");
             }
         });
@@ -155,6 +160,9 @@ public class HomeFeed extends Fragment {
                 currentFlag = 0;
                 getData(0, "", null, null);
                 date_layout.setVisibility(View.GONE);
+                recyclerView.showShimmerAdapter();
+                starting.setText("Starting Date");
+                ending.setText("Ending Date");
             }
         });
         search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -238,9 +246,6 @@ public class HomeFeed extends Fragment {
                     flagFirst = true;
                     viewed.setVisibility(View.GONE);
                     lastIndex = null;
-                    arrayList.clear();
-                    adapter.notifyDataSetChanged();
-                    recyclerView.showShimmerAdapter();
                     if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
                         Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
                     else {
@@ -275,9 +280,6 @@ public class HomeFeed extends Fragment {
                 }
             }
         });
-
-        getData(0, "", null, null);
-
     }
 
 /*    private void getArrayListByAuthor(String name,String id,long timestamp) {
@@ -368,6 +370,7 @@ public class HomeFeed extends Fragment {
                                 flagFetch = false;
                                 recyclerView.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
+
                             }
                         } else {
                             Log.d("hello", task
@@ -502,10 +505,7 @@ public class HomeFeed extends Fragment {
                                     polldetails.setPic(null);
                                 polldetails.setUsername(task1.getResult().get("username").toString());
                                 arrayList.add(polldetails);
-                                Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
-//                                if(currentFlag == 2){
-//                                    Log.d("name1",polldetails.getAuthor());
-//                                }
+                               // Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
                                 Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                                 viewed.setVisibility(View.GONE);
                                 adapter.notifyDataSetChanged();
