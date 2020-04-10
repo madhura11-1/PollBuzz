@@ -68,7 +68,7 @@ public class VotedFeed extends Fragment {
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     private LinearLayout search_layout, date_layout;
-    TextView starting, ending;
+    private TextView starting, ending;
     private String name = "";
     private ImageButton search, check, back1, back2;
     private Button search_button;
@@ -285,7 +285,8 @@ public class VotedFeed extends Fragment {
                 currentFlag = 0;
                 search_layout.setVisibility(View.GONE);
                 votedRV.showShimmerAdapter();
-
+                viewed.setVisibility(View.GONE);
+                search_type.setText("");
             }
         });
         back2.setOnClickListener(new View.OnClickListener() {
@@ -296,11 +297,12 @@ public class VotedFeed extends Fragment {
                 flagFirst = true;
                 lastIndex = null;
                 closeKeyboard();
-                getData(0, "", null, null);
                 currentFlag = 0;
+                getData(0, "", null, null);
                 date_layout.setVisibility(View.GONE);
                 votedRV.showShimmerAdapter();
-
+                starting.setText("Starting Date");
+                ending.setText("Ending Date");
             }
         });
     }
@@ -328,7 +330,6 @@ public class VotedFeed extends Fragment {
                                 }
                             } else {
                                 flagFetch = false;
-                                votedRV.hideShimmerAdapter();
                                 votedRV.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
                                 viewed.setText("You haven't voted yet...");
@@ -368,33 +369,67 @@ public class VotedFeed extends Fragment {
             }
         } else {
             try {
-                userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
-                        .get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        if (!task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot dS : task.getResult()) {
-                                if (dS.exists()) {
-                                    long timestamp = (long) dS.get("timestamp");
-                                    if (flagi == 1) {
-                                        getArrayListByAuthor(name, dS.getId(), timestamp);
-                                    } else if (flagi == 2) {
-                                        try {
-                                            getArrayListByDate(start, end, timestamp, dS.getId());
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
+                if (lastIndex == null) {
+                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                            .get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    if (dS.exists()) {
+                                        long timestamp = (long) dS.get("timestamp");
+                                        if (flagi == 1) {
+                                            getArrayListByAuthor(name, dS.getId(), timestamp);
+                                        } else if (flagi == 2) {
+                                            try {
+                                                getArrayListByDate(start, end, timestamp, dS.getId());
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     }
+                                    lastIndex = dS;
                                 }
-                                lastIndex = dS;
+                            } else {
+                                votedRV.hideShimmerAdapter();
+                                viewed.setVisibility(View.VISIBLE);
+                                flagFetch = false;
+                            }
+                        } else {
+                            votedRV.hideShimmerAdapter();
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else {
+                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                            .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            if (!task.getResult().isEmpty()) {
+                                for (QueryDocumentSnapshot dS : task.getResult()) {
+                                    if (dS.exists()) {
+                                        long timestamp = (long) dS.get("timestamp");
+                                        if (flagi == 1) {
+                                            getArrayListByAuthor(name, dS.getId(), timestamp);
+                                        } else if (flagi == 2) {
+                                            try {
+                                                getArrayListByDate(start, end, timestamp, dS.getId());
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                    lastIndex = dS;
+                                }
+                            } else {
+                                flagFetch = false;
                             }
                         } else {
                             flagFetch = false;
+                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } catch (Exception e) {
+                    });
+                }
+            }catch (Exception e) {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         }
@@ -474,7 +509,7 @@ public class VotedFeed extends Fragment {
             if (flagFirst) {
                 votedRV.hideShimmerAdapter();
                 votedRV.scheduleLayoutAnimation();
-                flagFirst = true;
+                flagFirst = false;
             }
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
