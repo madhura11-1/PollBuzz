@@ -250,7 +250,7 @@ public class VotedFeed extends Fragment {
                             else {
                                 mArrayList.clear();
                                 mAdapter.notifyDataSetChanged();
-                                votedRV.showShimmerAdapter();
+                               votedRV.showShimmerAdapter();
                                 currentFlag = 2;
                                 getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                             }
@@ -454,11 +454,14 @@ public class VotedFeed extends Fragment {
                         }
 
                     }
-                } else {
-                    votedRV.hideShimmerAdapter();
-                    viewed.setVisibility(View.VISIBLE);
-                    viewed.setText("You have no voted polls created in the date span");
+                    else {
+                        votedRV.hideShimmerAdapter();
 
+                            viewed.setVisibility(View.VISIBLE);
+                            viewed.setText("You have no voted polls created in that date span.");
+
+
+                    }
                 }
             }
         });
@@ -471,6 +474,7 @@ public class VotedFeed extends Fragment {
                 if (task.isSuccessful() && task.getResult() != null) {
                     if (!task.getResult().isEmpty()) {
                         viewed.setVisibility(View.GONE);
+                        votedRV.hideShimmerAdapter();
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             PollDetails pollDetails = dS.toObject(PollDetails.class);
                             if (docu_id.equals(dS.getId())) {
@@ -493,6 +497,7 @@ public class VotedFeed extends Fragment {
     }
 
     private void addToRecyclerView(DocumentSnapshot dS1, long timestamp) {
+       // votedRV.hideShimmerAdapter();
         try {
             PollDetails polldetails = dS1.toObject(PollDetails.class);
             polldetails.setUID(dS1.getId());
