@@ -27,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -164,7 +165,9 @@ public class HomeFeed extends Fragment {
                 getData(0, "", null, null);
                 date_layout.setVisibility(View.GONE);
                 recyclerView.showShimmerAdapter();
+                starting.setText("");
                 starting.setHint("Starting Date");
+                ending.setText("");
                 ending.setHint("Ending Date");
             }
         });
@@ -222,7 +225,6 @@ public class HomeFeed extends Fragment {
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 String date = day + "-" + (month + 1) + "-" + year;
                                 starting.setText(date);
-
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
