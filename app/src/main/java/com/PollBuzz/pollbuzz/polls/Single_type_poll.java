@@ -142,6 +142,7 @@ public class Single_type_poll extends AppCompatActivity {
                 if(expiry.getText().toString().isEmpty())
                 {
                     expiry.setText(df.format(default_date));
+                    expirydate = df.format(default_date);
                     addToDatabase(formattedDate);
                 }
                 else
