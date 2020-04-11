@@ -240,6 +240,7 @@ public class Image_type_poll extends AppCompatActivity {
                 if(expiry.getText().toString().isEmpty())
                 {
                     expiry.setText(dateFormat.format(default_date));
+                    expirydate = dateFormat.format(default_date);
                     addToDatabase();
                 }
 
