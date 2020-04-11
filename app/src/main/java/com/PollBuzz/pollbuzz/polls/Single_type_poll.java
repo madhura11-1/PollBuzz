@@ -64,7 +64,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Single_type_poll extends AppCompatActivity {
     Button add;
     RadioGroup group;
-    String name,expirydate;
+    String name;
     int c;
     RadioButton b;
     TextInputEditText question;
@@ -155,7 +155,7 @@ public class Single_type_poll extends AppCompatActivity {
                             String sday = Integer.toString(day);
                             String smonth = Integer.toString(month);
                             String sint = Integer.toString(year);
-                            expirydate = (sday+"-"+smonth+"-"+sint);
+                            expiry.setText(sday+"-"+smonth+"-"+sint);
                             addToDatabase(formattedDate);}
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -201,7 +201,9 @@ public class Single_type_poll extends AppCompatActivity {
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                    polldetails.setExpiry_date(df.parse(expirydate));
+
+
+                    polldetails.setExpiry_date(df.parse(expiry.getText().toString()));
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);

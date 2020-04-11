@@ -55,7 +55,7 @@ public class Multiple_type_poll extends AppCompatActivity {
     MaterialButton post_multi;
     TextInputEditText question_multi;
     LinearLayout group;
-    String name,expirydate;
+    String name;
     int c;
     RadioButton b;
     Date date = Calendar.getInstance().getTime();
@@ -161,7 +161,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                            String sday = Integer.toString(day);
                            String smonth = Integer.toString(month);
                            String sint = Integer.toString(year);
-                           expirydate = (sday+"-"+smonth+"-"+sint);
+                           expiry.setText(sday+"-"+smonth+"-"+sint);
                            addToDatabase(formatteddate);}
                    } catch (ParseException e) {
                        e.printStackTrace();
@@ -214,7 +214,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
 
-                    polldetails.setExpiry_date(dateFormat.parse(expirydate));
+                    polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
