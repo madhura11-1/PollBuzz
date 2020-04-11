@@ -131,7 +131,7 @@ public class HomeFeed extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewed.setVisibility(View.GONE);
+               // viewed.setVisibility(View.GONE);
                 closeKeyboard();
                 showPopup(view);
             }
@@ -331,7 +331,7 @@ public class HomeFeed extends Fragment {
             if(adapter.getItemCount()==0)
             {
                 viewed.setVisibility(View.VISIBLE);
-                viewed.setText("You have voted all active polls created in that date span.");
+                viewed.setText("You have no unvoted polls created in that date span.");
             }
 
         }
@@ -381,7 +381,7 @@ public class HomeFeed extends Fragment {
                                 flagFetch = false;
                                 recyclerView.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
-                                viewed.setText("You have voted all active polls.");
+                                viewed.setText("You have no unvoted polls.");
 
 
 
@@ -429,14 +429,27 @@ public class HomeFeed extends Fragment {
                                     PollDetails pollDetails = dS.toObject(PollDetails.class);
                                     long timestamp = (long) dS.get("timestamp");
                                     if (flagi == 1) {
-                                        if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim())) {
-                                            addToRecyclerView(dS, pollDetails.getTimestamp());
-                                            recyclerView.hideShimmerAdapter();
+                                        if(adapter.getItemCount()==0)
+                                        {
+                                            recyclerView.showShimmerAdapter();
+                                           /* viewed.setVisibility(View.VISIBLE);
+                                            viewed.setText("No polls created by this author");*/
                                         }
+                                        if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim())) {
+                                            {
+                                                addToRecyclerView(dS, pollDetails.getTimestamp());
+                                                recyclerView.hideShimmerAdapter();
+                                            }
+
+                                        }
+
                                         else{
                                             recyclerView.hideShimmerAdapter();
-
-
+                                            if(adapter.getItemCount()==0)
+                                            {
+                                                viewed.setVisibility(View.VISIBLE);
+                                                viewed.setText("You have no unvoted polls created using this username.");
+                                            }
 
                                         }
                                     } else if (flagi == 2) {
@@ -500,10 +513,12 @@ public class HomeFeed extends Fragment {
 
 
     private void addToRecyclerView(QueryDocumentSnapshot dS, long timestamp) {
+        viewed.setVisibility(View.GONE);
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
+
                 Boolean flag = Boolean.TRUE;
                 for (QueryDocumentSnapshot dS1 : task.getResult()) {
                         if (dS1.getId().equals(fb.getUserId())) {
@@ -527,6 +542,7 @@ public class HomeFeed extends Fragment {
                                // Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
                                 Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                                 viewed.setVisibility(View.GONE);
+                                recyclerView.scheduleLayoutAnimation();
                                 adapter.notifyDataSetChanged();
                                 flagFetch = true;
                                 if (flagFirst) {
@@ -541,6 +557,8 @@ public class HomeFeed extends Fragment {
 
                 }
             }
+
+
         });
     }
 

@@ -15,7 +15,7 @@
             android:textSize="24sp"
             android:id="@+id/viewed"
             android:visibility="gone"
-            android:text="You have voted all active polls..."
+            android:text="You have no voted polls."
             android:layout_centerInParent="true" />
 
 
