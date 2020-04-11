@@ -61,7 +61,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Ranking_type_poll extends AppCompatActivity {
     Button add;
     LinearLayout group;
-    String name;
+    String name,expirydate;
     TextInputEditText question_ranking;
     MaterialButton post_ranking;
     int c;
@@ -173,7 +173,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                            String sday = Integer.toString(day);
                            String smonth = Integer.toString(month);
                            String sint = Integer.toString(year);
-                           expiry.setText(sday+"-"+smonth+"-"+sint);
+                           expirydate = (sday+"-"+smonth+"-"+sint);
                            addToDatabase(formatteddate);}
                    } catch (ParseException e) {
                        e.printStackTrace();
@@ -218,7 +218,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                    polldetails.setExpiry_date(dateFormat.parse(expiry.getText().toString()));
+                    polldetails.setExpiry_date(dateFormat.parse(expirydate));
                 Map<String,Object> option=new HashMap<>();
                 Map<String,Integer> ranks=new HashMap<>();
                 for(int i=0;i<group.getChildCount();i++)
