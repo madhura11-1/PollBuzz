@@ -345,7 +345,7 @@ public class Single_type_poll extends AppCompatActivity {
                         dialog.dismiss();
 
                     }
-
+                    closeKeyboard();
                 }
 
             }

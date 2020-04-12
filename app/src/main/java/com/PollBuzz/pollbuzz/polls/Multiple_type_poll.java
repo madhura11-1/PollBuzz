@@ -330,6 +330,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                     dialog.dismiss();
 
                 }
+                closeKeyboard();
             }
         });
 
