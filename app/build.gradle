@@ -3,12 +3,6 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
-        debug {
-            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
-            storePassword 'pb1234'
-            keyAlias = 'PollBuzz'
-            keyPassword 'pb1234'
-        }
         release {
             storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
             storePassword 'pb1234'
