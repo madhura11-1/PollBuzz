@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "855854355070",
+    "firebase_url": "https://pollbuzz-f0eac.firebaseio.com",
+    "project_id": "pollbuzz-f0eac",
+    "storage_bucket": "pollbuzz-f0eac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:855854355070:android:1fae10b0c557bd57a47e2f",
+        "android_client_info": {
+          "package_name": "com.PollBuzz.pollbuzz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "855854355070-4q6c6hhbchb5vf9hvevfleh80o8pj05i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.PollBuzz.pollbuzz",
+            "certificate_hash": "673c8ffb14faedf2e443ed39a3da7a77b93a7828"
+          }
+        },
+        {
+          "client_id": "855854355070-3cm5q9nrf24a7pmme2k5c86tcchclr8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCafVzemTS4M5HgmTRS9HBf0YR0y8LHRQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "855854355070-5s02r3k8in31o5uebo1shf2nfsjmie9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

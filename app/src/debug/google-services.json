@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "896875392739",
+    "firebase_url": "https://glass-pen-271820.firebaseio.com",
+    "project_id": "glass-pen-271820",
+    "storage_bucket": "glass-pen-271820.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896875392739:android:50e0426f1726bad5691fd6",
+        "android_client_info": {
+          "package_name": "com.PollBuzz.pollbuzz.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "896875392739-fqj1apr6hjj88eqc5alu5p8ml1jj3r2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.PollBuzz.pollbuzz.debug",
+            "certificate_hash": "673c8ffb14faedf2e443ed39a3da7a77b93a7828"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLExkitW4K_OwLSm60_YHS6cZvL9bUqk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "896875392739-m41n3o1qrde27chcfh883avrhp1tvd7t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

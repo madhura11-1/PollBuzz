@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Poll Buzz</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="poll_title"><u>Poll Title</u></string>
+    <string name="home_feed_title">Polls</string>
+
+    <string name="client_id">855854355070-5s02r3k8in31o5uebo1shf2nfsjmie9a.apps.googleusercontent.com</string>
+</resources>

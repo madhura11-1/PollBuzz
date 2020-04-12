@@ -2,6 +2,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
+            storePassword 'pb1234'
+            keyAlias = 'PollBuzz'
+            keyPassword 'pb1234'
+        }
+        release {
+            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
+            storePassword 'pb1234'
+            keyAlias = 'PollBuzz'
+            keyPassword 'pb1234'
+        }
+    }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
@@ -17,19 +31,27 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.PollBuzz.pollbuzz"
+        applicationId 'com.PollBuzz.pollbuzz'
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug{
+            applicationIdSuffix ".debug"
+            debuggable true
+
         }
     }
     compileOptions {
