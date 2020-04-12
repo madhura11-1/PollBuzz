@@ -10,6 +10,7 @@ android {
 //            keyPassword 'pb1234'
 //        }
 //    }
+
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/LICENSE'
