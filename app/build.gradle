@@ -6,8 +6,8 @@ android {
 //        release {
 //            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
 //            storePassword '******'
-//            keyAlias = '******'
-//            keyPassword 'pb1234'
+//            keyAlias = 'PollBuzz'
+//            keyPassword '******'
 //        }
 //    }
 
