@@ -52,6 +52,10 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kinda.alert.KAlertDialog;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +71,13 @@ import Utils.ImagePickerActivity;
 import Utils.firebase;
 import Utils.helper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Image_type_poll extends AppCompatActivity {
 
@@ -437,11 +448,57 @@ public class Image_type_poll extends AppCompatActivity {
                                                     fb.getPollsCollection().document(UID).set(pollDetails).addOnCompleteListener(task -> {
                                                        if(task.isSuccessful()){
                                                            deleteCache();
-                                                           dialog.dismissWithAnimation();
-                                                           Toast.makeText(Image_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
-                                                           Intent i = new Intent(Image_type_poll.this, MainActivity.class);
-                                                           i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                           startActivity(i);
+                                                           MediaType mediaType = MediaType.parse("application/json");
+                                                           JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                                           try {
+                                                               data.put("type", "PICTURE BASED");
+                                                               data.put("username",helper.getusernamePref(Image_type_poll.this));
+                                                               data.put("pollId", UID);
+                                                               data.put("title",pollDetails.getQuestion());
+                                                               if (helper.getpPicPref(Image_type_poll.this)!=null)
+                                                                   data.put("profilePic", helper.getpPicPref(Image_type_poll.this));
+                                                               obj.put("data", data);
+                                                               obj.put("to", "/topics/" + fb.getUserId());
+                                                               obj.put("priority", "high");
+                                                           } catch (JSONException e) {
+                                                               Log.d("Exception", e.getMessage());
+                                                           }
+                                                           Log.d("NotificationBody", obj.toString());
+                                                           RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                                           OkHttpClient client = new OkHttpClient();
+                                                           Request request = new Request.Builder()
+                                                                   .url("https://fcm.googleapis.com/fcm/send")
+                                                                   .post(body)
+                                                                   .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                                   .addHeader("Content-Type", "application/json")
+                                                                   .build();
+                                                           Call call = client.newCall(request);
+                                                           call.enqueue(new Callback() {
+                                                               @Override
+                                                               public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                                   runOnUiThread(new Runnable() {
+                                                                       public void run() {
+                                                                           Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                                       }
+                                                                   });
+                                                               }
+
+                                                               @Override
+                                                               public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                                   if (response.isSuccessful()) {
+                                                                       Log.d("Response", response.body().string());
+                                                                   }
+                                                                   runOnUiThread(new Runnable() {
+                                                                       public void run() {
+                                                                           Toast.makeText(Image_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                                           dialog.dismissWithAnimation();
+                                                                       }
+                                                                   });
+                                                                   Intent intent = new Intent(Image_type_poll.this, MainActivity.class);
+                                                                   intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                   startActivity(intent);
+                                                               }
+                                                           });
                                                        }else{
                                                            post_image.setEnabled(true);
                                                            dialog.dismissWithAnimation();

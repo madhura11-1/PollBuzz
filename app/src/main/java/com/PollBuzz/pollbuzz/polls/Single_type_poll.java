@@ -226,7 +226,6 @@ public class Single_type_poll extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                dialog.dismissWithAnimation();
                                 Map<String, Object> m = new HashMap<>();
                                 m.put("pollId", doc.getId());
                                 m.put("timestamp", Timestamp.now().getSeconds());
@@ -234,18 +233,21 @@ public class Single_type_poll extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(Single_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
                                             MediaType mediaType = MediaType.parse("application/json");
                                             JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
                                             try {
-                                                notification.put("title", "New poll from your favourite author!");
-                                                notification.put("body", helper.getusernamePref(Single_type_poll.this) + " has a new poll for you.");
+//                                                notification.put("title", "New poll from your favourite author!");
+//                                                notification.put("body", helper.getusernamePref(Single_type_poll.this) + " has a new poll for you.");
                                                 data.put("type", "SINGLE CHOICE");
-                                                data.put("pollID", doc.getId());
-                                                data.put("profilePic",helper.getpPicPref(Single_type_poll.this));
-                                                obj.put("notification", notification);
+                                                data.put("username",helper.getusernamePref(Single_type_poll.this));
+                                                data.put("pollId", doc.getId());
+                                                data.put("title",polldetails.getQuestion());
+                                                if (helper.getpPicPref(Single_type_poll.this)!=null)
+                                                    data.put("profilePic", helper.getpPicPref(Single_type_poll.this));
+//                                                obj.put("notification", notification);
                                                 obj.put("data", data);
                                                 obj.put("to", "/topics/" + fb.getUserId());
+                                                obj.put("priority", "high");
                                             } catch (JSONException e) {
                                                 Log.d("Exception", e.getMessage());
                                             }
@@ -271,20 +273,20 @@ public class Single_type_poll extends AppCompatActivity {
 
                                                 @Override
                                                 public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
-                                                    if(response.isSuccessful()){
-                                                        Log.d("Response",response.body().string());
+                                                    if (response.isSuccessful()) {
+                                                        Log.d("Response", response.body().string());
                                                     }
+                                                    runOnUiThread(new Runnable() {
+                                                        public void run() {
+                                                            Toast.makeText(Single_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismissWithAnimation();
+                                                        }
+                                                    });
                                                     Intent intent = new Intent(Single_type_poll.this, MainActivity.class);
                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(intent);
                                                 }
                                             });
-
-//                                            FirebaseMessaging.getInstance().send(
-//                                                    new RemoteMessage.Builder(getString(R.string.sender_id) + "@gcm.googleapis.com")
-//                                                            .setMessageId("testing")
-//                                                            .addData("type", "SINGLE CHOICE")
-//                                                            .build());
                                         } else {
                                             Toast.makeText(Single_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             dialog.dismissWithAnimation();
