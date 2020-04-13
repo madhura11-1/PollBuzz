@@ -9,12 +9,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class NotificationService extends FirebaseMessagingService{
-    public static final String INTENT_ACTION = "android.intent.action.APPLICATION_MESSAGE_UPDATE";
-    public static final String EXTRA_UPDATE_APP_COMPONENT_NAME = "android.intent.extra.update_application_component_name";
-    public static final String EXTRA_UPDATE_APP_MSG_TEXT = "android.intent.extra.update_application_message_text";
     private ResolveInfo resolveInfo;
     public static int id=0;
-    String channel_id="Revidly";
     String TAG = "NotificationService";
 
     @Override

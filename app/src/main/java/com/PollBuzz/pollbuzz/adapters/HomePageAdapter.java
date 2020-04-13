@@ -23,6 +23,8 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 
@@ -95,6 +97,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     }
 
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
+        holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
         holder.voteArea.setOnClickListener(view -> {
             if(holder.card_status.getText().toString().equals("Active"))
             {
@@ -153,6 +156,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                           Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
+                                            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                    if(task.isSuccessful()){
+                                                        Log.d("InstanceId",task.getResult().getToken());
+                                                    }
+                                                }
+                                            });
                                             FirebaseMessaging.getInstance().unsubscribeFromTopic(mPollDetails.get(position).getAuthorUID())
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
