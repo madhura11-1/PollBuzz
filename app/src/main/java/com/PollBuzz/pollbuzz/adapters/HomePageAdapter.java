@@ -23,7 +23,9 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.kinda.alert.KAlertDialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +33,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -53,6 +58,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import Utils.firebase;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import dmax.dialog.SpotsDialog;
 
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeViewHolder> {
 
@@ -61,11 +68,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     FirebaseAnalytics mFirebaseAnalytics;
     firebase fb;
     ArrayList<String> authors=new ArrayList<>();
+    SpotsDialog dialog;
 
     public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
+        dialog= new SpotsDialog(mContext,R.style.Custom);
+        dialog.create();
         fb = new firebase();
     }
 
@@ -123,6 +133,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             @Override
             public void onClick(View v) {
 
+                dialog.show();
                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -130,10 +141,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 {
+                                holder.fav_author.setEnabled(false);
                                     //Log.d(TAG, "Document exists!");
                                     fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            //dialog1.dismissWithAnimation();
+                                            dialog.dismiss();
+                                            holder.fav_author.setEnabled(true);
                                           Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
@@ -142,6 +157,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
+                                                   // dialog1.dismissWithAnimation();
+                                                    dialog.dismiss();
+                                                    holder.fav_author.setEnabled(true);
                                                     Toast.makeText(mContext,"Failed "+mPollDetails.get(position).getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
                                                 }
                                             });
@@ -150,11 +168,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                 }
                             } else {
                                 //Log.d(TAG, "Document does not exist!");
+
+                                holder.fav_author.setEnabled(false);
                                 Map<String,String> map=new HashMap<>();
                                 map.put("Username",(mPollDetails.get(position).getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        //dialog1.dismissWithAnimation();
+                                        dialog.dismiss();
+                                        holder.fav_author.setEnabled(true);
                                         Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                                         notifyDataSetChanged();
@@ -163,6 +186,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
+                                                //dialog1.dismissWithAnimation();
+                                                dialog.dismiss();
+                                                holder.fav_author.setEnabled(true);
                                                 Toast.makeText(mContext,"Failed to add "+mPollDetails.get(position).getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -245,6 +271,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         intent.putExtra("UID", uid);
         mContext.startActivity(intent);
     }
+
 
     @Override
     public int getItemCount() {
