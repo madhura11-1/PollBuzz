@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import Utils.firebase;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,9 +38,9 @@ public class ResultActivity extends AppCompatActivity {
     ShimmerRecyclerView voteRV;
     VoterPageAdapter mPageAdapter;
     List<VoteDetails> mVoteDetailsList;
-    ImageButton home,logout;
+    ImageButton home, logout;
     TextView page_title;
-    String UID,type;
+    String UID, type;
     firebase fb;
     private LayoutAnimationController controller;
     private MaterialTextView viewed;
@@ -59,9 +60,9 @@ public class ResultActivity extends AppCompatActivity {
     private void retrieveData(firebase fb) {
         if (UID != null) {
             fb.getPollsCollection().document(UID).collection("Response").get().addOnCompleteListener(task -> {
-                if (task.isSuccessful() && task.getResult()!=null) {
+                if (task.isSuccessful() && task.getResult() != null) {
                     QuerySnapshot querySnapshot = task.getResult();
-                    if(!querySnapshot.isEmpty()) {
+                    if (!querySnapshot.isEmpty()) {
                         for (DocumentSnapshot dS : querySnapshot) {
                             long timestamp = (long) dS.get("timestamp");
                             fb.getUsersCollection().document(dS.getId()).get()
@@ -89,7 +90,7 @@ public class ResultActivity extends AppCompatActivity {
                                         }
                                     });
                         }
-                    }else {
+                    } else {
                         voteRV.hideShimmerAdapter();
                         viewed.setVisibility(View.VISIBLE);
                     }
@@ -102,8 +103,8 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private void getIntentExtras(Intent parent) {
-         UID = parent.getStringExtra("UID");
-         type = parent.getStringExtra("type");
+        UID = parent.getStringExtra("UID");
+        type = parent.getStringExtra("type");
     }
 
     private void setActionBarFunctionality() {
@@ -113,10 +114,7 @@ public class ResultActivity extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(ResultActivity.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
@@ -128,8 +126,8 @@ public class ResultActivity extends AppCompatActivity {
         home = view.findViewById(R.id.home);
         viewed = findViewById(R.id.viewed);
         logout = view.findViewById(R.id.logout);
-        page_title=view.findViewById(R.id.page_title);
-        fb=new firebase();
+        page_title = view.findViewById(R.id.page_title);
+        fb = new firebase();
         controller = AnimationUtils.loadLayoutAnimation(getApplicationContext(), R.anim.animation_down_to_up);
         page_title.setText("Results");
         voteRV = findViewById(R.id.voterListRV);

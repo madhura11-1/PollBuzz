@@ -1,19 +1,7 @@
 package com.PollBuzz.pollbuzz.results;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -22,17 +10,28 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import Utils.firebase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import Utils.firebase;
+
 public class Descriptive_type_result extends AppCompatActivity {
-    TextView  query, answer;
+    TextView query, answer;
     Map<String, Object> response;
     Typeface typeface;
     Dialog dialog;
@@ -126,7 +125,7 @@ public class Descriptive_type_result extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fb.signOut();
+                fb.signOut(Descriptive_type_result.this);
             }
         });
     }
@@ -136,11 +135,10 @@ public class Descriptive_type_result extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
         integer = intent.getExtras().getInt("flag");
 
-        if(integer == 1)
-        {
+        if (integer == 1) {
             uid = intent.getExtras().getString("UIDUser");
         }
-        if(integer == 0) {
+        if (integer == 0) {
             uid = fb.getUserId();
         }
 

@@ -108,10 +108,7 @@ public class Ranking_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Ranking_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
     private void setListeners(String formatteddate) {

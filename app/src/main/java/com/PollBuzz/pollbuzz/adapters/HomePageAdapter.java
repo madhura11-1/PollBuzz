@@ -1,7 +1,32 @@
 package com.PollBuzz.pollbuzz.adapters;
 
-import com.PollBuzz.pollbuzz.MainActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
+import com.PollBuzz.pollbuzz.responses.Image_type_responses;
+import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
+import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -12,38 +37,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
-import com.PollBuzz.pollbuzz.responses.Image_type_responses;
-import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
-import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
-import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.kinda.alert.KAlertDialog;
-
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,16 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import Utils.firebase;
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import dmax.dialog.SpotsDialog;
 
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeViewHolder> {

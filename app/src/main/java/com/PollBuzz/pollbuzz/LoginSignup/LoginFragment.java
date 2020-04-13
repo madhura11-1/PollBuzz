@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
@@ -31,6 +32,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 
 import java.util.Objects;
@@ -103,7 +106,7 @@ public class LoginFragment extends Fragment {
                     if (!fb.getUser().isEmailVerified()) {
                         dialog.dismissWithAnimation();
                         Toast.makeText(getContext(), "Please verify your mail.", Toast.LENGTH_SHORT).show();
-                        fb.signOut();
+                        fb.signOut(getContext());
                     } else {
                         fb.getUserDocument().get().addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
@@ -115,7 +118,6 @@ public class LoginFragment extends Fragment {
                                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                 mFirebaseAnalytics.logEvent("login", bundle);
                                 Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
-                                dialog.dismissWithAnimation();
                                 isProfileSet(dS);
                             } else {
                                 dialog.dismissWithAnimation();
@@ -137,12 +139,23 @@ public class LoginFragment extends Fragment {
     private void isProfileSet(DocumentSnapshot dS) {
         Intent i = new Intent(getActivity(), MainActivity.class);
         if (dS != null && dS.exists()) {
+            fb.getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if(task.isSuccessful() && task.getResult()!=null){
+                        for(DocumentSnapshot dS:task.getResult()){
+                            FirebaseMessaging.getInstance().subscribeToTopic(dS.getId());
+                        }
+                    }
+                }
+            });
             setSharedPreference(dS);
         } else {
             removeSharedPreference();
             i = new Intent(getActivity(), ProfileSetUp.class);
         }
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialog.dismissWithAnimation();
         startActivity(i);
     }
 

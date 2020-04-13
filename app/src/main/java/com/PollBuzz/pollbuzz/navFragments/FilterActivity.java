@@ -1,17 +1,8 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -30,6 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
@@ -42,7 +40,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.common.base.CharMatcher;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -67,7 +64,7 @@ public class FilterActivity extends Fragment {
     private LinearLayout search_layout, date_layout;
     private Button search_button;
     private String name;
-    String name_1u,name_u,name_l,name_1s_rl;
+    String name_1u, name_u, name_l, name_1s_rl;
     TextView starting, ending;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayoutManager layoutManager;
@@ -81,7 +78,7 @@ public class FilterActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_filter,container,false);
+        View view = inflater.inflate(R.layout.activity_filter, container, false);
         setGlobals(view);
         return view;
     }
@@ -112,30 +109,27 @@ public class FilterActivity extends Fragment {
 
                     if (!name.isEmpty()) {
                         //getData(1,name,null,null);
-                        name_1u=name.substring(0,1).toUpperCase()+name.substring(1);
-                        name_l=name.toLowerCase();
-                        name_u=name.toUpperCase();
-                        name_1s_rl=name.substring(0,1)+name.substring(1).toLowerCase();
+                        name_1u = name.substring(0, 1).toUpperCase() + name.substring(1);
+                        name_l = name.toLowerCase();
+                        name_u = name.toUpperCase();
+                        name_1s_rl = name.substring(0, 1) + name.substring(1).toLowerCase();
                         getArrayListByAuthor(name);
 
-                        if(CharMatcher.javaUpperCase().matchesAllOf(name))
-                        {
+                        if (CharMatcher.javaUpperCase().matchesAllOf(name)) {
                             getArrayListByAuthor(name_l);
                             getArrayListByAuthor(name_1s_rl);
-                        }
-                        else if(CharMatcher.javaLowerCase().matchesAllOf(name)){
+                        } else if (CharMatcher.javaLowerCase().matchesAllOf(name)) {
                             getArrayListByAuthor(name_1u);
                             getArrayListByAuthor(name_u);
-                        }
-                        else
-                        {
+                        } else {
                             getArrayListByAuthor(name_l);
                             getArrayListByAuthor(name_1s_rl);
                             getArrayListByAuthor(name_1u);
                             getArrayListByAuthor(name_u);
                         }
                     } else
-                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();                    return true;
+                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+                    return true;
                 }
                 return false;
             }
@@ -150,30 +144,25 @@ public class FilterActivity extends Fragment {
                 name = search_type.getText().toString().trim();
                 if (!name.isEmpty()) {
                     //getData(1,name,null,null);
-                    name_1u=name.substring(0,1).toUpperCase()+name.substring(1);
-                    name_l=name.toLowerCase();
-                    name_u=name.toUpperCase();
-                    name_1s_rl=name.substring(0,1)+name.substring(1).toLowerCase();
+                    name_1u = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    name_l = name.toLowerCase();
+                    name_u = name.toUpperCase();
+                    name_1s_rl = name.substring(0, 1) + name.substring(1).toLowerCase();
                     getArrayListByAuthor(name);
 
-                    if(CharMatcher.javaUpperCase().matchesAllOf(name))
-                    {
+                    if (CharMatcher.javaUpperCase().matchesAllOf(name)) {
                         getArrayListByAuthor(name_l);
                         getArrayListByAuthor(name_1s_rl);
-                    }
-                    else if(CharMatcher.javaLowerCase().matchesAllOf(name)){
+                    } else if (CharMatcher.javaLowerCase().matchesAllOf(name)) {
+                        getArrayListByAuthor(name_1u);
+                        getArrayListByAuthor(name_u);
+                    } else {
+                        getArrayListByAuthor(name_l);
+                        getArrayListByAuthor(name_1s_rl);
                         getArrayListByAuthor(name_1u);
                         getArrayListByAuthor(name_u);
                     }
-                    else
-                        {
-                            getArrayListByAuthor(name_l);
-                            getArrayListByAuthor(name_1s_rl);
-                            getArrayListByAuthor(name_1u);
-                            getArrayListByAuthor(name_u);
-                        }
-                }
-                else
+                } else
                     Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
                 //search_type.setText("");
             }
@@ -262,9 +251,8 @@ public class FilterActivity extends Fragment {
                         for (QueryDocumentSnapshot dS : task.getResult()) {
                             addToRecyclerView(dS);
                         }
-                    }
-                    else{
-                        if(arrayList.isEmpty()){
+                    } else {
+                        if (arrayList.isEmpty()) {
                             recyclerView.hideShimmerAdapter();
                             viewed.setVisibility(View.VISIBLE);
                         }
@@ -295,8 +283,8 @@ public class FilterActivity extends Fragment {
 
                         }
 
-                    }else{
-                        if(arrayList.isEmpty()){
+                    } else {
+                        if (arrayList.isEmpty()) {
                             recyclerView.hideShimmerAdapter();
                             viewed.setVisibility(View.VISIBLE);
                         }
@@ -334,8 +322,8 @@ public class FilterActivity extends Fragment {
                             recyclerView.scheduleLayoutAnimation();
                         }
                     });
-                }else{
-                    if(arrayList.isEmpty()){
+                } else {
+                    if (arrayList.isEmpty()) {
                         recyclerView.hideShimmerAdapter();
                         viewed.setVisibility(View.VISIBLE);
                     }
