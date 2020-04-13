@@ -2,6 +2,7 @@ package Utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -61,17 +62,17 @@ public class firebase {
         dialog.show();
         Utils.helper.removeProfileSetUpPref(context);
         if (getUser() != null) {
-            getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful() && task.getResult()!=null){
-                        for(DocumentSnapshot dS:task.getResult()){
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic(dS.getId());
-                        }
+            getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful() && task.getResult()!=null){
+                    for(DocumentSnapshot dS:task.getResult()){
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(dS.getId());
+                        Log.d("UnSubscribedFrom",dS.getId());
                     }
+                }else{
+                    Log.d("UnSubscribedFrom",task.getException().getMessage());
                 }
+                getAuth().signOut();
             });
-            getAuth().signOut();
         }
         Intent i=new Intent(context, LoginSignupActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
