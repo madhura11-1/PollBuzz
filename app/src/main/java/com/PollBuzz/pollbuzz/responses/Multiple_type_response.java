@@ -1,19 +1,7 @@
 package com.PollBuzz.pollbuzz.responses;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.kinda.alert.KAlertDialog;
-
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -26,31 +14,39 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.kinda.alert.KAlertDialog;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
 public class Multiple_type_response extends AppCompatActivity {
     TextView query;
     LinearLayout group;
-    Map<String,Integer> options;
+    Map<String, Integer> options;
     String key;
     Typeface typeface;
     Dialog dialog;
-    ImageButton home,logout;
+    ImageButton home, logout;
     Button submit;
     firebase fb;
     int c;
-    Map<String,Integer> update;
+    Map<String, Integer> update;
     PollDetails polldetails;
-    Map<String,Object> response;
+    Map<String, Object> response;
     KAlertDialog dialog1;
 
     @Override
@@ -60,7 +56,7 @@ public class Multiple_type_response extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.action_bar);
-        View view =getSupportActionBar().getCustomView();
+        View view = getSupportActionBar().getCustomView();
         Intent intent = getIntent();
         getIntentExtras(intent);
         setGlobals(view);
@@ -81,24 +77,24 @@ public class Multiple_type_response extends AppCompatActivity {
         showKAlertDialog();
         Integer p = polldetails.getPollcount();
         p++;
-        for(Map.Entry<String,Object> e : response.entrySet()){
+        for (Map.Entry<String, Object> e : response.entrySet()) {
             Integer i = update.get(e.getValue());
             i++;
-            update.put(e.getValue().toString(),i);
+            update.put(e.getValue().toString(), i);
         }
-        fb.getPollsCollection().document(key).update("pollcount",p);
-        fb.getPollsCollection().document(key).update("map",update);
+        fb.getPollsCollection().document(key).update("pollcount", p);
+        fb.getPollsCollection().document(key).update("map", update);
 
         response.put("timestamp", Timestamp.now().getSeconds());
         fb.getPollsCollection().document(key).collection("Response")
                 .document(fb.getUserId()).set(response);
-        Map<String,Object> mapi = new HashMap<>();
+        Map<String, Object> mapi = new HashMap<>();
         mapi.put("pollId", fb.getUserId());
         mapi.put("timestamp", Timestamp.now().getSeconds());
         fb.getUserDocument().collection("Voted").document(key).set(mapi)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(Multiple_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
-                    Intent i=new Intent(Multiple_type_response.this,MainActivity.class);
+                    Intent i = new Intent(Multiple_type_response.this, MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 })
@@ -120,7 +116,7 @@ public class Multiple_type_response extends AppCompatActivity {
                         if (data.exists()) {
 
                             dialog.dismiss();
-                             polldetails = data.toObject(PollDetails.class);
+                            polldetails = data.toObject(PollDetails.class);
                             query.setText(polldetails.getQuestion());
                             options = polldetails.getMap();
                             group.removeAllViews();
@@ -135,7 +131,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                 button.setTypeface(typeface);
 
                                 button.setText(entry.getKey());
-                                update.put(entry.getKey(),entry.getValue());
+                                update.put(entry.getKey(), entry.getValue());
                                 button.setTextSize(20.0f);
                                 group.addView(button);
                                 int finalI = i;
@@ -165,31 +161,27 @@ public class Multiple_type_response extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Multiple_type_response.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
     private void setGlobals(View view) {
         home = view.findViewById(R.id.home);
         logout = view.findViewById(R.id.logout);
-        c=0;
-        submit=findViewById(R.id.submit);
-        query=findViewById(R.id.query);
-        group=findViewById(R.id.options);
-        options=new HashMap<>();
-        response=new HashMap<>();
+        c = 0;
+        submit = findViewById(R.id.submit);
+        query = findViewById(R.id.query);
+        group = findViewById(R.id.options);
+        options = new HashMap<>();
+        response = new HashMap<>();
         update = new HashMap<>();
-        typeface= ResourcesCompat.getFont(getApplicationContext(),R.font.didact_gothic);
-        dialog=new Dialog(Multiple_type_response.this);
-        dialog1=new KAlertDialog(Multiple_type_response.this, SweetAlertDialog.PROGRESS_TYPE);
+        typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
+        dialog = new Dialog(Multiple_type_response.this);
+        dialog1 = new KAlertDialog(Multiple_type_response.this, SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
     }
 
-    private void showDialog()
-    {
+    private void showDialog() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading_dialog);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -201,7 +193,8 @@ public class Multiple_type_response extends AppCompatActivity {
         dialog.show();
         window.setAttributes(lp);
     }
-    private void showKAlertDialog(){
+
+    private void showKAlertDialog() {
         dialog1.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog1.setTitleText("Uploading your response");
         dialog1.setCancelable(false);

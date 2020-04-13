@@ -68,11 +68,7 @@ public class MainActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fb.getAuth().signOut();
-                Intent i=new Intent(MainActivity.this, LoginSignupActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-
+                fb.signOut(MainActivity.this);
             }
         });
     }

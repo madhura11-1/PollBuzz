@@ -1,19 +1,7 @@
 package com.PollBuzz.pollbuzz.responses;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -24,21 +12,32 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import Utils.firebase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import Utils.firebase;
+
 public class Descriptive_type_response extends AppCompatActivity {
     Button submit;
     TextView query;
-    Map<String,String> response;
+    Map<String, String> response;
     Typeface typeface;
     Dialog dialog;
-    ImageButton home,logout;
+    ImageButton home, logout;
     firebase fb;
     TextInputLayout answer;
     String key;
@@ -52,8 +51,8 @@ public class Descriptive_type_response extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         Intent intent = getIntent();
         getIntentExtras(intent);
-        View view =getSupportActionBar().getCustomView();
-        setGlobals( view);
+        View view = getSupportActionBar().getCustomView();
+        setGlobals(view);
         setActionBarFunctionality();
         showDialog();
         retrieveData();
@@ -70,11 +69,11 @@ public class Descriptive_type_response extends AppCompatActivity {
     }
 
     private void submitResponse() {
-        response.put("option",answer.getEditText().getText().toString());
+        response.put("option", answer.getEditText().getText().toString());
         System.out.println(response);
         fb.getPollsCollection().document(key).collection("Response")
                 .document(fb.getUserId()).set(response);
-        Map<String,Object> mapi = new HashMap<>();
+        Map<String, Object> mapi = new HashMap<>();
         mapi.put("pollId", fb.getUserId());
         mapi.put("timestamp", Timestamp.now().getSeconds());
         fb.getUserDocument().collection("Voted").document(key).set(mapi)
@@ -94,10 +93,9 @@ public class Descriptive_type_response extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     DocumentSnapshot data = task.getResult();
-                    if(data.exists())
-                    {
+                    if (data.exists()) {
                         dialog.dismiss();
-                        PollDetails polldetails=data.toObject(PollDetails.class);
+                        PollDetails polldetails = data.toObject(PollDetails.class);
                         query.setText(polldetails.getQuestion());
                     }
                 }
@@ -114,10 +112,7 @@ public class Descriptive_type_response extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Descriptive_type_response.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
@@ -125,8 +120,7 @@ public class Descriptive_type_response extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
     }
 
-    private void showDialog()
-    {
+    private void showDialog() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading_dialog);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -139,16 +133,15 @@ public class Descriptive_type_response extends AppCompatActivity {
         window.setAttributes(lp);
     }
 
-    private void setGlobals(View view)
-    {
-        submit=findViewById(R.id.submit);
-        query=findViewById(R.id.query);
-        answer=findViewById(R.id.answer);
-        typeface= ResourcesCompat.getFont(getApplicationContext(),R.font.didact_gothic);
-        dialog=new Dialog(Descriptive_type_response.this);
+    private void setGlobals(View view) {
+        submit = findViewById(R.id.submit);
+        query = findViewById(R.id.query);
+        answer = findViewById(R.id.answer);
+        typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
+        dialog = new Dialog(Descriptive_type_response.this);
         fb = new firebase();
         response = new HashMap<>();
-        logout=view.findViewById(R.id.logout);
-        home=view.findViewById(R.id.home);
+        logout = view.findViewById(R.id.logout);
+        home = view.findViewById(R.id.home);
     }
 }

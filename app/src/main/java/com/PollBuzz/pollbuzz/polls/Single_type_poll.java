@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,6 +46,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kinda.alert.KAlertDialog;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,11 +63,18 @@ import java.util.Map;
 import Utils.firebase;
 import Utils.helper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Single_type_poll extends AppCompatActivity {
     Button add;
     RadioGroup group;
-    String name,expirydate;
+    String name, expirydate;
     int c;
     RadioButton b;
     TextInputEditText question;
@@ -67,10 +82,10 @@ public class Single_type_poll extends AppCompatActivity {
     MaterialButton button;
     Date date = Calendar.getInstance().getTime();
     firebase fb;
-    ImageButton home,logout;
+    ImageButton home, logout;
     KAlertDialog dialog;
-    RadioButton option1,option2;
-    ArrayList<String> uniqueoptions=new ArrayList<>();
+    RadioButton option1, option2;
+    ArrayList<String> uniqueoptions = new ArrayList<>();
     TextView expiry;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
     Calendar cal = Calendar.getInstance();
@@ -93,12 +108,10 @@ public class Single_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Single_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
+
     private void setListeners(String formattedDate) {
         add.setOnClickListener(v -> {
             RadioButton button = new RadioButton(getApplicationContext());
@@ -126,33 +139,29 @@ public class Single_type_poll extends AppCompatActivity {
             if (question.getText().toString().isEmpty()) {
                 question.setError("Please enter the question");
                 question.requestFocus();
-            } else if (group.getChildCount()<2) {
+            } else if (group.getChildCount() < 2) {
                 Toast.makeText(Single_type_poll.this, "Please add atleast two options", Toast.LENGTH_SHORT).show();
-            }
-            else if (group.getChildCount()>12)
-            {
-                Toast.makeText(getApplicationContext(),"Maximum of 12 options allowed\nDelete some options",Toast.LENGTH_LONG).show();
-            }else {
+            } else if (group.getChildCount() > 12) {
+                Toast.makeText(getApplicationContext(), "Maximum of 12 options allowed\nDelete some options", Toast.LENGTH_LONG).show();
+            } else {
 
-                if(expiry.getText().toString().isEmpty())
-                {
+                if (expiry.getText().toString().isEmpty()) {
                     expiry.setText(df.format(default_date));
                     expirydate = df.format(default_date);
                     addToDatabase(formattedDate);
-                }
-                else
-                {
+                } else {
                     try {
-                        if(df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate))>=0){
+                        if (df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate)) >= 0) {
                             Calendar cali = Calendar.getInstance();
                             int year = cali.get(Calendar.YEAR);
-                            int month = cali.get(Calendar.MONTH)+1;
-                            int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                            int month = cali.get(Calendar.MONTH) + 1;
+                            int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
                             String sday = Integer.toString(day);
                             String smonth = Integer.toString(month);
                             String sint = Integer.toString(year);
-                            expirydate = (sday+"-"+smonth+"-"+sint);
-                            addToDatabase(formattedDate);}
+                            expirydate = (sday + "-" + smonth + "-" + sint);
+                            addToDatabase(formattedDate);
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -169,11 +178,11 @@ public class Single_type_poll extends AppCompatActivity {
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
-                 datePickerDialog = new DatePickerDialog(Single_type_poll.this,
+                datePickerDialog = new DatePickerDialog(Single_type_poll.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 expiry.setText(date);
 
                             }
@@ -199,7 +208,7 @@ public class Single_type_poll extends AppCompatActivity {
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
 
 
-                    polldetails.setExpiry_date(df.parse(expirydate));
+                polldetails.setExpiry_date(df.parse(expirydate));
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
@@ -214,7 +223,6 @@ public class Single_type_poll extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                dialog.dismissWithAnimation();
                                 Map<String, Object> m = new HashMap<>();
                                 m.put("pollId", doc.getId());
                                 m.put("timestamp", Timestamp.now().getSeconds());
@@ -222,15 +230,60 @@ public class Single_type_poll extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(Single_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
-                                            FirebaseMessaging.getInstance().send(
-                                                    new RemoteMessage.Builder(getString(R.string.sender_id) + "@gcm.googleapis.com")
-                                                            .setMessageId("testing")
-                                                            .addData("type", "SINGLE CHOICE")
-                                                            .build());
-                                            Intent intent = new Intent(Single_type_poll.this, MainActivity.class);
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            startActivity(intent);
+                                            MediaType mediaType = MediaType.parse("application/json");
+                                            JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                            try {
+//                                                notification.put("title", "New poll from your favourite author!");
+//                                                notification.put("body", helper.getusernamePref(Single_type_poll.this) + " has a new poll for you.");
+                                                data.put("type", "SINGLE CHOICE");
+                                                data.put("username",helper.getusernamePref(Single_type_poll.this));
+                                                data.put("pollId", doc.getId());
+                                                data.put("title",polldetails.getQuestion());
+                                                if (helper.getpPicPref(Single_type_poll.this)!=null)
+                                                    data.put("profilePic", helper.getpPicPref(Single_type_poll.this));
+//                                                obj.put("notification", notification);
+                                                obj.put("data", data);
+                                                obj.put("to", "/topics/" + fb.getUserId());
+                                                obj.put("priority", "high");
+                                            } catch (JSONException e) {
+                                                Log.d("Exception", e.getMessage());
+                                            }
+                                            Log.d("NotificationBody", obj.toString());
+                                            RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                            OkHttpClient client = new OkHttpClient();
+                                            Request request = new Request.Builder()
+                                                    .url("https://fcm.googleapis.com/fcm/send")
+                                                    .post(body)
+                                                    .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                    .addHeader("Content-Type", "application/json")
+                                                    .build();
+                                            Call call = client.newCall(request);
+                                            call.enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                    runOnUiThread(new Runnable() {
+                                                        public void run() {
+                                                            Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                    if (response.isSuccessful()) {
+                                                        Log.d("Response", response.body().string());
+                                                    }
+                                                    runOnUiThread(new Runnable() {
+                                                        public void run() {
+                                                            Toast.makeText(Single_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismissWithAnimation();
+                                                        }
+                                                    });
+                                                    Intent intent = new Intent(Single_type_poll.this, MainActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(intent);
+                                                }
+                                            });
                                         } else {
                                             Toast.makeText(Single_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                             dialog.dismissWithAnimation();
@@ -248,7 +301,7 @@ public class Single_type_poll extends AppCompatActivity {
 
 
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
@@ -267,18 +320,19 @@ public class Single_type_poll extends AppCompatActivity {
         c = group.getChildCount();
         button = findViewById(R.id.post);
         question = findViewById(R.id.question);
-        dialog=new KAlertDialog(Single_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
-        option1=findViewById(R.id.option1);
-        option2=findViewById(R.id.option2);
+        dialog = new KAlertDialog(Single_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
+        option1 = findViewById(R.id.option1);
+        option2 = findViewById(R.id.option2);
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         registerForContextMenu(option1);
         registerForContextMenu(option2);
-        expiry=findViewById(R.id.expiry_date);
+        expiry = findViewById(R.id.expiry_date);
 
-        if(group.getChildCount()==0)
+        if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
     }
+
     private void showDialog() {
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Uploading your poll");
@@ -287,8 +341,7 @@ public class Single_type_poll extends AppCompatActivity {
     }
 
 
-
-    public void showDialog(Activity activity, final RadioButton button,int flag){
+    public void showDialog(Activity activity, final RadioButton button, int flag) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.set_name_dialog);
@@ -298,8 +351,8 @@ public class Single_type_poll extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        final TextInputLayout text =  dialog.findViewById(R.id.name);
-        if(flag == 1 && b.getText() != null){
+        final TextInputLayout text = dialog.findViewById(R.id.name);
+        if (flag == 1 && b.getText() != null) {
             text.getEditText().setText(b.getText().toString().trim());
         }
 
@@ -307,9 +360,8 @@ public class Single_type_poll extends AppCompatActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                String t=text.getEditText().getText().toString().trim();
-                if( flag==0)
-                {
+                String t = text.getEditText().getText().toString().trim();
+                if (flag == 0) {
                     group.removeView(button);
                 }
 
@@ -322,24 +374,19 @@ public class Single_type_poll extends AppCompatActivity {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name=text.getEditText().getText().toString();
-                if(name.isEmpty())
-                {
+                name = text.getEditText().getText().toString();
+                if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please Enter the option name", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if(!doesContain(name))
-                    {
+                } else {
+                    if (!doesContain(name)) {
                         uniqueoptions.remove(button.getText().toString());
                         uniqueoptions.add(name);
                         button.setText(name);
-                        Toast.makeText(getApplicationContext(),"Option Added",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Option Added", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(),"The option is already added",Toast.LENGTH_LONG).show();
-                        if(flag==0)
+                    } else {
+                        Toast.makeText(getApplicationContext(), "The option is already added", Toast.LENGTH_LONG).show();
+                        if (flag == 0)
                             group.removeView(button);
 
                         dialog.dismiss();
@@ -352,33 +399,33 @@ public class Single_type_poll extends AppCompatActivity {
         });
 
 
-
     }
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.radiobutton_menu, menu);
-        b=(RadioButton)v;
+        b = (RadioButton) v;
         menu.setHeaderTitle("Select The Action");
     }
+
     @Override
-    public boolean onContextItemSelected(MenuItem item){
-        if(item.getItemId()==R.id.edit){
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.edit) {
             //Toast.makeText(getApplicationContext(),"calling code",Toast.LENGTH_LONG).show();
-            showDialog(Single_type_poll.this,b,1);
-        }
-        else if(item.getItemId()==R.id.delete){
+            showDialog(Single_type_poll.this, b, 1);
+        } else if (item.getItemId() == R.id.delete) {
             group.removeView(b);
             uniqueoptions.remove(b.getText().toString());
-            if(group.getChildCount()==0)
+            if (group.getChildCount() == 0)
                 group.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             return false;
         }
         return true;
     }
+
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -386,11 +433,10 @@ public class Single_type_poll extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-    private boolean doesContain(String word)
-    {
-        for(int i=0;i<uniqueoptions.size();i++)
-        {
-            if(uniqueoptions.get(i).equalsIgnoreCase(word))
+
+    private boolean doesContain(String word) {
+        for (int i = 0; i < uniqueoptions.size(); i++) {
+            if (uniqueoptions.get(i).equalsIgnoreCase(word))
                 return true;
         }
         return false;
@@ -403,7 +449,7 @@ public class Single_type_poll extends AppCompatActivity {
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH,7);
-        default_date=cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        default_date = cal.getTime();
     }
 }

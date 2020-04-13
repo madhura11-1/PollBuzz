@@ -1,30 +1,5 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
-import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.storage.StorageReference;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.adapters.ProfileFeedAdapter;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,17 +12,42 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.adapters.ProfileFeedAdapter;
+import com.bumptech.glide.Glide;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,15 +58,6 @@ import java.util.List;
 
 import Utils.ImagePickerActivity;
 import Utils.firebase;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ProfileFeed extends Fragment {
     private MaterialTextView Uname;
@@ -127,7 +118,7 @@ public class ProfileFeed extends Fragment {
 
     private void decideUserFeed() {
         if (UID.isEmpty() || UID.equals(fb.getUserId())) {
-            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList,true);
+            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList, true);
             profileRV.setAdapter(mAdapter);
             profileRV.setLayoutAnimation(controller);
             profileRV.showShimmerAdapter();
@@ -137,7 +128,7 @@ public class ProfileFeed extends Fragment {
             Uname.setText(Utils.helper.getusernamePref(getContext()));
             loadProfilePic(Utils.helper.getpPicPref(getContext()), false);
         } else {
-            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList,false);
+            mAdapter = new ProfileFeedAdapter(getContext(), mArrayList, false);
             profileRV.setAdapter(mAdapter);
             profileRV.setLayoutAnimation(controller);
             profileRV.showShimmerAdapter();
@@ -247,7 +238,7 @@ public class ProfileFeed extends Fragment {
                         .limit(20)
                         .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                        Log.d("ProfielFeed", "Size: "+task.getResult().size());
+                        Log.d("ProfielFeed", "Size: " + task.getResult().size());
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 if (dS.get("pollId") != null)
@@ -293,7 +284,7 @@ public class ProfileFeed extends Fragment {
     }
 
     private void setGlobals(@NonNull View view) {
-       // ToolbarSetup(view);
+        // ToolbarSetup(view);
         tB = view.findViewById(R.id.htab_toolbar2);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
@@ -308,7 +299,7 @@ public class ProfileFeed extends Fragment {
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
-        typeface= ResourcesCompat.getFont(getActivity(), R.font.maven_pro);
+        typeface = ResourcesCompat.getFont(getActivity(), R.font.maven_pro);
     }
 
     private void ToolbarSetup(@NonNull View view) {
@@ -514,26 +505,6 @@ public class ProfileFeed extends Fragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.main_menu, menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.logOut) {
-            logOut();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void logOut() {
-        Utils.helper.removeProfileSetUpPref(getContext());
-        fb.signOut();
-        Intent i = new Intent(getActivity(), LoginSignupActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-    }
 }
 
