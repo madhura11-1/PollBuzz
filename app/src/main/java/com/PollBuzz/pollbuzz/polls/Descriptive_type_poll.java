@@ -108,7 +108,6 @@ public class Descriptive_type_poll extends AppCompatActivity {
                 DocumentReference doc = fb.getPollsCollection().document();
                 doc.set(polldetails)
                         .addOnSuccessListener(aVoid -> {
-                            dialog.dismissWithAnimation();
                             Map<String, Object> m = new HashMap<>();
                             m.put("pollId", doc.getId());
                             m.put("timestamp", Timestamp.now().getSeconds());
@@ -117,6 +116,7 @@ public class Descriptive_type_poll extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(Descriptive_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                        dialog.dismissWithAnimation();
                                         Intent intent = new Intent(Descriptive_type_poll.this, MainActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
