@@ -417,11 +417,10 @@ public class HomeFeed extends Fragment {
                 });
             }
         } else {
-            if (lastIndex == null) {
                 recyclerView.showShimmerAdapter();
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
-                        limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
@@ -437,7 +436,7 @@ public class HomeFeed extends Fragment {
                                            /* viewed.setVisibility(View.VISIBLE);
                                             viewed.setText("No polls created by this author");*/
                                         }
-                                        if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim())) {
+                                        if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
                                             {
                                                 addToRecyclerView(dS, pollDetails.getTimestamp());
                                                 recyclerView.hideShimmerAdapter();
@@ -477,39 +476,6 @@ public class HomeFeed extends Fragment {
                         }
                     }
                 });
-            } else {
-                fb.getPollsCollection()
-                        .orderBy("timestamp", Query.Direction.DESCENDING).
-                        startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        if (!task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot dS : task.getResult()) {
-                                PollDetails pollDetails = dS.toObject(PollDetails.class);
-                                long timestamp = (long) dS.get("timestamp");
-                                if (flagi == 1) {
-                                    if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim()))
-                                        addToRecyclerView(dS, pollDetails.getTimestamp());
-                                    //  getArrayListByAuthor(name, dS.getId(), timestamp);
-                                } else if (flagi == 2) {
-                                    try {
-                                        Log.d("name", pollDetails.getAuthor());
-                                        getArrayListByDate(start, end, timestamp, dS);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                lastIndex = dS;
-                            }
-                        } else {
-                            flagFetch = false;
-                            //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        flagFetch = false;
-                    }
-                });
-            }
         }
     }
 
