@@ -52,6 +52,10 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kinda.alert.KAlertDialog;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +71,13 @@ import Utils.ImagePickerActivity;
 import Utils.firebase;
 import Utils.helper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Image_type_poll extends AppCompatActivity {
 
@@ -83,16 +94,15 @@ public class Image_type_poll extends AppCompatActivity {
     Calendar cal = Calendar.getInstance();
     Date default_date;
     String expirydate;
-    Boolean flagA=false,flagB=false;
-
+    Boolean flagA = false, flagB = false;
 
 
     @Override
     protected void onStart() {
         super.onStart();
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH,7);
-        default_date=cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        default_date = cal.getTime();
 
     }
 
@@ -192,6 +202,7 @@ public class Image_type_poll extends AppCompatActivity {
                                     showSettingsDialog();
                                 }
                             }
+
                             @Override
                             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
                                 token.continuePermissionRequest();
@@ -219,6 +230,7 @@ public class Image_type_poll extends AppCompatActivity {
                                     showSettingsDialog();
                                 }
                             }
+
                             @Override
                             public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
                                 token.continuePermissionRequest();
@@ -234,28 +246,26 @@ public class Image_type_poll extends AppCompatActivity {
             if (question_image.getText().toString().isEmpty()) {
                 question_image.setError("Please enter the question");
                 question_image.requestFocus();
-            } else if(!(flagA && flagB)){
+            } else if (!(flagA && flagB)) {
                 Toast.makeText(this, "Please make sure both options are added", Toast.LENGTH_SHORT).show();
-            }else {
-                if(expiry.getText().toString().isEmpty())
-                {
+            } else {
+                if (expiry.getText().toString().isEmpty()) {
                     expiry.setText(dateFormat.format(default_date));
                     expirydate = dateFormat.format(default_date);
                     addToDatabase();
-                }
-
-                else{
+                } else {
                     try {
-                        if(dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate))>=0){
+                        if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
                             Calendar cali = Calendar.getInstance();
                             int year = cali.get(Calendar.YEAR);
-                            int month = cali.get(Calendar.MONTH)+1;
-                            int day = cali.get(Calendar.DAY_OF_MONTH)+1;
+                            int month = cali.get(Calendar.MONTH) + 1;
+                            int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
                             String sday = Integer.toString(day);
                             String smonth = Integer.toString(month);
                             String sint = Integer.toString(year);
-                            expirydate = (sday+"-"+smonth+"-"+sint);
-                            addToDatabase();}
+                            expirydate = (sday + "-" + smonth + "-" + sint);
+                            addToDatabase();
+                        }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -276,7 +286,7 @@ public class Image_type_poll extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 expiry.setText(date);
 
                             }
@@ -295,10 +305,7 @@ public class Image_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Image_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
@@ -309,7 +316,7 @@ public class Image_type_poll extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
-        expiry=findViewById(R.id.expiry_date);
+        expiry = findViewById(R.id.expiry_date);
         l1 = findViewById(R.id.l1);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);
@@ -323,7 +330,7 @@ public class Image_type_poll extends AppCompatActivity {
         logout = view.findViewById(R.id.logout);
         post_image = findViewById(R.id.post_imagetype);
         question_image = findViewById(R.id.question_imagetype);
-        dialog=new KAlertDialog(Image_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
+        dialog = new KAlertDialog(Image_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
     }
 
     private void showImagePickerOptions() {
@@ -382,14 +389,14 @@ public class Image_type_poll extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 100) {
                 uri1 = data.getParcelableExtra("path");
-                flagA=true;
+                flagA = true;
                 loadProfilePic(view1, uri1.toString());
-                Log.d("UriPaths",uri1.toString());
+                Log.d("UriPaths", uri1.toString());
             } else {
                 uri2 = data.getParcelableExtra("path");
-                flagB=true;
+                flagB = true;
                 loadProfilePic(view2, uri2.toString());
-                Log.d("UriPaths",uri2.toString());
+                Log.d("UriPaths", uri2.toString());
             }
         }
     }
@@ -412,7 +419,7 @@ public class Image_type_poll extends AppCompatActivity {
         }
     }
 
-    private void addToStorage(String UID,PollDetails pollDetails) {
+    private void addToStorage(String UID, PollDetails pollDetails) {
         try {
             Map<String, Integer> map = new HashMap<>();
             StorageReference mRef = fb.getStorageReference().child("polls/" + fb.getUserId() + "/" + UID + "/option1");
@@ -435,18 +442,64 @@ public class Image_type_poll extends AppCompatActivity {
                                                     map.put(imagePath1, 0);
                                                     pollDetails.setMap(map);
                                                     fb.getPollsCollection().document(UID).set(pollDetails).addOnCompleteListener(task -> {
-                                                       if(task.isSuccessful()){
-                                                           deleteCache();
-                                                           dialog.dismissWithAnimation();
-                                                           Toast.makeText(Image_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
-                                                           Intent i = new Intent(Image_type_poll.this, MainActivity.class);
-                                                           i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                           startActivity(i);
-                                                       }else{
-                                                           post_image.setEnabled(true);
-                                                           dialog.dismissWithAnimation();
-                                                           Toast.makeText(Image_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                                       }
+                                                        if (task.isSuccessful()) {
+                                                            deleteCache();
+                                                            MediaType mediaType = MediaType.parse("application/json");
+                                                            JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                                            try {
+                                                                data.put("type", "PICTURE BASED");
+                                                                data.put("username", helper.getusernamePref(Image_type_poll.this));
+                                                                data.put("pollId", UID);
+                                                                data.put("title", pollDetails.getQuestion());
+                                                                if (helper.getpPicPref(Image_type_poll.this) != null)
+                                                                    data.put("profilePic", helper.getpPicPref(Image_type_poll.this));
+                                                                obj.put("data", data);
+                                                                obj.put("to", "/topics/" + fb.getUserId());
+                                                                obj.put("priority", "high");
+                                                            } catch (JSONException e) {
+                                                                Log.d("Exception", e.getMessage());
+                                                            }
+                                                            Log.d("NotificationBody", obj.toString());
+                                                            RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                                            OkHttpClient client = new OkHttpClient();
+                                                            Request request = new Request.Builder()
+                                                                    .url("https://fcm.googleapis.com/fcm/send")
+                                                                    .post(body)
+                                                                    .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                                    .addHeader("Content-Type", "application/json")
+                                                                    .build();
+                                                            Call call = client.newCall(request);
+                                                            call.enqueue(new Callback() {
+                                                                @Override
+                                                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                                    runOnUiThread(new Runnable() {
+                                                                        public void run() {
+                                                                            Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                @Override
+                                                                public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                                    if (response.isSuccessful()) {
+                                                                        Log.d("Response", response.body().string());
+                                                                    }
+                                                                    runOnUiThread(new Runnable() {
+                                                                        public void run() {
+                                                                            Toast.makeText(Image_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                                            dialog.dismissWithAnimation();
+                                                                        }
+                                                                    });
+                                                                    Intent intent = new Intent(Image_type_poll.this, MainActivity.class);
+                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                    startActivity(intent);
+                                                                }
+                                                            });
+                                                        } else {
+                                                            post_image.setEnabled(true);
+                                                            dialog.dismissWithAnimation();
+                                                            Toast.makeText(Image_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        }
                                                     });
                                                 }).addOnFailureListener(exception -> {
                                                     exception.printStackTrace();
@@ -502,7 +555,7 @@ public class Image_type_poll extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task1) {
                                     if (task1.isSuccessful()) {
-                                        addToStorage(task.getResult().getId(),polldetails);
+                                        addToStorage(task.getResult().getId(), polldetails);
                                     } else {
                                         post_image.setEnabled(true);
                                         dialog.dismissWithAnimation();
@@ -517,7 +570,7 @@ public class Image_type_poll extends AppCompatActivity {
                             Log.d("Exception", task.getException().toString());
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }

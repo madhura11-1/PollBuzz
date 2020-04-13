@@ -1,5 +1,21 @@
 package com.PollBuzz.pollbuzz.polls;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
@@ -9,20 +25,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
 import com.kinda.alert.KAlertDialog;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,9 +35,6 @@ import java.util.Map;
 
 import Utils.firebase;
 import Utils.helper;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class Descriptive_type_poll extends AppCompatActivity {
@@ -42,10 +42,10 @@ public class Descriptive_type_poll extends AppCompatActivity {
     TextInputLayout query;
     TextInputEditText question_descriptive;
     firebase fb;
-    ImageButton home,logout;
+    ImageButton home, logout;
     Date date = Calendar.getInstance().getTime();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-   KAlertDialog dialog;
+    KAlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +65,14 @@ public class Descriptive_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Descriptive_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
     private void setListeners(String formatteddate) {
         post_descriptive.setOnClickListener(view -> {
             closeKeyboard();
-              if (question_descriptive.getText().toString().isEmpty()) {
+            if (question_descriptive.getText().toString().isEmpty()) {
                 question_descriptive.setError("Please enter the question");
                 question_descriptive.requestFocus();
             } else {
@@ -108,7 +105,6 @@ public class Descriptive_type_poll extends AppCompatActivity {
                 DocumentReference doc = fb.getPollsCollection().document();
                 doc.set(polldetails)
                         .addOnSuccessListener(aVoid -> {
-                            dialog.dismissWithAnimation();
                             Map<String, Object> m = new HashMap<>();
                             m.put("pollId", doc.getId());
                             m.put("timestamp", Timestamp.now().getSeconds());
@@ -117,6 +113,7 @@ public class Descriptive_type_poll extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(Descriptive_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                        dialog.dismissWithAnimation();
                                         Intent intent = new Intent(Descriptive_type_poll.this, MainActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
@@ -135,10 +132,11 @@ public class Descriptive_type_poll extends AppCompatActivity {
                             post_descriptive.setEnabled(true);
                         });
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
+
     private void showDialog() {
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Uploading your poll");
@@ -153,11 +151,11 @@ public class Descriptive_type_poll extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
-        home=findViewById(R.id.home);
-        logout=findViewById(R.id.logout);
+        home = findViewById(R.id.home);
+        logout = findViewById(R.id.logout);
         post_descriptive = findViewById(R.id.post_descriptive);
         question_descriptive = findViewById(R.id.question_descriptive);
-        dialog=new KAlertDialog(Descriptive_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
+        dialog = new KAlertDialog(Descriptive_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
 
     }
 }

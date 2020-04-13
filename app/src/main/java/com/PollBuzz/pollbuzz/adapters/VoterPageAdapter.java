@@ -1,6 +1,16 @@
 package com.PollBuzz.pollbuzz.adapters;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.VoteDetails;
@@ -11,20 +21,9 @@ import com.PollBuzz.pollbuzz.results.Ranking_type_result;
 import com.PollBuzz.pollbuzz.results.Single_type_result;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.VoterViewHolder> {
 
@@ -56,9 +55,9 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
 
     private void setData(@NonNull VoterViewHolder holder, int position) {
         try {
-            if(mVotedetails.get(position).getUsername()!=null)
+            if (mVotedetails.get(position).getUsername() != null)
                 holder.voterUsername.setText(mVotedetails.get(position).getUsername().trim());
-            if(mVotedetails.get(position).getProgfileUrl()==null){
+            if (mVotedetails.get(position).getProgfileUrl() == null) {
                 holder.voterPhoto.setImageResource(R.drawable.ic_person_black_24dp);
             } else {
                 Glide.with(mContext)
@@ -71,10 +70,9 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
         }
     }
 
-    private void startActivity(String useruid,String option,String uid) {
+    private void startActivity(String useruid, String option, String uid) {
         Intent intent;
-        switch(option)
-        {
+        switch (option) {
             case "SINGLE CHOICE":
                 intent = new Intent(mContext, Single_type_result.class);
                 break;
@@ -119,7 +117,7 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
         private void setGlobals(@NonNull View itemView) {
             card_view = itemView.findViewById(R.id.card_view);
             voterUsername = itemView.findViewById(R.id.voterUsername);
-            voterPhoto=itemView.findViewById(R.id.voterPhoto);
+            voterPhoto = itemView.findViewById(R.id.voterPhoto);
         }
     }
 }

@@ -1,42 +1,37 @@
 package com.PollBuzz.pollbuzz.results;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import Utils.firebase;
 
 public class Single_type_result extends AppCompatActivity {
-    TextView  query;
+    TextView query;
     RadioGroup group;
     Map<String, Integer> options;
     String key;
@@ -45,7 +40,7 @@ public class Single_type_result extends AppCompatActivity {
     Dialog dialog;
     FirebaseAuth auth;
     firebase fb = new firebase();
-   TextView poll_stats;
+    TextView poll_stats;
     FirebaseAuth.AuthStateListener listener;
     Map<String, Object> response;
     Integer integer;
@@ -122,16 +117,16 @@ public class Single_type_result extends AppCompatActivity {
 
     private void setActionBarFunctionality() {
 
-       poll_stats.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-               Intent i=new Intent(Single_type_result.this,PercentageResult.class);
-               i.putExtra("UID",key);
-               i.putExtra("type","SINGLE CHOICE");
-               i.putExtra("flag",1);
-               startActivity(i);
-           }
-       });
+        poll_stats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Single_type_result.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "SINGLE CHOICE");
+                i.putExtra("flag", 1);
+                startActivity(i);
+            }
+        });
     }
 
     private void getIntentExtras(Intent intent) {
@@ -139,12 +134,10 @@ public class Single_type_result extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
         integer = intent.getExtras().getInt("flag");
 
-        if(integer == 1)
-        {
+        if (integer == 1) {
             uid = intent.getExtras().getString("UIDUser");
         }
-        if(integer == 0)
-        {
+        if (integer == 0) {
             uid = auth.getCurrentUser().getUid();
         }
 
@@ -161,7 +154,7 @@ public class Single_type_result extends AppCompatActivity {
 
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Single_type_result.this);
-        poll_stats=view.findViewById(R.id.poll_stats);
+        poll_stats = view.findViewById(R.id.poll_stats);
     }
 
     private void showDialog() {
@@ -190,8 +183,8 @@ public class Single_type_result extends AppCompatActivity {
         String value = "";
 
         for (Map.Entry<String, Object> entry : response.entrySet()) {
-             if(entry.getKey().equals("option")){
-                 value =entry.getValue().toString();
+            if (entry.getKey().equals("option")) {
+                value = entry.getValue().toString();
             }
 
         }
@@ -205,10 +198,10 @@ public class Single_type_result extends AppCompatActivity {
             button.setText(entry.getKey());
             button.setTextSize(20.0f);
             group.addView(button);
-            final String val=value;
+            final String val = value;
             if (button.getText().toString().equals(value))
                 button.setChecked(true);
-          else
+            else
                 button.setEnabled(false);
          /*   button.setOnClickListener(new View.OnClickListener() {
                 @Override

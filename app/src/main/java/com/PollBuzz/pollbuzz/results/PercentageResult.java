@@ -1,41 +1,12 @@
 package com.PollBuzz.pollbuzz.results;
 
-import com.PollBuzz.pollbuzz.BuildConfig;
-import com.PollBuzz.pollbuzz.polls.Image_type_poll;
-import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
-import com.PollBuzz.pollbuzz.responses.Image_type_responses;
-import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
-import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
-import com.PollBuzz.pollbuzz.responses.Single_type_response;
-import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.Timestamp;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.DocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -45,36 +16,53 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.PollBuzz.pollbuzz.BuildConfig;
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Image_type_responses;
+import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
+import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import Utils.firebase;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.content.res.ResourcesCompat;
 
 public class PercentageResult extends AppCompatActivity {
 
@@ -129,42 +117,25 @@ public class PercentageResult extends AppCompatActivity {
         selfVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Case", type);
-                fb.getPollsCollection().document(uid).collection("Response").get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        if (!task.getResult().isEmpty()) {
-                            for (QueryDocumentSnapshot dS1 : task.getResult()) {
-                                if (dS1.getId().equals(fb.getUserId())) {
-                                    flagVoted = false;
-                                    Toast.makeText(PercentageResult.this, "You have already voted once...", Toast.LENGTH_SHORT).show();
-                                    break;
-                                }
-                            }
-
-                        } else flagVoted = true;
-                        if (flagVoted) {
-                            Intent intent;
-                            switch (type) {
-                                case "SINGLE CHOICE":
-                                    intent = new Intent(getApplicationContext(), Single_type_response.class);
-                                    break;
-                                case "MULTI SELECT":
-                                    intent = new Intent(getApplicationContext(), Multiple_type_response.class);
-                                    break;
-                                case "RANKED":
-                                    intent = new Intent(getApplicationContext(), Ranking_type_response.class);
-                                    break;
-                                case "PICTURE BASED":
-                                    intent = new Intent(getApplicationContext(), Image_type_responses.class);
-                                    break;
-                                default:
-                                    throw new IllegalStateException("Unexpected value: " + type);
-                            }
-                            intent.putExtra("UID", uid);
-                            startActivity(intent);
-                        }
-                    }
-                });
+                Intent intent;
+                switch (type) {
+                    case "SINGLE CHOICE":
+                        intent = new Intent(getApplicationContext(), Single_type_response.class);
+                        break;
+                    case "MULTI SELECT":
+                        intent = new Intent(getApplicationContext(), Multiple_type_response.class);
+                        break;
+                    case "RANKED":
+                        intent = new Intent(getApplicationContext(), Ranking_type_response.class);
+                        break;
+                    case "PICTURE BASED":
+                        intent = new Intent(getApplicationContext(), Image_type_responses.class);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + type);
+                }
+                intent.putExtra("UID", uid);
+                startActivity(intent);
             }
         });
 
@@ -238,9 +209,28 @@ public class PercentageResult extends AppCompatActivity {
                             total = Double.valueOf(pollDetails.getPollcount());
                             String vote = "Total Voters:" + pollDetails.getPollcount();
                             vote_count.setText(vote);
-                            setProgressbar(map);
-                        } else
-                            Log.d("hello", "hii");
+                            fb.getPollsCollection().document(uid).collection("Response").get().addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful() && task1.getResult() != null) {
+                                    if (!task1.getResult().isEmpty()) {
+                                        for (QueryDocumentSnapshot dS1 : task1.getResult()) {
+                                            if (dS1.getId().equals(fb.getUserId())) {
+                                                flagVoted = false;
+                                                break;
+                                            }
+                                        }
+                                    } else flagVoted = true;
+                                    if (flagVoted) {
+                                        selfVote.setEnabled(true);
+                                    } else {
+                                        selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
+                                        selfVote.setEnabled(false);
+                                    }
+                                }
+                                setProgressbar(map);
+                            });
+                        } else{
+                            Log.d("PercentageResult", Objects.requireNonNull(task.getException().getMessage()));
+                        }
                     }
                 });
     }
@@ -248,10 +238,12 @@ public class PercentageResult extends AppCompatActivity {
     private void setProgressbar(Map<String, Integer> mapip) {
 
         LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
-        mapip.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .forEachOrdered(x -> map.put(x.getKey(), x.getValue()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mapip.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                    .forEachOrdered(x -> map.put(x.getKey(), x.getValue()));
+        }
         dialog.dismiss();
         linearLayout.removeAllViews();
         data.clear();
@@ -562,10 +554,7 @@ public class PercentageResult extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(PercentageResult.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
@@ -594,7 +583,7 @@ public class PercentageResult extends AppCompatActivity {
             result.setVisibility(View.GONE);
             selfVote.setVisibility(View.GONE);
         }
-        if(flag==2)
+        if (flag == 2)
             selfVote.setVisibility(View.GONE);
 
 

@@ -1,18 +1,5 @@
 package com.PollBuzz.pollbuzz.adapters;
 
-import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
-import com.PollBuzz.pollbuzz.responses.Image_type_responses;
-import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
-import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
-import com.PollBuzz.pollbuzz.responses.Single_type_response;
-import com.google.firebase.Timestamp;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.results.PercentageResult;
-import com.PollBuzz.pollbuzz.results.ResultActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -21,12 +8,23 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
+import com.PollBuzz.pollbuzz.responses.Image_type_responses;
+import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
+import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
+import com.google.firebase.Timestamp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.ProfileViewHolder> {
 
@@ -63,11 +61,11 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 mContext.startActivity(intent);
             });
         } else {
-            if(mPollDetails.get(position).getExpiry_date().compareTo(Timestamp.now().toDate())>=0)
-            holder.cardV.setOnClickListener(view -> {
-                startIntent(mPollDetails.get(position).getUID(),mPollDetails.get(position).getPoll_type());
-            });
-            else{
+            if (mPollDetails.get(position).getExpiry_date().compareTo(Timestamp.now().toDate()) >= 0)
+                holder.cardV.setOnClickListener(view -> {
+                    startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                });
+            else {
                 holder.cardV.setOnClickListener(view -> {
                     Toast.makeText(mContext, "This poll has expired!\nYou can't vote this...", Toast.LENGTH_SHORT).show();
                 });
