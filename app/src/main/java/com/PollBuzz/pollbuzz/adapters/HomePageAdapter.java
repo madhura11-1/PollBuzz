@@ -23,6 +23,7 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 
 import android.app.Dialog;
@@ -152,6 +153,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                           Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(mPollDetails.get(position).getAuthorUID())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if(task.isSuccessful()){
+                                                                Log.d("UnSubscribedFrom",mPollDetails.get(position).getAuthorUID());
+                                                            }
+                                                        }
+                                                    });
                                         }
                                     })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -181,6 +191,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                         Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                                         notifyDataSetChanged();
+                                        FirebaseMessaging.getInstance().subscribeToTopic(mPollDetails.get(position).getAuthorUID())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if(task.isSuccessful()){
+                                                            Log.d("SubscribedTo",mPollDetails.get(position).getAuthorUID());
+                                                        }
+                                                    }
+                                                });
                                     }
                                 })
                                         .addOnFailureListener(new OnFailureListener() {
