@@ -22,7 +22,10 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
@@ -32,6 +35,7 @@ import java.util.Map;
 
 import Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import dmax.dialog.SpotsDialog;
 
 public class Multiple_type_response extends AppCompatActivity {
     TextView query;
@@ -40,7 +44,7 @@ public class Multiple_type_response extends AppCompatActivity {
     String key;
     Typeface typeface;
     Dialog dialog;
-    ImageButton home, logout;
+    ImageButton home, logout, fav_author;
     Button submit;
     firebase fb;
     int c;
@@ -48,6 +52,7 @@ public class Multiple_type_response extends AppCompatActivity {
     PollDetails polldetails;
     Map<String, Object> response;
     KAlertDialog dialog1;
+    SpotsDialog dialog2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +70,76 @@ public class Multiple_type_response extends AppCompatActivity {
         retrieveData();
 
         submit.setOnClickListener(v -> submitResponse());
+        fav_author.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog2.show();
+                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                {
+                                    fav_author.setEnabled(false);
+                                    //Log.d(TAG, "Document exists!");
+                                    fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            //dialog1.dismissWithAnimation();
+                                            dialog2.dismiss();
+                                            fav_author.setEnabled(true);
+                                            Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
+                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        }
+                                    })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // dialog1.dismissWithAnimation();
+                                                    dialog2.dismiss();
+                                                    fav_author.setEnabled(true);
+                                                    Toast.makeText(getApplicationContext(),"Failed "+polldetails.getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+
+
+                                }
+                            } else {
+                                //Log.d(TAG, "Document does not exist!");
+
+                                fav_author.setEnabled(false);
+                                Map<String,String> map=new HashMap<>();
+                                map.put("Username",(polldetails.getAuthor()));
+                                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        //dialog1.dismissWithAnimation();
+                                        dialog2.dismiss();
+                                        fav_author.setEnabled(true);
+                                        Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
+                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+
+                                    }
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                //dialog1.dismissWithAnimation();
+                                                dialog2.dismiss();
+                                                fav_author.setEnabled(true);
+                                                Toast.makeText(getApplicationContext(),"Failed to add "+polldetails.getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                            }
+                        } else {
+                            //Log.d(TAG, "Failed with: ", task.getException());
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void getIntentExtras(Intent intent) {
@@ -121,6 +196,21 @@ public class Multiple_type_response extends AppCompatActivity {
                             options = polldetails.getMap();
                             group.removeAllViews();
                             response.clear();
+                            fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                        } else {
+                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        }
+                                    } else {
+
+                                    }
+                                }
+                            });
 
                             int i = 0;
                             for (Map.Entry<String, Integer> entry : options.entrySet()) {
@@ -179,6 +269,9 @@ public class Multiple_type_response extends AppCompatActivity {
         dialog = new Dialog(Multiple_type_response.this);
         dialog1 = new KAlertDialog(Multiple_type_response.this, SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
+        fav_author=findViewById(R.id.fav_author);
+        dialog2= new SpotsDialog(Multiple_type_response.this,R.style.Custom);
+        dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     private void showDialog() {
