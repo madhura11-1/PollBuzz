@@ -143,7 +143,7 @@ public class VotedFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == mArrayList.size() - 11 && flagFetch && !flagFirst) {
+                if (!mArrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == Math.min(mArrayList.size()-1,Math.abs(mArrayList.size() - 11)) && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
                         getData(currentFlag, "", null, null);
@@ -510,7 +510,6 @@ public class VotedFeed extends Fragment {
             flagFetch = true;
             if (flagFirst) {
                 votedRV.hideShimmerAdapter();
-                votedRV.scheduleLayoutAnimation();
                 flagFirst = false;
             }
         } catch (Exception e) {

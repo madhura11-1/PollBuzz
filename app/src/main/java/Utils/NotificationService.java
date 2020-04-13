@@ -43,24 +43,22 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d("LOG_DATA", "Inside Notification service");
-        initExceptions();
-        if (remoteMessage.getData() != null) {
-            try {
-                Log.d(TAG, "ResponseNotif: " + remoteMessage.getData().toString());
-                JSONObject jsonObject = new JSONObject(remoteMessage.getData());
-                String pollId = jsonObject.getString("pollId");
-                String pollTitle = jsonObject.getString("title");
-                String username = jsonObject.getString("username");
-                String imageUrl = null;
-                if (jsonObject.has("profilePic"))
-                    imageUrl = jsonObject.getString("profilePic");
-                String type = jsonObject.getString("type");
-                sendNotification(pollId, pollTitle, username, imageUrl, type);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e(TAG, e.getMessage());
-                FirebaseCrashlytics.getInstance().log(e.getMessage());
-            }
+        remoteMessage.getData();
+        try {
+            Log.d(TAG, "ResponseNotif: " + remoteMessage.getData().toString());
+            JSONObject jsonObject = new JSONObject(remoteMessage.getData());
+            String pollId = jsonObject.getString("pollId");
+            String pollTitle = jsonObject.getString("title");
+            String username = jsonObject.getString("username");
+            String imageUrl = null;
+            if (jsonObject.has("profilePic"))
+                imageUrl = jsonObject.getString("profilePic");
+            String type = jsonObject.getString("type");
+            sendNotification(pollId, pollTitle, username, imageUrl, type);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
 
@@ -164,29 +162,29 @@ public class NotificationService extends FirebaseMessagingService {
         id++;
     }
 
-    void initExceptions() {
-        try {
-            Intent intent = new Intent();
-            String manufacturer = android.os.Build.MANUFACTURER;
-            if ("xiaomi".equalsIgnoreCase(manufacturer)) {
-                intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
-            } else if ("oppo".equalsIgnoreCase(manufacturer)) {
-                intent.setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity"));
-            } else if ("vivo".equalsIgnoreCase(manufacturer)) {
-                intent.setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"));
-            } else if ("letv".equalsIgnoreCase(manufacturer)) {
-                intent.setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity"));
-            } else if ("honor".equalsIgnoreCase(manufacturer)) {
-                intent.setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity"));
-            }
-
-            List<ResolveInfo> list = this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            if (list.size() > 0) {
-                this.startActivity(intent);
-            }
-        } catch (Exception e) {
-            FirebaseCrashlytics.getInstance().log(e.getMessage());
-        }
-    }
+//    void initExceptions() {
+//        try {
+//            Intent intent = new Intent();
+//            String manufacturer = android.os.Build.MANUFACTURER;
+//            if ("xiaomi".equalsIgnoreCase(manufacturer)) {
+//                intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+//            } else if ("oppo".equalsIgnoreCase(manufacturer)) {
+//                intent.setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity"));
+//            } else if ("vivo".equalsIgnoreCase(manufacturer)) {
+//                intent.setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"));
+//            } else if ("letv".equalsIgnoreCase(manufacturer)) {
+//                intent.setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity"));
+//            } else if ("honor".equalsIgnoreCase(manufacturer)) {
+//                intent.setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity"));
+//            }
+//
+//            List<ResolveInfo> list = this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+//            if (list.size() > 0) {
+//                this.startActivity(intent);
+//            }
+//        } catch (Exception e) {
+//            FirebaseCrashlytics.getInstance().log(e.getMessage());
+//        }
+//    }
 }
 
