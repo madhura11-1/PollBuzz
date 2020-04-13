@@ -87,6 +87,20 @@ public class Image_type_responses extends AppCompatActivity {
                 }
             }
         });
+        image1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b1.setChecked(true);
+                b2.setChecked(false);
+            }
+        });
+        image2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b2.setChecked(true);
+                b1.setChecked(false);
+            }
+        });
         retrieveData();
 
 
