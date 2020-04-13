@@ -53,6 +53,7 @@ public class Multiple_type_response extends AppCompatActivity {
     Map<String, Object> response;
     KAlertDialog dialog1;
     SpotsDialog dialog2;
+    int checked=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,12 @@ public class Multiple_type_response extends AppCompatActivity {
         showDialog();
         retrieveData();
 
-        submit.setOnClickListener(v -> submitResponse());
+        submit.setOnClickListener(v -> {
+            if(response.size()>0)
+                submitResponse();
+            else
+                Toast.makeText(Multiple_type_response.this, "Please select atleast one option...", Toast.LENGTH_SHORT).show();
+        });
         fav_author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,37 +155,40 @@ public class Multiple_type_response extends AppCompatActivity {
 
     private void submitResponse() {
 
-        showKAlertDialog();
-        Integer p = polldetails.getPollcount();
-        p++;
-        for (Map.Entry<String, Object> e : response.entrySet()) {
-            Integer i = update.get(e.getValue());
-            i++;
-            update.put(e.getValue().toString(), i);
-        }
-        fb.getPollsCollection().document(key).update("pollcount", p);
-        fb.getPollsCollection().document(key).update("map", update);
 
-        response.put("timestamp", Timestamp.now().getSeconds());
-        fb.getPollsCollection().document(key).collection("Response")
-                .document(fb.getUserId()).set(response);
-        Map<String, Object> mapi = new HashMap<>();
-        mapi.put("pollId", fb.getUserId());
-        mapi.put("timestamp", Timestamp.now().getSeconds());
-        fb.getUserDocument().collection("Voted").document(key).set(mapi)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(Multiple_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(Multiple_type_response.this, MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dialog1.dismissWithAnimation();
-                        Toast.makeText(Multiple_type_response.this, "Unable to submit.\nPlease try again", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            showKAlertDialog();
+            Integer p = polldetails.getPollcount();
+            p++;
+            for (Map.Entry<String, Object> e : response.entrySet()) {
+                Integer i = update.get(e.getValue());
+                i++;
+                update.put(e.getValue().toString(), i);
+            }
+            fb.getPollsCollection().document(key).update("pollcount", p);
+            fb.getPollsCollection().document(key).update("map", update);
+
+
+            response.put("timestamp", Timestamp.now().getSeconds());
+            fb.getPollsCollection().document(key).collection("Response")
+                    .document(fb.getUserId()).set(response);
+            Map<String, Object> mapi = new HashMap<>();
+            mapi.put("pollId", fb.getUserId());
+            mapi.put("timestamp", Timestamp.now().getSeconds());
+            fb.getUserDocument().collection("Voted").document(key).set(mapi)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(Multiple_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(Multiple_type_response.this, MainActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            dialog1.dismissWithAnimation();
+                            Toast.makeText(Multiple_type_response.this, "Unable to submit.\nPlease try again", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
 
     }
 
@@ -230,9 +239,15 @@ public class Multiple_type_response extends AppCompatActivity {
                                     public void onClick(View v) {
                                         CheckBox b = (CheckBox) v;
                                         if (b.isChecked())
+                                        {
                                             response.put("option" + finalI, b.getText().toString());
+                                            checked++;
+                                        }
                                         else
+                                        {
                                             response.values().remove(b.getText().toString());
+                                            checked--;
+                                        }
                                     }
                                 });
                                 i++;
