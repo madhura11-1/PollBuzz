@@ -3,6 +3,7 @@ package com.PollBuzz.pollbuzz.LoginSignup;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.PollBuzz.pollbuzz.R;
@@ -72,12 +73,12 @@ public class SignupFragment extends Fragment {
                 showDialog();
                 fb.getAuth().createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        dialog.dismissWithAnimation();
                         fb.getUser().sendEmailVerification().addOnCompleteListener(task1 -> {
                             Bundle bundle = new Bundle();
                             bundle.putString("user_id", fb.getUserId());
                             bundle.putString("timestamp", Timestamp.now().toDate().toString());
                             mFirebaseAnalytics.logEvent("signup", bundle);
+                            dialog.dismissWithAnimation();
                             Toast.makeText(getContext(), "Signup successful.\nPlease verify your mail.", Toast.LENGTH_LONG).show();
                             fb.signOut();
                         });

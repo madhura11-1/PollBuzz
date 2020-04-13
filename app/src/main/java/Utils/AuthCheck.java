@@ -48,7 +48,7 @@ public class AuthCheck extends AppCompatActivity {
                         DocumentSnapshot dS=task.getResult();
                         Bundle bundle = new Bundle();
                         bundle.putString("user_id",fb.getUserId());
-                        if (dS != null) {
+                        if (dS != null && dS.get("username")!=null) {
                             bundle.putString("username",dS.get("username").toString());
                         }
                         bundle.putString("timestamp", Timestamp.now().toDate().toString());
