@@ -278,6 +278,7 @@ public class ProfileFeed extends Fragment {
         flagFetch = true;
         if (flagFirst) {
             profileRV.hideShimmerAdapter();
+            profileRV.scheduleLayoutAnimation();
             flagFirst = false;
         }
     }

@@ -510,6 +510,7 @@ public class VotedFeed extends Fragment {
             flagFetch = true;
             if (flagFirst) {
                 votedRV.hideShimmerAdapter();
+                votedRV.scheduleLayoutAnimation();
                 flagFirst = false;
             }
         } catch (Exception e) {

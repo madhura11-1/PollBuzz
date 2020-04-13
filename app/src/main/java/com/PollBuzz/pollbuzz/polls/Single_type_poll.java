@@ -201,7 +201,7 @@ public class Single_type_poll extends AppCompatActivity {
             if (fb.getUser() != null) {
 
                 PollDetails polldetails = new PollDetails();
-                polldetails.setQuestion(question.getText().toString());
+                polldetails.setQuestion(question.getText().toString().trim());
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());

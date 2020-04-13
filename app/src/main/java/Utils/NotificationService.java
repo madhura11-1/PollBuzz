@@ -4,11 +4,8 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
@@ -33,7 +30,6 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 public class NotificationService extends FirebaseMessagingService {
     public static int id = 0;
@@ -65,8 +61,9 @@ public class NotificationService extends FirebaseMessagingService {
     private void sendNotification(String pollId, String pollTitle, String username, String imageUrl, String type) {
         Bitmap image = null;
         if (imageUrl == null) {
+            Log.d("NotifImage","Null");
             image = BitmapFactory.decodeResource(this.getResources(),
-                    R.mipmap.ic_launcher);
+                    R.drawable.logo);
         } else {
             try {
                 URL newurl = new URL(imageUrl);
@@ -104,13 +101,14 @@ public class NotificationService extends FirebaseMessagingService {
             PendingIntent pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channel_id)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.logo)
                     .setContentTitle(title)
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
+                    .setColor(0x480F93)
+                    .setLargeIcon(image)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                     .setSound(defaultSoundUri)
-                    .setLargeIcon(image)
                     .setContentIntent(pendingIntent);
 
             NotificationManager notificationManager =
@@ -147,11 +145,12 @@ public class NotificationService extends FirebaseMessagingService {
                     PendingIntent.FLAG_UPDATE_CURRENT);
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.logo)
                     .setContentTitle(title)
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
                     .setSound(defaultSoundUri)
+                    .setColor(0x480F93)
                     .setLargeIcon(image)
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                     .setContentIntent(pendingIntent);
