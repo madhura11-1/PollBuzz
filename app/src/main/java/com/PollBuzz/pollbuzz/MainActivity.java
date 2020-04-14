@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.navFragments.FavouriteFeed;
 import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.navFragments.VotedFeed;
@@ -85,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     newFragment(new ProfileFeed(), "2");
                     break;
+                case 3:
+                    newFragment(new FavouriteFeed(),"3");
             }
         });
     }
