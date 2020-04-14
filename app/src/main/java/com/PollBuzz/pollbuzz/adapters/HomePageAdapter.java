@@ -69,6 +69,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         this.mPollDetails = mPollDetails;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         dialog= new SpotsDialog(mContext,R.style.Custom);
+        dialog.setCancelable(false);
         //dialog.create();
         fb = new firebase();
     }
@@ -136,33 +137,34 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 {
-                                holder.fav_author.setEnabled(false);
                                     //Log.d(TAG, "Document exists!");
                                     fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             //dialog1.dismissWithAnimation();
-                                            dialog.dismiss();
-                                            holder.fav_author.setEnabled(true);
+
+
                                           Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
                                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
-                                            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                            /*FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<InstanceIdResult> task) {
                                                     if(task.isSuccessful()){
                                                         Log.d("InstanceId",task.getResult().getToken());
                                                     }
                                                 }
-                                            });
+                                            });*/
                                             FirebaseMessaging.getInstance().unsubscribeFromTopic(mPollDetails.get(position).getAuthorUID())
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if(task.isSuccessful()){
                                                                 Log.d("UnSubscribedFrom",mPollDetails.get(position).getAuthorUID());
+
                                                             }
+                                                            dialog.dismiss();
                                                         }
                                                     });
                                         }
@@ -172,7 +174,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                 public void onFailure(@NonNull Exception e) {
                                                    // dialog1.dismissWithAnimation();
                                                     dialog.dismiss();
-                                                    holder.fav_author.setEnabled(true);
+//                                                    holder.fav_author.setEnabled(true);
                                                     Toast.makeText(mContext,"Failed "+mPollDetails.get(position).getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
                                                 }
                                             });
@@ -182,15 +184,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                             } else {
                                 //Log.d(TAG, "Document does not exist!");
 
-                                holder.fav_author.setEnabled(false);
+//
                                 Map<String,String> map=new HashMap<>();
                                 map.put("Username",(mPollDetails.get(position).getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
-                                        dialog.dismiss();
-                                        holder.fav_author.setEnabled(true);
+
+//
                                         Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
                                         holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
@@ -201,7 +203,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if(task.isSuccessful()){
                                                             Log.d("SubscribedTo",mPollDetails.get(position).getAuthorUID());
+
                                                         }
+                                                        dialog.dismiss();
                                                     }
                                                 });
                                     }
@@ -211,7 +215,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                             public void onFailure(@NonNull Exception e) {
                                                 //dialog1.dismissWithAnimation();
                                                 dialog.dismiss();
-                                                holder.fav_author.setEnabled(true);
+//                                                holder.fav_author.setEnabled(true);
                                                 Toast.makeText(mContext,"Failed to add "+mPollDetails.get(position).getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -227,26 +231,39 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
     private void setData(@NonNull HomeViewHolder holder, int position) {
         try {
-            fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
-                            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
-                            holder.fav_author.setTooltipText("Remove from favourite Authors");
+            holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
+            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+            holder.fav_author.setVisibility(View.VISIBLE);
+            if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
+            {
+                holder.fav_author.setVisibility(View.GONE);
+            }
+            else
+            {
+                fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    holder.fav_author.setTooltipText("Remove from favourite Authors");
+                                }
+                            } else {
+                                holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
+                                holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    holder.fav_author.setTooltipText("Add to favourite authors");
+                                }
+                            }
                         } else {
-                            holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
-                            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-                            holder.fav_author.setTooltipText("Add to favourite authors");
-                        }
-                    } else {
 
+                        }
                     }
-                }
-            });
+                });
+            }
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             if (mPollDetails.get(position).getPoll_type() != null)
                 holder.card_type.setText(mPollDetails.get(position).getPoll_type());
