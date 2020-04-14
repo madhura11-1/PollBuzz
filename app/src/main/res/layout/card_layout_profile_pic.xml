@@ -134,8 +134,7 @@
                     android:layout_weight="1"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/card_author"
