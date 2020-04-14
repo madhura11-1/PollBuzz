@@ -34,6 +34,7 @@ import com.PollBuzz.pollbuzz.BuildConfig;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
@@ -82,7 +83,7 @@ public class PercentageResult extends AppCompatActivity {
     public static Map<String, Integer> data = new HashMap<>();
     public static String question;
     Boolean flagVoted = true;
-    ImageView shareButton;
+    ImageView shareButton,sharePoll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +168,33 @@ public class PercentageResult extends AppCompatActivity {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         });
+        sharePoll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int type=getType();
+                String shareBody = "https://pollbuzz.com/share/"+type+uid;
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share link via"));
+            }
+        });
+    }
+
+    private int getType() {
+        switch (type) {
+            case "SINGLE CHOICE":
+                return 0;
+            case "MULTI SELECT":
+                return 1;
+            case "RANKED":
+                return 2;
+            case "PICTURE BASED":
+                return 3;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
     }
 
     private void showSettingsDialog() {
@@ -604,6 +632,7 @@ public class PercentageResult extends AppCompatActivity {
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
         pie_charts = findViewById(R.id.pie);
         shareButton = findViewById(R.id.share_button);
+        sharePoll=findViewById(R.id.share_poll);
     }
 
     @Override
