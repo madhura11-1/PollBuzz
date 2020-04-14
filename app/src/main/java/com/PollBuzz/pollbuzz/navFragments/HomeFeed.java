@@ -107,7 +107,7 @@ public class HomeFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == Math.min(arrayList.size()-1,Math.abs(arrayList.size() - 11)) && flagFetch && !flagFirst) {
+                if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
                         getData(currentFlag, "", null, null);

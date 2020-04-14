@@ -187,7 +187,7 @@ public class ProfileFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!mArrayList.isEmpty() && linearLayoutManager.findLastVisibleItemPosition() == Math.min(mArrayList.size()-1,Math.abs(mArrayList.size() - 11)) && flagFetch && !flagFirst) {
+                if (!mArrayList.isEmpty() && linearLayoutManager.findLastVisibleItemPosition() == mArrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     getData();
                 }
