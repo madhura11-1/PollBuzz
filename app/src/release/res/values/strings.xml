@@ -7,4 +7,6 @@
     <string name="home_feed_title">Polls</string>
 
     <string name="client_id">855854355070-5s02r3k8in31o5uebo1shf2nfsjmie9a.apps.googleusercontent.com</string>
+    <string name="server_key">AAAAx0TlEn4:APA91bFHuUA9LnLV0hdQu1nWbjwwTzJxUvyMo1WRlVcsZP8VyHjmLo0974_AVGoBMHXg66xLQvbvg-OoFtbpiqQckhKyR-St6P9PdOvwJpFh6hetHsC1E1q-WeX1lfHyP7DlUx54lXDh</string>
+
 </resources>
