@@ -2,6 +2,7 @@ package com.PollBuzz.pollbuzz.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
@@ -226,6 +228,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     private void setData(@NonNull HomeViewHolder holder, int position) {
         try {
             fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
@@ -233,9 +236,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                         if (document.exists()) {
                             holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+                            holder.fav_author.setTooltipText("Remove from favourite Authors");
                         } else {
                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+                            holder.fav_author.setTooltipText("Add to favourite authors");
                         }
                     } else {
 
