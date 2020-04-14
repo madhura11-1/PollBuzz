@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Loading your poll"
+        android:text="Loading poll"
         android:textSize="27sp"
         android:textColor="@color/colorPrimaryDark"
         android:fontFamily="@font/maven_pro"
