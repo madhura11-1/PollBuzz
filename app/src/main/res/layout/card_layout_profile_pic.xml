@@ -19,12 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+
 
         <RelativeLayout
             android:id="@+id/profileArea"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:padding="2dp"
@@ -37,6 +43,16 @@
                 android:adjustViewBounds="true"
                 android:background="@drawable/voter_item_outline"
                 android:src="@drawable/ic_person_black_24dp" />
+        </RelativeLayout>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_border_white_24dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/fav_author"
+                android:layout_alignRight="@+id/profileArea"
+                android:layout_alignBottom="@+id/profileArea"
+                android:clickable="true"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -128,14 +144,7 @@
                     android:text="Author"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_star_border_white_24dp"
-                    android:background="@android:color/transparent"
-                    android:layout_gravity="right"
-                    android:id="@+id/fav_author"
-                    android:clickable="true"/>
+
             </LinearLayout>
 
             <LinearLayout

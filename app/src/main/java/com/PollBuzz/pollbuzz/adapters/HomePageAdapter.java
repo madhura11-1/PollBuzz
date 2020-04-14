@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -142,6 +143,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                             dialog.dismiss();
                                             holder.fav_author.setEnabled(true);
                                           Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
+                                            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
                                             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -188,6 +190,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                         dialog.dismiss();
                                         holder.fav_author.setEnabled(true);
                                         Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
+                                        holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                                         notifyDataSetChanged();
                                         FirebaseMessaging.getInstance().subscribeToTopic(mPollDetails.get(position).getAuthorUID())
@@ -229,8 +232,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                         } else {
                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
+                            holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                         }
                     } else {
 
@@ -303,6 +308,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         private ImageButton fav_author;
         private TextView card_type, card_query, card_author, card_date,card_status;
         private ImageView profilePic;
+        private CardView cardV;
 
         private HomeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -319,6 +325,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
             fav_author=itemView.findViewById(R.id.fav_author);
+            cardV=itemView.findViewById(R.id.cardV);
         }
     }
 }
