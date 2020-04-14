@@ -36,6 +36,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
         this.bool = bool;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -120,6 +121,16 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
     @Override
     public int getItemCount() {
         return mPollDetails.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     static class ProfileViewHolder extends RecyclerView.ViewHolder {

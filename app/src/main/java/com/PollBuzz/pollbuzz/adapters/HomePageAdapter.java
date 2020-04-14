@@ -70,6 +70,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         dialog= new SpotsDialog(mContext,R.style.Custom);
         dialog.setCancelable(false);
+        setHasStableIds(true);
         //dialog.create();
         fb = new firebase();
     }
@@ -321,6 +322,16 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     @Override
     public int getItemCount() {
         return mPollDetails.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     static class HomeViewHolder extends RecyclerView.ViewHolder {

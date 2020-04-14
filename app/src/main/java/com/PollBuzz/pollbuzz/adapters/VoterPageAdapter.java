@@ -33,6 +33,7 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
     public VoterPageAdapter(Context mContext, List<VoteDetails> mVoteDetails) {
         this.mContext = mContext;
         this.mVotedetails = mVoteDetails;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -101,6 +102,16 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
     @Override
     public int getItemCount() {
         return mVotedetails.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     static class VoterViewHolder extends RecyclerView.ViewHolder {

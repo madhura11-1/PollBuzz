@@ -31,6 +31,7 @@ public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.Vote
     public VotedFeedAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -99,6 +100,16 @@ public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.Vote
     @Override
     public int getItemCount() {
         return mPollDetails.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     static class VotedViewHolder extends RecyclerView.ViewHolder {
