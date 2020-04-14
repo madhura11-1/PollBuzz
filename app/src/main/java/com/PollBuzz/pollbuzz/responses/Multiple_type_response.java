@@ -38,7 +38,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 import dmax.dialog.SpotsDialog;
 
 public class Multiple_type_response extends AppCompatActivity {
-    TextView query;
+    TextView query,author;
     LinearLayout group;
     Map<String, Integer> options;
     String key;
@@ -203,6 +203,7 @@ public class Multiple_type_response extends AppCompatActivity {
                             polldetails = data.toObject(PollDetails.class);
                             query.setText(polldetails.getQuestion());
                             options = polldetails.getMap();
+                            author.setText(polldetails.getAuthor());
                             group.removeAllViews();
                             response.clear();
                             fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -287,6 +288,7 @@ public class Multiple_type_response extends AppCompatActivity {
         fav_author=findViewById(R.id.fav_author);
         dialog2= new SpotsDialog(Multiple_type_response.this,R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        author=findViewById(R.id.author);
     }
 
     private void showDialog() {

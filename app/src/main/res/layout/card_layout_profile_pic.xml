@@ -111,13 +111,12 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/maven_pro"
                     android:text="Author : "
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:layout_weight="1"
                     android:textStyle="bold" />
 
                 <TextView
@@ -129,6 +128,14 @@
                     android:text="Author"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_star_border_white_24dp"
+                    android:background="@android:color/transparent"
+                    android:layout_gravity="right"
+                    android:id="@+id/fav_author"
+                    android:clickable="true"/>
             </LinearLayout>
 
             <LinearLayout
@@ -186,15 +193,7 @@
 
         </LinearLayout>
     </LinearLayout>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_star_border_white_24dp"
-            android:background="@android:color/transparent"
-            android:layout_gravity="right"
-            android:id="@+id/fav_author"
-            android:layout_margin="5dp"
-            android:clickable="true"/>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 

@@ -44,7 +44,7 @@ import dmax.dialog.SpotsDialog;
 
 public class Image_type_responses extends AppCompatActivity {
 
-    TextView query;
+    TextView query,author;
     ImageView image1, image2;
     RadioGroup group;
     RadioButton b1, b2;
@@ -257,6 +257,7 @@ public class Image_type_responses extends AppCompatActivity {
                                 polldetails = snapshot.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion().trim());
                                 options = polldetails.getMap();
+                                author.setText(polldetails.getAuthor());
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -329,6 +330,7 @@ public class Image_type_responses extends AppCompatActivity {
         fav_author=findViewById(R.id.fav_author);
         dialog2= new SpotsDialog(Image_type_responses.this,R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        author=findViewById(R.id.author);
     }
 
 

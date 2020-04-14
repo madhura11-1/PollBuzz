@@ -25,9 +25,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -36,8 +34,39 @@
                     android:textSize="30sp"
                     android:fontFamily="@font/maven_pro"
                     android:textStyle="bold"
-                    android:layout_alignParentStart="true"
+
                     />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:orientation="horizontal">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Author: "
+                            android:layout_margin="10dp"
+                            android:textSize="27sp"
+                            android:fontFamily="@font/maven_pro"
+                            android:textStyle="bold"
+
+                            />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Author Name "
+                            android:layout_margin="10dp"
+                            android:textSize="25sp"
+                            android:fontFamily="@font/maven_pro"
+                            android:textStyle="bold"
+                            android:id="@+id/author"
+                            android:textColor="@color/colorPrimaryDark"
+                            />
+                    </LinearLayout>
+
                     <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -48,6 +77,7 @@
                         android:id="@+id/fav_author"
                         />
                 </RelativeLayout>
+
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/query"
                     android:layout_width="match_parent"
@@ -140,6 +170,7 @@
                     android:padding="10dp"
                     android:textSize="15sp"
                     android:stateListAnimator="@animator/button_anim"/>
+
 
 
             </LinearLayout>

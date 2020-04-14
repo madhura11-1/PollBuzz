@@ -46,7 +46,7 @@ import dmax.dialog.SpotsDialog;
 public class Ranking_type_response extends AppCompatActivity {
 
     MaterialButton submit;
-    MaterialTextView query_ranking;
+    MaterialTextView query_ranking,author;
     LinearLayout group, sequence;
     CollectionReference ref;
     Map<String, Integer> options;
@@ -172,6 +172,7 @@ public class Ranking_type_response extends AppCompatActivity {
                         query_ranking.setText(polldetails.getQuestion());
                         options = polldetails.getMap();
                         c = options.size();
+                        author.setText(polldetails.getAuthor());
                         fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -224,6 +225,7 @@ public class Ranking_type_response extends AppCompatActivity {
         fav_author=findViewById(R.id.fav_author);
         dialog2= new SpotsDialog(Ranking_type_response.this,R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        author=findViewById(R.id.author);
     }
 
     private void setOptions() {
