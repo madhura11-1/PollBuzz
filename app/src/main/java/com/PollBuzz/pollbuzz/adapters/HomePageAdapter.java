@@ -3,12 +3,15 @@ package com.PollBuzz.pollbuzz.adapters;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -24,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +35,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -92,6 +99,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 bundle.putString("poll_id", mPollDetails.get(position).getUID());
                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                 mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
+                if(holder.live.getVisibility() == View.VISIBLE){
+                       showcodedialog(mPollDetails.get(position).getUID(),position);
+                }
+                else
                 startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
             }
             else
@@ -176,6 +187,47 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         });
     }
 
+    private void showcodedialog(String uid, int position) {
+
+        final Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.code_type_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        TextInputEditText code_type = dialog.findViewById(R.id.code_type);
+        MaterialButton ok = dialog.findViewById(R.id.ok);
+        LottieAnimationView loader = dialog.findViewById(R.id.loader);
+
+        dialog.show();
+        window.setAttributes(lp);
+
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(code_type.getText().toString().isEmpty()){
+                    code_type.setError("Please enter the code to access the poll");
+                    code_type.requestFocus();
+                }
+                else {
+                    ok.setVisibility(View.GONE);
+                    loader.setVisibility(View.VISIBLE);
+                    loader.playAnimation();
+                    if(code_type.getText().toString().equals(uid)){
+
+                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                        ok.setVisibility(View.VISIBLE);
+                        loader.setVisibility(View.GONE);
+                        dialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     private void setData(@NonNull HomeViewHolder holder, int position) {
         try {
             fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -205,10 +257,17 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_date.setText(date.trim());
             }
             Date date = Calendar.getInstance().getTime();
-            if(mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
+            if(mPollDetails.get(position).isLive()){
+                Log.d("live","true");
+                holder.live.setVisibility(View.VISIBLE);
                 holder.card_status.setText("Active");
-            else
-                holder.card_status.setText("Expired");
+            }
+            else {
+                if (mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
+                    holder.card_status.setText("Active");
+                else
+                    holder.card_status.setText("Expired");
+            }
             if (mPollDetails.get(position).getPic() == null) {
                 Log.d("NoPic", String.valueOf(position));
                 holder.profilePic.setImageResource(R.drawable.ic_person_black_24dp);
@@ -218,6 +277,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                         .transform(new CircleCrop())
                         .into(holder.profilePic);
             }
+
 
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
@@ -256,7 +316,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         private RelativeLayout pPicArea;
         private LinearLayout voteArea;
         private ImageButton fav_author;
-        private TextView card_type, card_query, card_author, card_date,card_status;
+        private TextView card_type, card_query, card_author, card_date,card_status,live;
         private ImageView profilePic;
 
         private HomeViewHolder(@NonNull View itemView) {
@@ -274,6 +334,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
             fav_author=itemView.findViewById(R.id.fav_author);
+            live = itemView.findViewById(R.id.live);
         }
     }
 }

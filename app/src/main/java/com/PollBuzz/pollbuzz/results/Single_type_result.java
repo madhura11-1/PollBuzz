@@ -1,7 +1,9 @@
 package com.PollBuzz.pollbuzz.results;
 
+import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -10,6 +12,7 @@ import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.kinda.alert.KAlertDialog;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -49,6 +52,7 @@ public class Single_type_result extends AppCompatActivity {
     FirebaseAuth.AuthStateListener listener;
     Map<String, Object> response;
     Integer integer;
+    PollDetails polldetails;
 
 
     @Override
@@ -67,8 +71,6 @@ public class Single_type_result extends AppCompatActivity {
         setAuthStateListener();
         showDialog();
         retrivedata(fb);
-
-
     }
 
     private void retrivedata(firebase fb) {
@@ -83,7 +85,7 @@ public class Single_type_result extends AppCompatActivity {
                             if (data.exists()) {
                                 group.removeAllViews();
                                 dialog.dismiss();
-                                PollDetails polldetails = data.toObject(PollDetails.class);
+                                polldetails = data.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion());
                                 options = polldetails.getMap();
                                 fb.getPollsCollection().document(key).collection("Response").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
