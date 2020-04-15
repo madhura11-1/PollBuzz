@@ -408,7 +408,7 @@ public class Image_type_poll extends AppCompatActivity {
         final TextView code = dialog.findViewById(R.id.code);
         dialog.setCancelable(false);
 
-        code.setText(doc.trim());
+        code.setText("PB#"+doc.trim().substring(16,20).toUpperCase());
 
         dialog.show();
         window.setAttributes(lp);

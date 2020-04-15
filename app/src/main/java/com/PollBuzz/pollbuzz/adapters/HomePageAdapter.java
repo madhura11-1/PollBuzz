@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -266,7 +267,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     ok.setVisibility(View.GONE);
                     loader.setVisibility(View.VISIBLE);
                     loader.playAnimation();
-                    if(code_type.getText().toString().equals(uid)){
+                    if(code_type.getText().toString().equals("PB#"+uid.substring(16,20).toUpperCase())){
 
                         startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                         ok.setVisibility(View.VISIBLE);
@@ -277,7 +278,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             }
         });
     }
-
     private void setData(@NonNull HomeViewHolder holder, int position) {
         try {
             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);

@@ -416,7 +416,7 @@ public class Single_type_poll extends AppCompatActivity {
         final TextView code = dialog.findViewById(R.id.code);
         dialog.setCancelable(false);
 
-        code.setText(doc.getId().trim());
+        code.setText("PB#"+doc.getId().trim().substring(16,20).toUpperCase());
 
         dialog.show();
         window.setAttributes(lp);
