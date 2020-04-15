@@ -2,21 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/home"
-            android:title="Home"
-            android:icon="@drawable/ic_home_white_24dp"/>
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="Home" />
+    <item
+        android:id="@+id/favourite"
+        android:icon="@drawable/ic_star_white_24dp"
+        android:title="Favourites" />
+    <item
+        android:id="@+id/voted"
+        android:icon="@drawable/ic_beenhere_black_24dp"
+        android:title="Voted" />
 
     <item
-            android:id="@+id/voted"
-            android:title="Voted"
-            android:icon="@drawable/ic_beenhere_black_24dp"/>
-
-    <item
-            android:id="@+id/profile"
-            android:title="Profile"
-            android:icon="@drawable/ic_person_black_24dp"/>
-    <item
-            android:id="@+id/favourite"
-            android:title="Favourites"
-            android:icon="@drawable/ic_star_white_24dp"/>
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Profile" />
 </menu>

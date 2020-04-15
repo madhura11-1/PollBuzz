@@ -142,8 +142,8 @@ public class LoginFragment extends Fragment {
             fb.getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful() && task.getResult()!=null){
-                        for(DocumentSnapshot dS:task.getResult()){
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (DocumentSnapshot dS : task.getResult()) {
                             FirebaseMessaging.getInstance().subscribeToTopic(dS.getId());
                         }
                     }
@@ -215,7 +215,6 @@ public class LoginFragment extends Fragment {
                                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
                                     mFirebaseAnalytics.logEvent("gLogin", bundle);
                                     Toast.makeText(getActivity(), "Logged In Successfully!", Toast.LENGTH_SHORT).show();
-                                    dialog.dismissWithAnimation();
                                     isProfileSet(dS);
                                 } else {
                                     dialog.dismissWithAnimation();

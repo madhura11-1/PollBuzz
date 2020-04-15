@@ -107,22 +107,14 @@ public class VotedFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-//                        mArrayList.clear();
-//                        mAdapter.notifyDataSetChanged();
-//                        lastIndex = null;
                         search_layout.setVisibility(View.VISIBLE);
                         date_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-//                        getData(0, "", null, null);
                         return true;
                     case R.id.by_date:
-//                        mArrayList.clear();
-//                        mAdapter.notifyDataSetChanged();
-//                        lastIndex = null;
                         date_layout.setVisibility(View.VISIBLE);
                         search_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-//                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -43,7 +42,7 @@ import dmax.dialog.SpotsDialog;
 
 public class Single_type_response extends AppCompatActivity {
 
-    TextView query,author;
+    TextView query, author;
     RadioGroup group;
     Map<String, Integer> options;
     String key;
@@ -118,7 +117,7 @@ public class Single_type_response extends AppCompatActivity {
                                                     dialog2.dismiss();
                                                     fav_author.setEnabled(true);
                                                     Toast.makeText(getApplicationContext(), "Failed " + polldetails.getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
-                                               }
+                                                }
                                             });
 
 
@@ -202,7 +201,7 @@ public class Single_type_response extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Boolean f=false;
+                        Boolean f = false;
                         DocumentSnapshot data = task.getResult();
                         if (data != null && data.exists()) {
                             group.removeAllViews();
@@ -210,10 +209,10 @@ public class Single_type_response extends AppCompatActivity {
                             query.setText(polldetails.getQuestion());
                             options = polldetails.getMap();
                             author.setText(polldetails.getAuthor());
-                            if(fb.getUserId().equals(polldetails.getAuthorUID())){
+                            if (fb.getUserId().equals(polldetails.getAuthorUID())) {
                                 fav_author.setVisibility(View.GONE);
-                                f=true;
-                            }else {
+                                f = true;
+                            } else {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -264,26 +263,24 @@ public class Single_type_response extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(KAlertDialog kAlertDialog) {
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
-                                                    i.putExtra("UID",key);
-                                                    i.putExtra("type","SINGLE CHOICE");
-                                                    if(!finalF)
-                                                        i.putExtra("flag",1);
+                                                    i.putExtra("UID", key);
+                                                    i.putExtra("type", "SINGLE CHOICE");
+                                                    if (!finalF)
+                                                        i.putExtra("flag", 1);
                                                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    i.putExtra("from",1);
+                                                    i.putExtra("from", 1);
                                                     startActivity(i);
                                                 }
                                             })
                                             .show();
-                                }
-                                else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1) )
-                                {
+                                } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0 || flag == 1)) {
                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
-                                    i.putExtra("UID",key);
-                                    i.putExtra("type","SINGLE CHOICE");
-                                    if(!f)
-                                        i.putExtra("flag",1);
+                                    i.putExtra("UID", key);
+                                    i.putExtra("type", "SINGLE CHOICE");
+                                    if (!f)
+                                        i.putExtra("flag", 1);
                                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    i.putExtra("from",1);
+                                    i.putExtra("from", 1);
                                     startActivity(i);
                                 }
 
@@ -297,7 +294,7 @@ public class Single_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-       flag = intent.getIntExtra("flag",0);
+        flag = intent.getIntExtra("flag", 0);
     }
 
     private void setActionBarFunctionality() {
@@ -350,6 +347,7 @@ public class Single_type_response extends AppCompatActivity {
         dialog1.setCancelable(false);
         dialog1.show();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();

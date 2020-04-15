@@ -9,7 +9,7 @@ public class PollDetails {
     private String question;
     private String poll_type;
     private String author;
-    private String UID,Poll_accessID;
+    private String UID, poll_accessID;
     private String authorUID;
     private String username;
     private String pic;
@@ -18,33 +18,33 @@ public class PollDetails {
     private Date created_date, expiry_date;
     private Map<String, Integer> map;
     private Integer pollcount;
-    private long timestamp,seconds;
+    private long timestamp, seconds;
 
-    public PollDetails(){
-        question="";
-        poll_type="";
-        author="";
-        UID="";
-        authorUID="";
-        username="";
-        author_lc="";
-        live=false;
-        created_date=new Date();
-        expiry_date= null;
-        map=new HashMap<>();
-        pollcount=0;
-        timestamp=0;
-        seconds =0;
-        Poll_accessID = "";
+    public PollDetails() {
+        question = "";
+        poll_type = "";
+        author = "";
+        UID = "";
+        authorUID = "";
+        username = "";
+        author_lc = "";
+        live = false;
+        created_date = new Date();
+        expiry_date = new Date();
+        map = new HashMap<>();
+        pollcount = 0;
+        timestamp = 0;
+        seconds = 0;
+        poll_accessID = "";
 
     }
 
     public String getPoll_accessID() {
-        return Poll_accessID;
+        return poll_accessID;
     }
 
     public void setPoll_accessID(String poll_accessID) {
-        Poll_accessID = poll_accessID;
+        poll_accessID = poll_accessID;
     }
 
     public long getSeconds() {
@@ -70,7 +70,6 @@ public class PollDetails {
     public void setAuthor_lc(String author_lc) {
         this.author_lc = author_lc;
     }
-
 
 
     public void setUsername(String username) {

@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 import Utils.firebase;
 
@@ -114,161 +115,133 @@ public class HomeFeed extends Fragment {
                 }
             }
         });
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // viewed.setVisibility(View.GONE);
-                closeKeyboard();
-                showPopup(view);
-            }
+
+        search.setOnClickListener(view -> {
+            closeKeyboard();
+            showPopup(view);
         });
-        back1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeKeyboard();
-                flagFirst = true;
-                arrayList.clear();
-                adapter.notifyDataSetChanged();
-                lastIndex = null;
-                currentFlag = 0;
-                getData(0, "", null, null);
-                search_layout.setVisibility(View.GONE);
-                recyclerView.showShimmerAdapter();
-                search_type.setText("");
-            }
+
+        back1.setOnClickListener(view -> {
+            closeKeyboard();
+            flagFirst = true;
+            arrayList.clear();
+            adapter.notifyDataSetChanged();
+            lastIndex = null;
+            currentFlag = 0;
+            getData(0, "", null, null);
+            search_layout.setVisibility(View.GONE);
+            recyclerView.showShimmerAdapter();
+            search_type.setText("");
         });
-        back2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeKeyboard();
-                flagFirst = true;
-                arrayList.clear();
-                adapter.notifyDataSetChanged();
-                lastIndex = null;
-                currentFlag = 0;
-                getData(0, "", null, null);
-                date_layout.setVisibility(View.GONE);
-                recyclerView.showShimmerAdapter();
-                starting.setText("");
-                starting.setHint("Starting Date");
-                ending.setText("");
-                ending.setHint("Ending Date");
-            }
+
+        back2.setOnClickListener(view -> {
+            closeKeyboard();
+            flagFirst = true;
+            arrayList.clear();
+            adapter.notifyDataSetChanged();
+            lastIndex = null;
+            currentFlag = 0;
+            getData(0, "", null, null);
+            date_layout.setVisibility(View.GONE);
+            recyclerView.showShimmerAdapter();
+            starting.setText("");
+            starting.setHint("Starting Date");
+            ending.setText("");
+            ending.setHint("Ending Date");
         });
-        search_type.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    if (!search_type.getText().toString().isEmpty()) {
-                        closeKeyboard();
-                        //recyclerView.showShimmerAdapter();
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        currentFlag = 1;
-                        flagFirst = true;
-                        lastIndex = null;
-                        name = search_type.getText().toString();
-                        getData(1, name, null, null);
-//                        recyclerView.setVisibility(View.VISIBLE);
-//                        arrayList.clear();
-//                        adapter.notifyDataSetChanged();
-                    } else
-                        Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
-                }
-                return false;
-            }
-        });
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+
+        search_type.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 if (!search_type.getText().toString().isEmpty()) {
                     closeKeyboard();
-                    recyclerView.showShimmerAdapter();
                     arrayList.clear();
                     adapter.notifyDataSetChanged();
                     currentFlag = 1;
                     flagFirst = true;
                     lastIndex = null;
                     name = search_type.getText().toString();
-                    viewed.setVisibility(View.GONE);
                     getData(1, name, null, null);
-//                        recyclerView.setVisibility(View.VISIBLE);
-//                        arrayList.clear();
-//                        adapter.notifyDataSetChanged();
                 } else
                     Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
             }
+            return false;
         });
-        starting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date = day + "-" + (month + 1) + "-" + year;
-                                starting.setText(date);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-            }
-        });
-        ending.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date = day + "-" + (month + 1) + "-" + year;
-                                ending.setText(date);
 
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-            }
+        search_button.setOnClickListener(view -> {
+            if (!search_type.getText().toString().isEmpty()) {
+                closeKeyboard();
+                recyclerView.showShimmerAdapter();
+                arrayList.clear();
+                adapter.notifyDataSetChanged();
+                currentFlag = 1;
+                flagFirst = true;
+                lastIndex = null;
+                name = search_type.getText().toString();
+                viewed.setVisibility(View.GONE);
+                getData(1, name, null, null);
+            } else
+                Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
         });
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    flagFirst = true;
-                    viewed.setVisibility(View.GONE);
-                    lastIndex = null;
-                    if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
-                        Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
-                    else {
-                        if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
-                            Date start = dateFormat.parse(starting.getText().toString());
-                            Date end = dateFormat.parse(ending.getText().toString());
-                            if (start.compareTo(end) > 0)
-                                Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
-                            else {
-                                arrayList.clear();
-                                adapter.notifyDataSetChanged();
-                                //recyclerView.showShimmerAdapter();
-                                currentFlag = 2;
-                                viewed.setVisibility(View.GONE);
-                                getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
-                            }
-                        } else {
-                            arrayList.clear();
-                            adapter.notifyDataSetChanged();
-                            recyclerView.showShimmerAdapter();
-                            viewed.setVisibility(View.GONE);
-                            if (starting.getText().toString().isEmpty())
-                                getData(2, "", null, dateFormat.parse(ending.getText().toString()));
-                            else
-                                getData(2, "", dateFormat.parse(starting.getText().toString()), null);
-                            currentFlag = 2;
+
+        starting.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            String date = day + "-" + (month + 1) + "-" + year;
+                            starting.setText(date);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
+
+        ending.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            String date = day + "-" + (month + 1) + "-" + year;
+                            ending.setText(date);
 
                         }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
 
+        check.setOnClickListener(v -> {
+            try {
+                flagFirst = true;
+                viewed.setVisibility(View.GONE);
+                lastIndex = null;
+                if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
+                    Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
+                else {
+                    if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
+                        Date start = dateFormat.parse(starting.getText().toString());
+                        Date end = dateFormat.parse(ending.getText().toString());
+                        if (start.compareTo(end) > 0)
+                            Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                        else {
+                            arrayList.clear();
+                            adapter.notifyDataSetChanged();
+                            currentFlag = 2;
+                            viewed.setVisibility(View.GONE);
+                            getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
+                        }
+                    } else {
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        recyclerView.showShimmerAdapter();
+                        viewed.setVisibility(View.GONE);
+                        if (starting.getText().toString().isEmpty())
+                            getData(2, "", null, dateFormat.parse(ending.getText().toString()));
+                        else
+                            getData(2, "", dateFormat.parse(starting.getText().toString()), null);
+                        currentFlag = 2;
                     }
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
                 }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -300,7 +273,7 @@ public class HomeFeed extends Fragment {
 
     }*/
 
-    private void getArrayListByDate(Date start, Date end, long timestamp, QueryDocumentSnapshot id) throws ParseException {
+    private void getArrayListByDate(Date start, Date end, QueryDocumentSnapshot id) throws ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
         else if (start == null)
@@ -308,7 +281,7 @@ public class HomeFeed extends Fragment {
         PollDetails pollDetails = id.toObject(PollDetails.class);
         if (pollDetails.getCreated_date().compareTo(start) >= 0 && pollDetails.getCreated_date().compareTo(end) <= 0) {
             Log.d("okay", "fitted");
-            addToRecyclerView(id, pollDetails.getTimestamp());
+            addToRecyclerView(id);
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
         } else {
             recyclerView.hideShimmerAdapter();
@@ -349,29 +322,23 @@ public class HomeFeed extends Fragment {
             if (lastIndex == null) {
                 fb.getPollsCollection()
                         .orderBy("timestamp", Query.Direction.DESCENDING).
-                        limit(20).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Log.d("HomeFeedEmpty", "" + task.getResult().size());
-                            if (!task.getResult().isEmpty()) {
-                                for (QueryDocumentSnapshot dS : task.getResult()) {
-                                    long timestamp = (long) dS.get("timestamp");
-                                    addToRecyclerView(dS, timestamp);
-                                    lastIndex = dS;
-                                }
-                            } else {
-                                flagFetch = false;
-                                recyclerView.hideShimmerAdapter();
-                                viewed.setVisibility(View.VISIBLE);
-                                viewed.setText("There are no polls around...");
+                        limit(20).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                addToRecyclerView(dS);
+                                lastIndex = dS;
                             }
                         } else {
-                            Log.d("hello", task
-                                    .getException().toString());
+                            flagFetch = false;
                             recyclerView.hideShimmerAdapter();
-                            Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            viewed.setText("There are no polls around...");
+                            viewed.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        Log.d("hello", task.getException().toString());
+                        recyclerView.hideShimmerAdapter();
+                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -381,8 +348,7 @@ public class HomeFeed extends Fragment {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
-                                long timestamp = (long) dS.get("timestamp");
-                                addToRecyclerView(dS, timestamp);
+                                addToRecyclerView(dS);
                                 lastIndex = dS;
                             }
                         } else {
@@ -405,36 +371,27 @@ public class HomeFeed extends Fragment {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 PollDetails pollDetails = dS.toObject(PollDetails.class);
-                                long timestamp = (long) dS.get("timestamp");
                                 if (flagi == 1) {
                                     if (adapter.getItemCount() == 0) {
                                         recyclerView.showShimmerAdapter();
-                                           /* viewed.setVisibility(View.VISIBLE);
-                                            viewed.setText("No polls created by this author");*/
                                     }
                                     if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
-                                        {
-                                            addToRecyclerView(dS, pollDetails.getTimestamp());
-                                            recyclerView.hideShimmerAdapter();
-                                        }
-
+                                        addToRecyclerView(dS);
+                                        recyclerView.hideShimmerAdapter();
                                     } else {
                                         recyclerView.hideShimmerAdapter();
                                         if (adapter.getItemCount() == 0) {
                                             viewed.setText("You have no unvoted polls created using this username.");
                                             viewed.setVisibility(View.VISIBLE);
                                         }
-
                                     }
                                 } else if (flagi == 2) {
                                     try {
-                                        Log.d("name", pollDetails.getAuthor());
-                                        getArrayListByDate(start, end, timestamp, dS);
+                                        getArrayListByDate(start, end, dS);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
                                 }
-                                lastIndex = dS;
                             }
                         } else {
                             flagFetch = false;
@@ -443,8 +400,7 @@ public class HomeFeed extends Fragment {
                             viewed.setVisibility(View.VISIBLE);
                         }
                     } else {
-                        Log.d("hello", task
-                                .getException().toString());
+                        Log.d("hello", task.getException().toString());
                         recyclerView.hideShimmerAdapter();
                         Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -453,14 +409,12 @@ public class HomeFeed extends Fragment {
         }
     }
 
-
-    private void addToRecyclerView(QueryDocumentSnapshot dS, long timestamp) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS) {
         viewed.setVisibility(View.GONE);
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
         fb.getPollsCollection().document(dS.getId()).collection("Response").get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-
                 Boolean flag = Boolean.TRUE;
                 for (QueryDocumentSnapshot dS1 : task.getResult()) {
                     if (dS1.getId().equals(fb.getUserId())) {
@@ -470,8 +424,6 @@ public class HomeFeed extends Fragment {
                         break;
                     }
                 }
-
-
                 if (flag) {
                     fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful() && task1.getResult() != null) {
@@ -482,7 +434,6 @@ public class HomeFeed extends Fragment {
                             polldetails.setUsername(task1.getResult().get("username").toString());
                             arrayList.add(polldetails);
                             Log.d("ArraySize", arrayList.size() + "");
-                            // Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
                             Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
                             viewed.setVisibility(View.GONE);
                             adapter.notifyDataSetChanged();
@@ -496,11 +447,8 @@ public class HomeFeed extends Fragment {
                             Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-
                 }
             }
-
-
         });
     }
 
@@ -529,11 +477,10 @@ public class HomeFeed extends Fragment {
         search_type = view.findViewById(R.id.search_type);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
-        //viewed.setVisibility(View.GONE);
     }
 
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
+    private void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -541,29 +488,20 @@ public class HomeFeed extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-//                        arrayList.clear();
-//                        adapter.notifyDataSetChanged();
-//                        lastIndex = null;
                         search_layout.setVisibility(View.VISIBLE);
                         date_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-//                        getData(0, "", null, null);
                         return true;
                     case R.id.by_date:
-//                        arrayList.clear();
-//                        adapter.notifyDataSetChanged();
-//                        lastIndex = null;
                         date_layout.setVisibility(View.VISIBLE);
                         search_layout.setVisibility(View.GONE);
                         viewed.setVisibility(View.GONE);
-//                        getData(0, "", null, null);
                         return true;
                     default:
                         return false;
                 }
             }
         });
-
         popup.show();
     }
 

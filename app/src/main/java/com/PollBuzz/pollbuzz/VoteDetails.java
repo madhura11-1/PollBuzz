@@ -1,8 +1,11 @@
 package com.PollBuzz.pollbuzz;
 
 public class VoteDetails {
-    private String UserId,option,username,PollId,profileUrl;
+    private String UserId, option, username, PollId, profileUrl;
     private long timestamp;
+
+    public VoteDetails() {
+    }
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
@@ -21,8 +24,8 @@ public class VoteDetails {
         this.UserId = UserId;
         this.option = option;
         this.username = username;
-        this.profileUrl=profileUrl;
-        this.timestamp=timestamp;
+        this.profileUrl = profileUrl;
+        this.timestamp = timestamp;
     }
 
     public String getProgfileUrl() {
@@ -65,5 +68,4 @@ public class VoteDetails {
         return username;
     }
 
-    VoteDetails(){}
 }

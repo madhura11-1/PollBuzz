@@ -1,14 +1,5 @@
 package com.PollBuzz.pollbuzz.LoginSignup;
 
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.ActionCodeSettings;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-
-import com.PollBuzz.pollbuzz.R;
-import com.kinda.alert.KAlertDialog;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +7,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import Utils.firebase;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.PollBuzz.pollbuzz.R;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.kinda.alert.KAlertDialog;
+
+import java.util.Objects;
+
+import Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class SignupFragment extends Fragment {
@@ -85,12 +87,14 @@ public class SignupFragment extends Fragment {
                     } else {
                         dialog.dismissWithAnimation();
                         Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
-                        passwordL.getEditText().getText().clear();
-                        password2L.getEditText().getText().clear();
+//                        passwordL.getEditText().getText().clear();
+//                        password2L.getEditText().getText().clear();
+                        ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
                     }
                 });
-            }catch (Exception e){
+            } catch (Exception e) {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
+                Crashlytics.logException(e);
             }
         }
     }
@@ -100,10 +104,11 @@ public class SignupFragment extends Fragment {
         passwordL = (TextInputLayout) view.findViewById(R.id.password);
         password2L = (TextInputLayout) view.findViewById(R.id.password2);
         signup = view.findViewById(R.id.signup);
-        dialog=new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
-        mFirebaseAnalytics=FirebaseAnalytics.getInstance(getContext());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
     }
+
     private void showDialog() {
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Creating account...");

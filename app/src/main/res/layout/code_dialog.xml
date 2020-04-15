@@ -7,13 +7,16 @@
     android:paddingBottom="10dp"
     >
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="10dp">
 
     <TextView
+        android:id="@+id/title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Poll Code"
@@ -24,15 +27,18 @@
         android:gravity="center"/>
 
         <com.google.android.material.imageview.ShapeableImageView
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title"
+            app:layout_constraintBottom_toBottomOf="@id/title"
             android:id="@+id/share_button"
+            android:layout_marginRight="10dp"
             android:tooltipText="Share Result"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:src="@drawable/ic_share_blue"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <TextView
@@ -40,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="ugjyawhhuwvfukfkqkih"
+        android:text="Generating Code..."
         android:textColor="@color/black"
         android:layout_margin="20dp"
         android:textStyle="bold"

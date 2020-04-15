@@ -1,13 +1,5 @@
 package com.PollBuzz.pollbuzz;
 
-import com.google.android.material.card.MaterialCardView;
-
-import com.PollBuzz.pollbuzz.polls.Descriptive_type_poll;
-import com.PollBuzz.pollbuzz.polls.Image_type_poll;
-import com.PollBuzz.pollbuzz.polls.Multiple_type_poll;
-import com.PollBuzz.pollbuzz.polls.Ranking_type_poll;
-import com.PollBuzz.pollbuzz.polls.Single_type_poll;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,9 +8,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.PollBuzz.pollbuzz.polls.Image_type_poll;
+import com.PollBuzz.pollbuzz.polls.Multiple_type_poll;
+import com.PollBuzz.pollbuzz.polls.Ranking_type_poll;
+import com.PollBuzz.pollbuzz.polls.Single_type_poll;
+import com.google.android.material.card.MaterialCardView;
+
 public class PollList extends AppCompatActivity {
 
-    private MaterialCardView card1,card2,card3,card4,card5;
+    private MaterialCardView card1, card2, card3, card4, card5;
     private TextView page_title;
 
     @Override
@@ -60,8 +58,8 @@ public class PollList extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setCustomView(R.layout.action_bar);
-        View view =getSupportActionBar().getCustomView();
-        page_title=view.findViewById(R.id.page_title);
+        View view = getSupportActionBar().getCustomView();
+        page_title = view.findViewById(R.id.page_title);
         page_title.setText("Poll Types");
         view.findViewById(R.id.home).setVisibility(View.INVISIBLE);
         view.findViewById(R.id.logout).setVisibility(View.INVISIBLE);

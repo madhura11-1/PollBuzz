@@ -48,6 +48,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.kinda.alert.KAlertDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,6 +59,7 @@ import java.util.List;
 
 import Utils.ImagePickerActivity;
 import Utils.firebase;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileFeed extends Fragment {
     private MaterialTextView Uname;
@@ -77,6 +79,7 @@ public class ProfileFeed extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     Boolean flagFirst = true, flagFetch = true;
     private Typeface typeface;
+    private KAlertDialog dialog;
 
     public ProfileFeed() {
     }
@@ -400,6 +403,7 @@ public class ProfileFeed extends Fragment {
 
     private void addToStorage(Uri uri) {
         try {
+            showDialog();
             StorageReference mRef = fb.getStorageReference().child("images/" + fb.getUserId());
             byte[] compressedImage = compressImage(uri);
             if (compressedImage != null) {
@@ -409,15 +413,19 @@ public class ProfileFeed extends Fragment {
                                 if (uri1 != null)
                                     loadProfilePic(uri1.toString(), true);
                                 else loadProfilePic(null, true);
+                                dialog.dismissWithAnimation();
                             });
                         })
                         .addOnFailureListener(exception -> {
                             exception.printStackTrace();
                             Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
                             Log.d("Exception", exception.toString());
+                            dialog.dismissWithAnimation();
                         })
                         .addOnProgressListener(taskSnapshot -> {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            float progress = ((float) 100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            Log.d("Progess", progress + "");
+//                            dialog.getProgressHelper().setProgress(progress);
                         });
             }
             deleteCache();
@@ -505,6 +513,12 @@ public class ProfileFeed extends Fragment {
         }
     }
 
-
+    private void showDialog() {
+        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
+        dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        dialog.setTitleText("Uploading Photo...");
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }
 

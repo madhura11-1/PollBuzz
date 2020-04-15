@@ -1,35 +1,9 @@
 package com.PollBuzz.pollbuzz.LoginSignup;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.R;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.kinda.alert.KAlertDialog;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,6 +18,34 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.kinda.alert.KAlertDialog;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -54,9 +56,6 @@ import java.util.Map;
 
 import Utils.ImagePickerActivity;
 import Utils.firebase;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileSetUp extends AppCompatActivity {
@@ -80,7 +79,7 @@ public class ProfileSetUp extends AppCompatActivity {
         setGlobals();
         setListeners();
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void setListeners() {
@@ -170,20 +169,17 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void isDateValid(int age, int monthOfYear, int dayOfMonth, int monthT, int dayT) {
-        if (age<0) {
+        if (age < 0) {
             flag = 0;
-        }
-        else if (age==0) {
+        } else if (age == 0) {
             if (monthT < monthOfYear)
                 flag = 0;
             else if (monthT == monthOfYear) {
                 if (dayT < dayOfMonth)
                     flag = 0;
                 else flag = 1;
-            }
-            else flag = 1;
-        }
-        else flag = 1;
+            } else flag = 1;
+        } else flag = 1;
     }
 
     private void setGlobals() {
@@ -204,7 +200,6 @@ public class ProfileSetUp extends AppCompatActivity {
         female.setAlpha(0.5f);
         female.setElevation(-0.5f);
         save = findViewById(R.id.save);
-        dialog=new KAlertDialog(ProfileSetUp.this, SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
         if (fb.getUser().getDisplayName() != null)
             name.getEditText().setText(fb.getUser().getDisplayName());
@@ -288,7 +283,7 @@ public class ProfileSetUp extends AppCompatActivity {
             } else {
                 pPic.setImageResource(R.drawable.ic_person_black_24dp);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
@@ -333,7 +328,7 @@ public class ProfileSetUp extends AppCompatActivity {
             } else {
                 addToStorage(unameS, data);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
@@ -381,8 +376,8 @@ public class ProfileSetUp extends AppCompatActivity {
                                         fb.getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                if(task.isSuccessful() && task.getResult()!=null){
-                                                    for(DocumentSnapshot dS:task.getResult()){
+                                                if (task.isSuccessful() && task.getResult() != null) {
+                                                    for (DocumentSnapshot dS : task.getResult()) {
                                                         FirebaseMessaging.getInstance().subscribeToTopic(dS.getId());
                                                     }
                                                 }
@@ -481,7 +476,9 @@ public class ProfileSetUp extends AppCompatActivity {
             return false;
         }
     }
+
     private void showDialog() {
+        dialog = new KAlertDialog(ProfileSetUp.this, SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Creating profile...");
         dialog.setCancelable(false);

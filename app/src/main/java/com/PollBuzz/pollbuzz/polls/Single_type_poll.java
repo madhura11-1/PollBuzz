@@ -85,8 +85,8 @@ import okhttp3.Response;
 public class Single_type_poll extends AppCompatActivity {
     Button add;
     RadioGroup group;
-    String name,expirydate;
-    int c,flagm=0;
+    String name, expirydate;
+    int c, flagm = 0;
     long sec;
     RadioButton b;
     TextInputEditText question;
@@ -135,28 +135,24 @@ public class Single_type_poll extends AppCompatActivity {
     }
 
     private void setListeners(String formattedDate) {
-
         materialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 flagm = 1;
                 sec = Long.parseLong(item);
-
             }
         });
 
         toggleButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                if(on){
+                if (on) {
                     flagm = 1;
                     sec = Long.parseLong("30");
                     materialSpinner.setVisibility(View.VISIBLE);
                     text1.setText("Select your time in sec");
                     expiry.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     flagm = 0;
                     materialSpinner.setVisibility(View.GONE);
                     text1.setText("Set Poll Expiry Date");
@@ -165,9 +161,8 @@ public class Single_type_poll extends AppCompatActivity {
             }
         });
 
-
-
         add.setOnClickListener(v -> {
+            question.clearFocus();
             RadioButton button = new RadioButton(getApplicationContext());
             RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(
                     RadioGroup.LayoutParams.MATCH_PARENT,
@@ -183,12 +178,14 @@ public class Single_type_poll extends AppCompatActivity {
             registerForContextMenu(button);
         });
         group.setOnCheckedChangeListener((RadioGroup.OnCheckedChangeListener) (group, checkedId) -> {
+            question.clearFocus();
             RadioButton button = (RadioButton) findViewById(checkedId);
             button.setChecked(false);
             button.showContextMenu();
             closeKeyboard();
         });
         button.setOnClickListener(view -> {
+            question.clearFocus();
             closeKeyboard();
             if (question.getText().toString().isEmpty()) {
                 question.setError("Please enter the question");
@@ -198,8 +195,7 @@ public class Single_type_poll extends AppCompatActivity {
             } else if (group.getChildCount() > 12) {
                 Toast.makeText(getApplicationContext(), "Maximum of 12 options allowed\nDelete some options", Toast.LENGTH_LONG).show();
             } else {
-                if(expiry.getVisibility() == View.VISIBLE) {
-
+                if (expiry.getVisibility() == View.VISIBLE) {
                     if (expiry.getText().toString().isEmpty()) {
                         expiry.setText(df.format(default_date));
                         expirydate = df.format(default_date);
@@ -221,8 +217,7 @@ public class Single_type_poll extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }
-                else if(materialSpinner.getVisibility() == View.VISIBLE){
+                } else if (materialSpinner.getVisibility() == View.VISIBLE) {
                     addToDatabase(formattedDate);
                 }
             }
@@ -230,6 +225,7 @@ public class Single_type_poll extends AppCompatActivity {
         expiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                question.clearFocus();
                 closeKeyboard();
                 final Calendar c = Calendar.getInstance();
                 int mYear = c.get(Calendar.YEAR);
@@ -256,20 +252,17 @@ public class Single_type_poll extends AppCompatActivity {
             showDialog();
             button.setEnabled(false);
             if (fb.getUser() != null) {
-
                 PollDetails polldetails = new PollDetails();
                 polldetails.setQuestion(question.getText().toString().trim());
                 polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                if(flagm == 1){
-                    Log.d("yes","item");
+                if (flagm == 1) {
+                    Log.d("yes", "item");
                     polldetails.setLive(true);
                     polldetails.setSeconds(sec);
-                }
-                else
-                {
+                } else {
                     polldetails.setExpiry_date(df.parse(expirydate));
                 }
                 Map<String, Integer> map = new HashMap<>();
@@ -386,10 +379,10 @@ public class Single_type_poll extends AppCompatActivity {
         logout = view.findViewById(R.id.logout);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);
+        add = findViewById(R.id.add);
         c = group.getChildCount();
         button = findViewById(R.id.post);
         question = findViewById(R.id.question);
-        dialog = new KAlertDialog(Single_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
         option1 = findViewById(R.id.option1);
         option2 = findViewById(R.id.option2);
         uniqueoptions.add("Option 1");
@@ -398,13 +391,14 @@ public class Single_type_poll extends AppCompatActivity {
         registerForContextMenu(option1);
         registerForContextMenu(option2);
         toggleButton = findViewById(R.id.toggle);
-        materialSpinner = (MaterialSpinner)findViewById(R.id.spinner);
-        materialSpinner.setItems("30","60","90","Custom Stop");
+        materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
+        materialSpinner.setItems("30", "60", "90");
         expiry = findViewById(R.id.expiry_date);
         if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
     }
-    public void showDialog(Activity activity, DocumentReference doc){
+
+    public void showDialog(Activity activity, DocumentReference doc) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.code_dialog);
@@ -418,9 +412,8 @@ public class Single_type_poll extends AppCompatActivity {
         dialog.setCancelable(false);
 
         String alpha_numeric = alpha_numeric(4);
-        Toast.makeText(activity, doc.getId(), Toast.LENGTH_SHORT).show();
-        doc.update("poll_accessID","PB#"+alpha_numeric);
-        code.setText("PB#"+alpha_numeric);
+        doc.update("poll_accessID", "PB#" + alpha_numeric);
+        code.setText("PB#" + alpha_numeric);
 
         dialog.show();
         window.setAttributes(lp);
@@ -431,7 +424,6 @@ public class Single_type_poll extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.dismiss();
                 flagm = 0;
-                Toast.makeText(Single_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Single_type_poll.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -450,7 +442,7 @@ public class Single_type_poll extends AppCompatActivity {
                                 @Override
                                 public void onPermissionsChecked(MultiplePermissionsReport report) {
                                     if (report.areAllPermissionsGranted()) {
-                                        sharecode(code.getText().toString().trim());
+                                        sharecode(code.getText().toString().trim(),doc.getId());
                                     }
 
                                     if (report.isAnyPermissionPermanentlyDenied()) {
@@ -471,21 +463,21 @@ public class Single_type_poll extends AppCompatActivity {
         });
     }
 
-    public static String alpha_numeric(int count){
+    public static String alpha_numeric(int count) {
 
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
-            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
             builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();
     }
 
-    private void sharecode(String code) {
+    private void sharecode(String code,String UID) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT,"Access Code for the Live poll :\n"+code);
+        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code+"\n\nOr use the link:\n"+"https://pollbuzz.com/share/0"+UID);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             startActivity(Intent.createChooser(intent, "Share Code Using"));
@@ -508,14 +500,15 @@ public class Single_type_poll extends AppCompatActivity {
     }
 
 
-
     private void openSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         startActivityForResult(intent, 101);
     }
+
     private void showDialog() {
+        dialog = new KAlertDialog(Single_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Uploading your poll");
         dialog.setCancelable(false);
@@ -537,7 +530,7 @@ public class Single_type_poll extends AppCompatActivity {
         if (flag == 1 && b.getText() != null) {
             text.getEditText().setText(b.getText().toString().trim());
         }
-
+        text.requestFocus();
         dialog.setCancelable(true);
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -608,6 +601,10 @@ public class Single_type_poll extends AppCompatActivity {
         return true;
     }
 
+    private void showKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

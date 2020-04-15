@@ -1,7 +1,5 @@
 package com.PollBuzz.pollbuzz.LoginSignup;
 
-import com.PollBuzz.pollbuzz.R;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,6 +7,8 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.PollBuzz.pollbuzz.R;
 
 public class LoginSignupActivity extends AppCompatActivity {
     private Button login, signup;

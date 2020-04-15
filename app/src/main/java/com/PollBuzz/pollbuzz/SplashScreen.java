@@ -1,17 +1,16 @@
 package com.PollBuzz.pollbuzz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -22,6 +21,7 @@ public class SplashScreen extends AppCompatActivity {
 
     ProgressBar splashProgress;
     int SPLASH_TIME = 3000; //3 seconds
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +34,12 @@ public class SplashScreen extends AppCompatActivity {
         playProgress();
         fade();
         tvanim();
-
-        
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 Intent mySuperIntent;
-                mySuperIntent = new Intent(SplashScreen.this, AuthCheck.class );
+                mySuperIntent = new Intent(SplashScreen.this, AuthCheck.class);
                 startActivity(mySuperIntent);
 
 
@@ -51,22 +49,22 @@ public class SplashScreen extends AppCompatActivity {
         }, SPLASH_TIME);
     }
 
-    
+
     private void playProgress() {
         ObjectAnimator.ofInt(splashProgress, "progress", 100)
                 .setDuration(3000)
                 .start();
     }
 
-    public void fade(){
-        ImageView image = (ImageView)findViewById(R.id.imagee);
+    public void fade() {
+        ImageView image = (ImageView) findViewById(R.id.imagee);
         Animation animation1 =
                 AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.fade);
         image.startAnimation(animation1);
     }
 
-    public void tvanim(){
+    public void tvanim() {
         TextView tv = (TextView) findViewById(R.id.txt);
         Animation animation1 =
                 AnimationUtils.loadAnimation(getApplicationContext(),

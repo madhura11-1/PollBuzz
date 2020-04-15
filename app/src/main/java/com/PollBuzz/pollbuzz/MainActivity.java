@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.navFragments.FavouriteFeed;
 import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().show();
-        final ActionBar actionBar=getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setCustomView(R.layout.action_bar);
@@ -56,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         }
         fm = getSupportFragmentManager();
         newFragment(new HomeFeed(), "0");
-        logout=view.findViewById(R.id.logout);
-        fb=new firebase();
+        logout = view.findViewById(R.id.logout);
+        fb = new firebase();
 
     }
 
@@ -80,14 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     newFragment(new HomeFeed(), "0");
                     break;
-                case 1:
-                    newFragment(new VotedFeed(), "1");
-                    break;
                 case 2:
-                    newFragment(new ProfileFeed(), "2");
+                    newFragment(new FavouriteFeed(), "1");
+                    break;
+                case 1:
+                    newFragment(new VotedFeed(), "2");
                     break;
                 case 3:
-                    newFragment(new FavouriteFeed(),"3");
+                    newFragment(new ProfileFeed(), "3");
+                    break;
+
             }
         });
     }
