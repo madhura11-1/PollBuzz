@@ -31,11 +31,11 @@ public class DeepLinkActivity extends AppCompatActivity {
             String code = getData(getIntent().getData());
            type=code.substring(0,1);
             UID=code.substring(1);
-            //checkAccess(UID);
-           startIntent(UID,type);
+            checkAccess(UID);
+           //startIntent(UID,type);
     }
 
-   /*private void checkAccess(String uid) {
+   private void checkAccess(String uid) {
         firebase fb=new firebase();
 
         if(fb.getUser()!=null)
@@ -48,32 +48,7 @@ public class DeepLinkActivity extends AppCompatActivity {
                         DocumentSnapshot document1=task.getResult();
                         if(document1.exists())
                             startIntent(UID,type,1);
-                        else
-                        {
-                            fb.getPollsCollection().document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful())
-                                    {
-                                        DocumentSnapshot document=task.getResult();
-                                        if(document.exists())
-                                        {
-                                            Date date = Calendar.getInstance().getTime();
-                                            PollDetails pollDetails=document.toObject(PollDetails.class);
-                                            if(pollDetails.getExpiry_date().compareTo(date) < 0)
-                                                startIntent(UID,type,1);
-                                            else
-                                            {
-                                                startIntent(UID,type,0);
-                                            }
-
-
-                                        }
-                                    }
-
-                                }
-                            });
-                        }
+                           else startIntent(UID,type,0);
                     }
 
                 }
@@ -81,7 +56,7 @@ public class DeepLinkActivity extends AppCompatActivity {
 
         }
 
-    }*/
+    }
 
     private String getData(Uri data) {
         if(data!=null && data.isHierarchical()) {
@@ -92,7 +67,7 @@ public class DeepLinkActivity extends AppCompatActivity {
         }
         return null;
     }
-    private void startIntent(String uid, String pollType) {
+    private void startIntent(String uid, String pollType, int flag) {
         Intent intent;
         firebase fb=new firebase();
         if(fb.getUser()!=null)
@@ -114,6 +89,7 @@ public class DeepLinkActivity extends AppCompatActivity {
                     throw new IllegalStateException("Unexpected value: " + pollType);
             }
             intent.putExtra("UID", uid);
+            intent.putExtra("flag",flag);
             startActivity(intent);
         }
         else

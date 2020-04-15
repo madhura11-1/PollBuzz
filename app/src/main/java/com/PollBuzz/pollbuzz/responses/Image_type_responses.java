@@ -24,6 +24,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +36,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +62,8 @@ public class Image_type_responses extends AppCompatActivity {
     PollDetails polldetails;
     KAlertDialog dialog1;
     SpotsDialog dialog2;
+    Boolean f=false;
+    int flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,6 +301,19 @@ public class Image_type_responses extends AppCompatActivity {
 
                                         callkalert();
                                     }
+                                    Date date = Calendar.getInstance().getTime();
+                                    if(polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )
+                                    {
+                                        Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
+                                        intent.putExtra("UID",key);
+                                        intent.putExtra("type","PICTURE BASED");
+                                        if(!f)
+                                            intent.putExtra("flag",1);
+
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                    }
+
                                 }
                             }
                         }
@@ -333,6 +351,7 @@ public class Image_type_responses extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
+        flag=intent.getIntExtra("flag",0);
 
     }
 

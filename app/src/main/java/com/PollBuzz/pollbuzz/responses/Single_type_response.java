@@ -22,14 +22,18 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +50,7 @@ public class Single_type_response extends AppCompatActivity {
     Typeface typeface;
     Dialog dialog;
     ImageButton home, logout;
-    Button submit;
+    MaterialButton submit;
     Map<String, Object> response;
     String resp;
     firebase fb;
@@ -55,6 +59,7 @@ public class Single_type_response extends AppCompatActivity {
     KAlertDialog dialog1;
     ImageButton fav_author;
     SpotsDialog dialog2;
+    int flag;
 
 
     @Override
@@ -197,6 +202,7 @@ public class Single_type_response extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Boolean f=false;
                         DocumentSnapshot data = task.getResult();
                         if (data != null && data.exists()) {
                             group.removeAllViews();
@@ -206,6 +212,8 @@ public class Single_type_response extends AppCompatActivity {
                             author.setText(polldetails.getAuthor());
                             if(fb.getUserId().equals(polldetails.getAuthorUID())){
                                 fav_author.setVisibility(View.GONE);
+                                f=true;
+
                             }else {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
@@ -260,7 +268,21 @@ public class Single_type_response extends AppCompatActivity {
                                             })
                                             .show();
                                 }
+                                Date date = Calendar.getInstance().getTime();
+                                if(polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )
+                                {
+                                    Intent i = new Intent(Single_type_response.this, PercentageResult.class);
+                                    i.putExtra("UID",key);
+                                    i.putExtra("type","SINGLE CHOICE");
+                                    if(!f)
+                                        i.putExtra("flag",1);
+
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                }
+
                             }
+
                         }
                     }
                 });
@@ -269,7 +291,7 @@ public class Single_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-
+       flag = intent.getIntExtra("flag",0);
     }
 
     private void setActionBarFunctionality() {
@@ -322,4 +344,13 @@ public class Single_type_response extends AppCompatActivity {
         dialog1.setCancelable(false);
         dialog1.show();
     }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent1 = new Intent(Single_type_response.this, MainActivity.class);
+        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent1);
+
+    }
+
 }

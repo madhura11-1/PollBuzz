@@ -23,6 +23,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,6 +37,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +64,8 @@ public class Ranking_type_response extends AppCompatActivity {
     KAlertDialog dialog1;
     ArrayList<String> resp = new ArrayList<>();
     SpotsDialog dialog2;
+    int flag;
+    Boolean f=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class Ranking_type_response extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         Intent intent = getIntent();
         key = intent.getExtras().getString("UID");
+        flag=intent.getIntExtra("flag",0);
         setGlobals(view);
         showDialog();
         setActionBarFunctionality();
@@ -174,6 +180,7 @@ public class Ranking_type_response extends AppCompatActivity {
                         author.setText(polldetails.getAuthor());
                         if(fb.getUserId().equals(polldetails.getAuthorUID())){
                             fav_author.setVisibility(View.GONE);
+                            f=true;
                         }else {
                             fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -269,6 +276,18 @@ public class Ranking_type_response extends AppCompatActivity {
                             }
                         })
                         .show();
+            }
+            Date date = Calendar.getInstance().getTime();
+            if(polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )
+            {
+                Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
+                i.putExtra("UID",key);
+                i.putExtra("type","RANKED");
+                if(!f)
+                    i.putExtra("flag",1);
+
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
             }
         }
 
