@@ -80,7 +80,7 @@ public class SignupFragment extends Fragment {
                             mFirebaseAnalytics.logEvent("signup", bundle);
                             dialog.dismissWithAnimation();
                             Toast.makeText(getContext(), "Signup successful.\nPlease verify your mail.", Toast.LENGTH_LONG).show();
-                            fb.signOut();
+                            fb.getAuth().signOut();
                         });
                     } else {
                         dialog.dismissWithAnimation();

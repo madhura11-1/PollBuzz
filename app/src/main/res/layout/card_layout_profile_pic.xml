@@ -19,12 +19,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+
 
         <RelativeLayout
             android:id="@+id/profileArea"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
 
             <ImageView
                 android:padding="2dp"
@@ -37,6 +43,16 @@
                 android:adjustViewBounds="true"
                 android:background="@drawable/voter_item_outline"
                 android:src="@drawable/ic_person_black_24dp" />
+        </RelativeLayout>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_border_white_24dp"
+                android:background="@android:color/transparent"
+                android:id="@+id/fav_author"
+                android:layout_alignRight="@+id/profileArea"
+                android:layout_alignBottom="@+id/profileArea"
+                android:clickable="true"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -115,10 +131,10 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/maven_pro"
                     android:text="Author : "
+                    android:layout_weight="1"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    android:layout_weight="1"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/card_author"
@@ -129,6 +145,7 @@
                     android:text="Author"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -186,37 +203,18 @@
 
         </LinearLayout>
     </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginEnd="20dp"
 >
             <TextView
                 android:id="@+id/live"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/red"
+                android:textColor="#B2EBF2"
                 android:textSize="18sp"
                 android:text="LIVE"
-                android:layout_marginStart="250dp"
-                android:visibility="invisible"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_star_border_white_24dp"
-            android:background="@android:color/transparent"
-            android:id="@+id/fav_author"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="10dp"
-            android:clickable="true"
-           android:layout_gravity="right"/>
-
-        </LinearLayout>
-
-
+                android:textStyle="bold"
+                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:visibility="visible"/>
 
 
     </LinearLayout>

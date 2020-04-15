@@ -57,6 +57,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,10 +71,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import Utils.firebase;
 import Utils.helper;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Ranking_type_poll extends AppCompatActivity {
     Button add;
@@ -124,10 +136,7 @@ public class Ranking_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Ranking_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
     private void setListeners(String formatteddate) {
@@ -312,8 +321,6 @@ public class Ranking_type_poll extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-
-                                dialog.dismissWithAnimation();
                                 Map<String, Object> m = new HashMap<>();
                                 m.put("pollId", doc.getId());
                                 m.put("timestamp", Timestamp.now().getSeconds());
@@ -326,10 +333,57 @@ public class Ranking_type_poll extends AppCompatActivity {
                                                 showDialog(Ranking_type_poll.this,doc);
                                             }
                                             else {
-                                                Toast.makeText(Ranking_type_poll.this, "Your data added Successfully", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(Ranking_type_poll.this, MainActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                startActivity(intent);
+                                                MediaType mediaType = MediaType.parse("application/json");
+                                                JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                                try {
+                                                    data.put("type", "RANKED");
+                                                    data.put("username", helper.getusernamePref(Ranking_type_poll.this));
+                                                    data.put("pollId", doc.getId());
+                                                    data.put("title", polldetails.getQuestion());
+                                                    if (helper.getpPicPref(Ranking_type_poll.this) != null)
+                                                        data.put("profilePic", helper.getpPicPref(Ranking_type_poll.this));
+                                                    obj.put("data", data);
+                                                    obj.put("to", "/topics/" + fb.getUserId());
+                                                    obj.put("priority", "high");
+                                                } catch (JSONException e) {
+                                                    Log.d("Exception", e.getMessage());
+                                                }
+                                                Log.d("NotificationBody", obj.toString());
+                                                RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                                OkHttpClient client = new OkHttpClient();
+                                                Request request = new Request.Builder()
+                                                        .url("https://fcm.googleapis.com/fcm/send")
+                                                        .post(body)
+                                                        .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                        .addHeader("Content-Type", "application/json")
+                                                        .build();
+                                                Call call = client.newCall(request);
+                                                call.enqueue(new Callback() {
+                                                    @Override
+                                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                        runOnUiThread(new Runnable() {
+                                                            public void run() {
+                                                                Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+
+                                                    @Override
+                                                    public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                        if (response.isSuccessful()) {
+                                                            Log.d("Response", response.body().string());
+                                                        }
+                                                        runOnUiThread(new Runnable() {
+                                                            public void run() {
+                                                                Toast.makeText(Ranking_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                                dialog.dismissWithAnimation();
+                                                            }
+                                                        });
+                                                        Intent intent = new Intent(Ranking_type_poll.this, MainActivity.class);
+                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(intent);
+                                                    }
+                                                });
                                             }
                                         } else {
                                             Toast.makeText(Ranking_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();

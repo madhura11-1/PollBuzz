@@ -53,6 +53,14 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:src="@drawable/ic_share_blue"/>
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/share_poll"
+                        android:tooltipText="Share Poll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_speaker_notes_dark_24dp"/>
 
                 </LinearLayout>
                 <TextView

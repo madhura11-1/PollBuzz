@@ -1,10 +1,15 @@
 package com.PollBuzz.pollbuzz.LoginSignup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -373,6 +378,16 @@ public class ProfileSetUp extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         setSharedPreference(unameS, imagePath);
                                         deleteCache();
+                                        fb.getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if(task.isSuccessful() && task.getResult()!=null){
+                                                    for(DocumentSnapshot dS:task.getResult()){
+                                                        FirebaseMessaging.getInstance().subscribeToTopic(dS.getId());
+                                                    }
+                                                }
+                                            }
+                                        });
                                         dialog.dismissWithAnimation();
                                         Intent i = new Intent(ProfileSetUp.this, MainActivity.class);
                                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -471,18 +486,6 @@ public class ProfileSetUp extends AppCompatActivity {
         dialog.setTitleText("Creating profile...");
         dialog.setCancelable(false);
         dialog.show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        mAuth.signOut();
-       finish();
-        Intent myIntent = new Intent(this, LoginSignupActivity.class);
-        startActivity(myIntent);
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
     }
 
 }

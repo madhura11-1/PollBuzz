@@ -1,12 +1,29 @@
 package Utils;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kinda.alert.KAlertDialog;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class firebase {
     public FirebaseAuth getAuth() {
@@ -37,9 +54,30 @@ public class firebase {
         return getUsersCollection().document(getUserId());
     }
 
-    public void signOut() {
-        if (getUser() != null)
-            getAuth().signOut();
+    public void signOut(Context context) {
+        KAlertDialog dialog = new KAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        dialog.getProgressHelper().setBarColor(context.getResources().getColor(R.color.colorPrimaryDark));
+        dialog.setTitleText("Logging Out...");
+        dialog.setCancelable(false);
+        dialog.show();
+        Utils.helper.removeProfileSetUpPref(context);
+        if (getUser() != null) {
+            getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(task -> {
+                if(task.isSuccessful() && task.getResult()!=null){
+                    for(DocumentSnapshot dS:task.getResult()){
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(dS.getId());
+                        Log.d("UnSubscribedFrom",dS.getId());
+                    }
+                }else{
+                    Log.d("UnSubscribedFrom",task.getException().getMessage());
+                }
+                getAuth().signOut();
+            });
+        }
+        Intent i=new Intent(context, LoginSignupActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        dialog.dismissWithAnimation();
+        context.startActivity(i);
     }
 
     public StorageReference getStorageReference() {

@@ -1,6 +1,15 @@
 package com.PollBuzz.pollbuzz.adapters;
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
@@ -9,20 +18,10 @@ import com.PollBuzz.pollbuzz.results.Image_type_result;
 import com.PollBuzz.pollbuzz.results.Multiple_type_result;
 import com.PollBuzz.pollbuzz.results.Ranking_type_result;
 import com.PollBuzz.pollbuzz.results.Single_type_result;
-
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.VotedViewHolder> {
 
@@ -32,6 +31,7 @@ public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.Vote
     public VotedFeedAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -61,21 +61,19 @@ public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.Vote
                 holder.card_query.setText(mPollDetails.get(position).getQuestion().trim());
             if (mPollDetails.get(position).getAuthor() != null)
                 holder.card_author.setText(mPollDetails.get(position).getAuthor().trim());
-            if (mPollDetails.get(position).getCreated_date() != null)
-            {
-                String date=df.format(mPollDetails.get(position).getCreated_date());
+            if (mPollDetails.get(position).getCreated_date() != null) {
+                String date = df.format(mPollDetails.get(position).getCreated_date());
                 holder.card_date.setText(date.trim());
             }
 
-        }catch(Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
 
     private void startIntent(String uid, String pollType) {
         Intent intent;
-        switch (pollType)
-        {
+        switch (pollType) {
             case "SINGLE CHOICE":
                 intent = new Intent(mContext, Single_type_result.class);
                 break;
@@ -102,6 +100,16 @@ public class VotedFeedAdapter extends RecyclerView.Adapter<VotedFeedAdapter.Vote
     @Override
     public int getItemCount() {
         return mPollDetails.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     static class VotedViewHolder extends RecyclerView.ViewHolder {

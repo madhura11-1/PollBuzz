@@ -1,24 +1,7 @@
 package com.PollBuzz.pollbuzz.navFragments;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
-import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
-import com.google.firebase.firestore.QuerySnapshot;
-
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,9 +19,30 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,13 +52,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import Utils.firebase;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class VotedFeed extends Fragment {
     private ShimmerRecyclerView votedRV;
@@ -250,7 +247,7 @@ public class VotedFeed extends Fragment {
                             else {
                                 mArrayList.clear();
                                 mAdapter.notifyDataSetChanged();
-                               votedRV.showShimmerAdapter();
+                                votedRV.showShimmerAdapter();
                                 currentFlag = 2;
                                 getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
                             }
@@ -369,8 +366,7 @@ public class VotedFeed extends Fragment {
             } catch (Exception e) {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
-        }
-        else {
+        } else {
             try {
                 userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
                         .get().addOnCompleteListener(task -> {
@@ -392,9 +388,10 @@ public class VotedFeed extends Fragment {
                                 lastIndex = dS;
                             }
                         } else {
+                            flagFetch = false;
                             votedRV.hideShimmerAdapter();
                             viewed.setVisibility(View.VISIBLE);
-                            flagFetch = false;
+                            viewed.setText("You haven't voted yet...");
                         }
                     } else {
                         votedRV.hideShimmerAdapter();
@@ -407,7 +404,8 @@ public class VotedFeed extends Fragment {
         }
     }
 
-    private void getArrayListByDate(Date start, Date end, long timestamp, String docu_id) throws ParseException {
+    private void getArrayListByDate(Date start, Date end, long timestamp, String docu_id) throws
+            ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
         else if (start == null)
@@ -425,12 +423,11 @@ public class VotedFeed extends Fragment {
 
                         }
 
-                    }
-                    else {
+                    } else {
                         votedRV.hideShimmerAdapter();
 
-                            viewed.setVisibility(View.VISIBLE);
-                            viewed.setText("You have no voted polls created in that date span.");
+                        viewed.setVisibility(View.VISIBLE);
+                        viewed.setText("You have no voted polls created in that date span.");
 
 
                     }
@@ -469,7 +466,7 @@ public class VotedFeed extends Fragment {
     }
 
     private void addToRecyclerView(DocumentSnapshot dS1, long timestamp) {
-       // votedRV.hideShimmerAdapter();
+        // votedRV.hideShimmerAdapter();
         try {
             PollDetails polldetails = dS1.toObject(PollDetails.class);
             polldetails.setUID(dS1.getId());

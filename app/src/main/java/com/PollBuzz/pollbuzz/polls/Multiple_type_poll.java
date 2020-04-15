@@ -1,27 +1,5 @@
 package com.PollBuzz.pollbuzz.polls;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
-import com.PollBuzz.pollbuzz.R;
-import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.kinda.alert.KAlertDialog;
-import com.zcw.togglebutton.ToggleButton;
 
 import android.Manifest;
 import android.app.Activity;
@@ -52,6 +30,38 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.R;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.kinda.alert.KAlertDialog;
+import com.zcw.togglebutton.ToggleButton;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,17 +73,22 @@ import java.util.Map;
 
 import Utils.firebase;
 import Utils.helper;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class Multiple_type_poll extends AppCompatActivity {
     Button add;
     MaterialButton post_multi;
     TextInputEditText question_multi;
     LinearLayout group;
-    String name,expirydate;
-    int c,flagm=0;
+    String name, expirydate;
+    int c, flagm = 0;
     long sec;
     RadioButton b;
     Date date = Calendar.getInstance().getTime();
@@ -81,8 +96,8 @@ public class Multiple_type_poll extends AppCompatActivity {
     TextView text1;
     ImageButton home, logout;
     KAlertDialog dialog;
-    RadioButton option1,option2;
-    ArrayList<String> uniqueoptions=new ArrayList<>();
+    RadioButton option1, option2;
+    ArrayList<String> uniqueoptions = new ArrayList<>();
     TextView expiry;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     Calendar cal = Calendar.getInstance();
@@ -113,10 +128,7 @@ public class Multiple_type_poll extends AppCompatActivity {
             startActivity(i);
         });
         logout.setOnClickListener(v -> {
-            fb.signOut();
-            Intent i = new Intent(Multiple_type_poll.this, LoginSignupActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            fb.signOut(this);
         });
     }
 
@@ -124,7 +136,8 @@ public class Multiple_type_poll extends AppCompatActivity {
 
         materialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
 
                 flagm = 1;
                 sec = Long.parseLong(item);
@@ -135,14 +148,13 @@ public class Multiple_type_poll extends AppCompatActivity {
         toggleButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                if(on){
+                if (on) {
                     flagm = 1;
                     sec = Long.parseLong("30");
                     materialSpinner.setVisibility(View.VISIBLE);
                     text1.setText("Select your time in sec");
                     expiry.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     flagm = 0;
                     materialSpinner.setVisibility(View.GONE);
                     text1.setText("Set Poll Expiry Date");
@@ -191,45 +203,41 @@ public class Multiple_type_poll extends AppCompatActivity {
 
         post_multi.setOnClickListener(view -> {
             closeKeyboard();
-           if (question_multi.getText().toString().isEmpty()) {
+            if (question_multi.getText().toString().isEmpty()) {
                 question_multi.setError("Please enter the question");
                 question_multi.requestFocus();
-            } else if (group.getChildCount() <2) {
+            } else if (group.getChildCount() < 2) {
                 Toast.makeText(Multiple_type_poll.this, "Please add at least two options", Toast.LENGTH_SHORT).show();
-            }
-           else if (group.getChildCount()>12)
-           {
-               Toast.makeText(getApplicationContext(),"Maximum of 12 options allowed\nDelete some options",Toast.LENGTH_LONG).show();
-           }
-               else {
+            } else if (group.getChildCount() > 12) {
+                Toast.makeText(getApplicationContext(), "Maximum of 12 options allowed\nDelete some options", Toast.LENGTH_LONG).show();
+            } else {
 
-               if(expiry.getVisibility() == View.VISIBLE) {
+                if (expiry.getVisibility() == View.VISIBLE) {
 
-                   if (expiry.getText().toString().isEmpty()) {
-                       expiry.setText(dateFormat.format(default_date));
-                       expirydate = dateFormat.format(default_date);
-                       addToDatabase(formatteddate);
-                   } else {
-                       try {
-                           if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
-                               Calendar cali = Calendar.getInstance();
-                               int year = cali.get(Calendar.YEAR);
-                               int month = cali.get(Calendar.MONTH) + 1;
-                               int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
-                               String sday = Integer.toString(day);
-                               String smonth = Integer.toString(month);
-                               String sint = Integer.toString(year);
-                               expirydate = (sday + "-" + smonth + "-" + sint);
-                               addToDatabase(formatteddate);
-                           }
-                       } catch (ParseException e) {
-                           e.printStackTrace();
-                       }
-                   }
-               }
-               else if(materialSpinner.getVisibility() == View.VISIBLE){
-                   addToDatabase(formatteddate);
-               }
+                    if (expiry.getText().toString().isEmpty()) {
+                        expiry.setText(dateFormat.format(default_date));
+                        expirydate = dateFormat.format(default_date);
+                        addToDatabase(formatteddate);
+                    } else {
+                        try {
+                            if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
+                                Calendar cali = Calendar.getInstance();
+                                int year = cali.get(Calendar.YEAR);
+                                int month = cali.get(Calendar.MONTH) + 1;
+                                int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
+                                String sday = Integer.toString(day);
+                                String smonth = Integer.toString(month);
+                                String sint = Integer.toString(year);
+                                expirydate = (sday + "-" + smonth + "-" + sint);
+                                addToDatabase(formatteddate);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (materialSpinner.getVisibility() == View.VISIBLE) {
+                    addToDatabase(formatteddate);
+                }
 
             }
         });
@@ -245,7 +253,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 expiry.setText(date);
 
                             }
@@ -255,6 +263,7 @@ public class Multiple_type_poll extends AppCompatActivity {
             }
         });
     }
+
     private void showDialog() {
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Uploading your poll");
@@ -276,13 +285,11 @@ public class Multiple_type_poll extends AppCompatActivity {
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                if(flagm == 1){
-                    Log.d("yes","item");
+                if (flagm == 1) {
+                    Log.d("yes", "item");
                     polldetails.setLive(true);
                     polldetails.setSeconds(sec);
-                }
-                else
-                {
+                } else {
                     polldetails.setExpiry_date(dateFormat.parse(expirydate));
                 }
                 Map<String, Integer> map = new HashMap<>();
@@ -295,20 +302,76 @@ public class Multiple_type_poll extends AppCompatActivity {
                 DocumentReference doc = fb.getPollsCollection().document();
                 doc.set(polldetails)
                         .addOnSuccessListener(aVoid -> {
-                            dialog.dismissWithAnimation();
                             Map<String, Object> m = new HashMap<>();
                             m.put("pollId", doc.getId());
                             m.put("timestamp", Timestamp.now().getSeconds());
-                            docCreated.document().set(m);
-                            if(flagm == 1){
-                                dialog.dismissWithAnimation();
-                                showDialog(Multiple_type_poll.this,doc);
-                            }else {
-                                Toast.makeText(Multiple_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(Multiple_type_poll.this, MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
+                            docCreated.document().set(m).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        if (flagm == 1) {
+                                            dialog.dismissWithAnimation();
+                                            showDialog(Multiple_type_poll.this, doc);
+                                        } else {
+                                            MediaType mediaType = MediaType.parse("application/json");
+                                            JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                            try {
+                                                data.put("type", "MULTI SELECT");
+                                                data.put("username", helper.getusernamePref(Multiple_type_poll.this));
+                                                data.put("pollId", doc.getId());
+                                                data.put("title", polldetails.getQuestion());
+                                                if (helper.getpPicPref(Multiple_type_poll.this) != null)
+                                                    data.put("profilePic", helper.getpPicPref(Multiple_type_poll.this));
+                                                obj.put("data", data);
+                                                obj.put("to", "/topics/" + fb.getUserId());
+                                                obj.put("priority", "high");
+                                            } catch (JSONException e) {
+                                                Log.d("Exception", e.getMessage());
+                                            }
+                                            Log.d("NotificationBody", obj.toString());
+                                            RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                            OkHttpClient client = new OkHttpClient();
+                                            Request request = new Request.Builder()
+                                                    .url("https://fcm.googleapis.com/fcm/send")
+                                                    .post(body)
+                                                    .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                    .addHeader("Content-Type", "application/json")
+                                                    .build();
+                                            Call call = client.newCall(request);
+                                            call.enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                    runOnUiThread(new Runnable() {
+                                                        public void run() {
+                                                            Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                    if (response.isSuccessful()) {
+                                                        Log.d("Response", response.body().string());
+                                                    }
+                                                    runOnUiThread(new Runnable() {
+                                                        public void run() {
+                                                            Toast.makeText(Multiple_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                            dialog.dismissWithAnimation();
+                                                        }
+                                                    });
+                                                    Intent intent = new Intent(Multiple_type_poll.this, MainActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Toast.makeText(Multiple_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        dialog.dismissWithAnimation();
+                                        post_multi.setEnabled(true);
+                                    }
+                                }
+                            });
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(Multiple_type_poll.this, "Unable to post.Please try again", Toast.LENGTH_SHORT).show();
@@ -336,25 +399,25 @@ public class Multiple_type_poll extends AppCompatActivity {
         c = group.getChildCount();
         post_multi = findViewById(R.id.post_multi);
         question_multi = findViewById(R.id.question_multi);
-        dialog=new KAlertDialog(Multiple_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
-        option1=findViewById(R.id.option1);
-        option2=findViewById(R.id.option2);
+        dialog = new KAlertDialog(Multiple_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
+        option1 = findViewById(R.id.option1);
+        option2 = findViewById(R.id.option2);
         registerForContextMenu(option1);
         registerForContextMenu(option2);
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         text1 = findViewById(R.id.text1);
-        expiry=findViewById(R.id.expiry_date);
+        expiry = findViewById(R.id.expiry_date);
         toggleButton = findViewById(R.id.toggle);
-        materialSpinner = (MaterialSpinner)findViewById(R.id.spinner);
-        materialSpinner.setItems("30","60","90","Custom Stop");
+        materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
+        materialSpinner.setItems("30", "60", "90", "Custom Stop");
 
         if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
     }
 
 
-    public void showDialog(Activity activity, DocumentReference doc){
+    public void showDialog(Activity activity, DocumentReference doc) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.code_dialog);
@@ -417,14 +480,13 @@ public class Multiple_type_poll extends AppCompatActivity {
         });
 
 
-
     }
 
     private void sharecode(String code) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT,"Access Code for the Live poll :\n"+code);
+        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             startActivity(Intent.createChooser(intent, "Share Code Using"));
@@ -447,7 +509,6 @@ public class Multiple_type_poll extends AppCompatActivity {
     }
 
 
-
     private void openSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -456,8 +517,7 @@ public class Multiple_type_poll extends AppCompatActivity {
     }
 
 
-
-    public void showDialog(Activity activity, final RadioButton button, int flag){
+    public void showDialog(Activity activity, final RadioButton button, int flag) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.set_name_dialog);
@@ -467,8 +527,8 @@ public class Multiple_type_poll extends AppCompatActivity {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        final TextInputLayout text =  dialog.findViewById(R.id.name);
-        if(flag == 1 && b.getText() != null){
+        final TextInputLayout text = dialog.findViewById(R.id.name);
+        if (flag == 1 && b.getText() != null) {
             text.getEditText().setText(b.getText().toString().trim());
         }
 
@@ -476,16 +536,14 @@ public class Multiple_type_poll extends AppCompatActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                String t=text.getEditText().getText().toString().trim();
-                if( flag==0)
-                {
+                String t = text.getEditText().getText().toString().trim();
+                if (flag == 0) {
                     group.removeView(button);
                 }
             }
         });
         dialog.show();
         window.setAttributes(lp);
-
 
 
         Button dialogButton = (Button) dialog.findViewById(R.id.done);
@@ -495,18 +553,15 @@ public class Multiple_type_poll extends AppCompatActivity {
                 text.setError("Please enter this");
                 text.requestFocus();
             } else {
-                if(!doesContain(name))
-                {
+                if (!doesContain(name)) {
                     uniqueoptions.remove(button.getText().toString());
                     uniqueoptions.add(name);
                     button.setText(name);
-                    Toast.makeText(getApplicationContext(),"Option Added",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Option Added", Toast.LENGTH_LONG).show();
                     dialog.dismiss();
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"The option is already added",Toast.LENGTH_LONG).show();
-                    if(flag==0)
+                } else {
+                    Toast.makeText(getApplicationContext(), "The option is already added", Toast.LENGTH_LONG).show();
+                    if (flag == 0)
                         group.removeView(button);
 
                     dialog.dismiss();
@@ -517,31 +572,31 @@ public class Multiple_type_poll extends AppCompatActivity {
         });
 
 
-
     }
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.radiobutton_menu, menu);
-        b=(RadioButton)v;
+        b = (RadioButton) v;
         menu.setHeaderTitle("Select The Action");
     }
+
     @Override
-    public boolean onContextItemSelected(MenuItem item){
-        if(item.getItemId()==R.id.edit){
-            showDialog(Multiple_type_poll.this,b,1);
-        }
-        else if(item.getItemId()==R.id.delete){
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.edit) {
+            showDialog(Multiple_type_poll.this, b, 1);
+        } else if (item.getItemId() == R.id.delete) {
             group.removeView(b);
-            if(group.getChildCount()==0)
+            if (group.getChildCount() == 0)
                 group.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             return false;
         }
         return true;
     }
+
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -549,11 +604,10 @@ public class Multiple_type_poll extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-    private boolean doesContain(String word)
-    {
-        for(int i=0;i<uniqueoptions.size();i++)
-        {
-            if(uniqueoptions.get(i).equalsIgnoreCase(word))
+
+    private boolean doesContain(String word) {
+        for (int i = 0; i < uniqueoptions.size(); i++) {
+            if (uniqueoptions.get(i).equalsIgnoreCase(word))
                 return true;
         }
         return false;
@@ -566,8 +620,8 @@ public class Multiple_type_poll extends AppCompatActivity {
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH,7);
-        default_date=cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        default_date = cal.getTime();
     }
 
 }

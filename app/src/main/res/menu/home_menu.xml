@@ -15,4 +15,8 @@
             android:id="@+id/profile"
             android:title="Profile"
             android:icon="@drawable/ic_person_black_24dp"/>
+    <item
+            android:id="@+id/favourite"
+            android:title="Favourites"
+            android:icon="@drawable/ic_star_white_24dp"/>
 </menu>

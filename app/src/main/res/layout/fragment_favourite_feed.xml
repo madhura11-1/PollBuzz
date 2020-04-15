@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navFragments.FilterActivity">
+    android:background="@color/white"
+    android:orientation="vertical">
+
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,37 +15,28 @@
         android:textSize="24sp"
         android:id="@+id/viewed"
         android:visibility="gone"
-        android:text="You have voted all active polls..."
+        android:text="You have no voted polls."
         android:layout_centerInParent="true" />
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:fontFamily="@font/maven_pro"
-        android:layout_margin="24dp"
-        android:textSize="24sp"
-        android:id="@+id/viewed2"
-        android:text="Select a filter option"
-        android:layout_centerInParent="true" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/linear_search">
+
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
-            android:text="Filter Polls"
-            android:textColor="@color/colorPrimaryDark"
-            android:fontFamily="@font/pacifico"
-            android:textSize="40sp"
-            android:id="@+id/text"
-            android:textAlignment="center"
-            android:gravity="center"
             android:layout_weight="2"
-            />
+            android:fontFamily="@font/fascinate_inline"
+            android:gravity="center"
+            android:text="@string/home_feed_title"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp" />
 
         <ImageButton
             android:id="@+id/search"
@@ -66,19 +58,30 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/linear_search"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_back"
+            android:id="@+id/back1"
+            android:background="@color/white"
+            android:layout_gravity="center_vertical"
+            />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/search_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search for username"
-            android:textColor="@color/black"
+            android:maxLines="1"
+            android:inputType="text"
             android:backgroundTint="@color/black"
+            android:hint="Search for username"
             android:textColorHint="@color/black"
             android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:maxLines="1"
+            android:textColor="@color/black"
             android:layout_marginRight="10dp"
             android:layout_weight="3"/>
 
@@ -102,7 +105,17 @@
         android:layout_below="@id/type_layout"
         android:layout_marginVertical="5dp"
         android:id="@+id/date_layout"
+        android:visibility="gone"
         >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_back"
+            android:id="@+id/back2"
+            android:background="@color/white"
+            android:layout_gravity="center_vertical"
+            />
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -162,20 +175,8 @@
         app:shimmer_demo_angle="20"
         app:shimmer_demo_view_holder_item_background="@color/white"
         app:shimmer_demo_layout_manager_type="linear_vertical"
-        app:shimmer_demo_layout="@layout/placeholder"
+        app:shimmer_demo_layout="@layout/placeholder_home"
         app:shimmer_demo_child_count="7"
         />
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:visibility="gone"
-        android:id="@+id/pBar" />
-
-
-
 
 </RelativeLayout>

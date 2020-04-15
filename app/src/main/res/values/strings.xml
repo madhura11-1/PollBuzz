@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="poll_title"><u>Poll Title</u></string>
     <string name="home_feed_title">Polls</string>
+
+    <string name="default_notification_channel_id">PollBuzz</string>
 </resources>

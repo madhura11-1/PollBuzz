@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.navFragments.FavouriteFeed;
 import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.navFragments.VotedFeed;
@@ -68,11 +69,7 @@ public class MainActivity extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fb.getAuth().signOut();
-                Intent i=new Intent(MainActivity.this, LoginSignupActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-
+                fb.signOut(MainActivity.this);
             }
         });
     }
@@ -89,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     newFragment(new ProfileFeed(), "2");
                     break;
+                case 3:
+                    newFragment(new FavouriteFeed(),"3");
             }
         });
     }

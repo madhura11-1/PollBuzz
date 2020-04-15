@@ -107,7 +107,6 @@ public class HomeFeed extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.d("Size", String.valueOf(arrayList.size()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
                 if (!arrayList.isEmpty() && layoutManager.findLastVisibleItemPosition() == arrayList.size() - 11 && flagFetch && !flagFirst) {
                     flagFetch = false;
                     if (currentFlag == 0)
@@ -118,12 +117,11 @@ public class HomeFeed extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // viewed.setVisibility(View.GONE);
+                // viewed.setVisibility(View.GONE);
                 closeKeyboard();
                 showPopup(view);
             }
         });
-
         back1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -312,11 +310,9 @@ public class HomeFeed extends Fragment {
             Log.d("okay", "fitted");
             addToRecyclerView(id, pollDetails.getTimestamp());
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
-        }
-        else{
+        } else {
             recyclerView.hideShimmerAdapter();
-            if(adapter.getItemCount()==0)
-            {
+            if (adapter.getItemCount() == 0) {
                 viewed.setVisibility(View.VISIBLE);
                 viewed.setText("You have no unvoted polls created in that date span.");
             }
@@ -368,10 +364,7 @@ public class HomeFeed extends Fragment {
                                 flagFetch = false;
                                 recyclerView.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
-                                viewed.setText("You have no unvoted polls.");
-
-
-
+                                viewed.setText("There are no polls around...");
                             }
                         } else {
                             Log.d("hello", task
@@ -394,7 +387,6 @@ public class HomeFeed extends Fragment {
                             }
                         } else {
                             flagFetch = false;
-                            //Toast.makeText(getContext(), "You have viewed all polls...", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -402,65 +394,62 @@ public class HomeFeed extends Fragment {
                 });
             }
         } else {
-                recyclerView.showShimmerAdapter();
-                fb.getPollsCollection()
-                        .orderBy("timestamp", Query.Direction.DESCENDING).
-                        get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Log.d("HomeFeedEmpty", "" + task.getResult().size());
-                            if (!task.getResult().isEmpty()) {
-                                for (QueryDocumentSnapshot dS : task.getResult()) {
-                                    PollDetails pollDetails = dS.toObject(PollDetails.class);
-                                    long timestamp = (long) dS.get("timestamp");
-                                    if (flagi == 1) {
-                                        if(adapter.getItemCount()==0)
-                                        {
-                                            recyclerView.showShimmerAdapter();
+            recyclerView.showShimmerAdapter();
+            fb.getPollsCollection()
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Log.d("HomeFeedEmpty", "" + task.getResult().size());
+                        if (!task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                PollDetails pollDetails = dS.toObject(PollDetails.class);
+                                long timestamp = (long) dS.get("timestamp");
+                                if (flagi == 1) {
+                                    if (adapter.getItemCount() == 0) {
+                                        recyclerView.showShimmerAdapter();
                                            /* viewed.setVisibility(View.VISIBLE);
                                             viewed.setText("No polls created by this author");*/
-                                        }
-                                        if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
-                                            {
-                                                addToRecyclerView(dS, pollDetails.getTimestamp());
-                                                recyclerView.hideShimmerAdapter();
-                                            }
-
-                                        }
-
-                                        else{
-                                            recyclerView.hideShimmerAdapter();
-                                            if(adapter.getItemCount()==0)
-                                            {
-                                                viewed.setVisibility(View.VISIBLE);
-                                                viewed.setText("You have no unvoted polls created using this username.");
-                                            }
-
-                                        }
-                                    } else if (flagi == 2) {
-                                        try {
-                                            Log.d("name", pollDetails.getAuthor());
-                                            getArrayListByDate(start, end, timestamp, dS);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
                                     }
-                                    lastIndex = dS;
+                                    if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
+                                        {
+                                            addToRecyclerView(dS, pollDetails.getTimestamp());
+                                            recyclerView.hideShimmerAdapter();
+                                        }
+
+                                    } else {
+                                        recyclerView.hideShimmerAdapter();
+                                        if (adapter.getItemCount() == 0) {
+                                            viewed.setText("You have no unvoted polls created using this username.");
+                                            viewed.setVisibility(View.VISIBLE);
+                                        }
+
+                                    }
+                                } else if (flagi == 2) {
+                                    try {
+                                        Log.d("name", pollDetails.getAuthor());
+                                        getArrayListByDate(start, end, timestamp, dS);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            } else {
-                                flagFetch = false;
-                                recyclerView.hideShimmerAdapter();
-                                viewed.setVisibility(View.VISIBLE);
+                                lastIndex = dS;
                             }
                         } else {
-                            Log.d("hello", task
-                                    .getException().toString());
+                            flagFetch = false;
                             recyclerView.hideShimmerAdapter();
-                            Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            viewed.setText("There are no polls around...");
+                            viewed.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        Log.d("hello", task
+                                .getException().toString());
+                        recyclerView.hideShimmerAdapter();
+                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                }
+            });
         }
     }
 
@@ -474,39 +463,39 @@ public class HomeFeed extends Fragment {
 
                 Boolean flag = Boolean.TRUE;
                 for (QueryDocumentSnapshot dS1 : task.getResult()) {
-                        if (dS1.getId().equals(fb.getUserId())) {
-                            flag = Boolean.FALSE;
-                            if (flagFirst)
-                                recyclerView.hideShimmerAdapter();
-                            break;
-                        }
+                    if (dS1.getId().equals(fb.getUserId())) {
+                        flag = Boolean.FALSE;
+                        if (flagFirst)
+                            recyclerView.hideShimmerAdapter();
+                        break;
                     }
+                }
 
 
                 if (flag) {
-                        fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful() && task1.getResult() != null) {
-                                if (task1.getResult().get("pic") != null)
-                                    polldetails.setPic(task1.getResult().get("pic").toString());
-                                else
-                                    polldetails.setPic(null);
-                                polldetails.setUsername(task1.getResult().get("username").toString());
-                                arrayList.add(polldetails);
-                               // Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
-                                Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
-                                viewed.setVisibility(View.GONE);
+                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful() && task1.getResult() != null) {
+                            if (task1.getResult().get("pic") != null)
+                                polldetails.setPic(task1.getResult().get("pic").toString());
+                            else
+                                polldetails.setPic(null);
+                            polldetails.setUsername(task1.getResult().get("username").toString());
+                            arrayList.add(polldetails);
+                            Log.d("ArraySize", arrayList.size() + "");
+                            // Log.d("HomeFeedSize2", Integer.toString(arrayList.size()));
+                            Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
+                            viewed.setVisibility(View.GONE);
+                            adapter.notifyDataSetChanged();
+                            flagFetch = true;
+                            if (flagFirst) {
+                                recyclerView.hideShimmerAdapter();
                                 recyclerView.scheduleLayoutAnimation();
-                                adapter.notifyDataSetChanged();
-                                flagFetch = true;
-                                if (flagFirst) {
-                                    recyclerView.hideShimmerAdapter();
-                                    recyclerView.scheduleLayoutAnimation();
-                                    flagFirst = false;
-                                }
-                            } else {
-                                Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                flagFirst = false;
                             }
-                        });
+                        } else {
+                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                 }
             }
@@ -590,5 +579,9 @@ public class HomeFeed extends Fragment {
         }
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 }
