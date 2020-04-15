@@ -285,8 +285,7 @@ public class Ranking_type_response extends AppCompatActivity {
                 i.putExtra("type","RANKED");
                 if(!f)
                     i.putExtra("flag",1);
-
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                finish();
                 startActivity(i);
             }
         }

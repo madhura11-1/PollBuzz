@@ -90,6 +90,8 @@ public class DeepLinkActivity extends AppCompatActivity {
             }
             intent.putExtra("UID", uid);
             intent.putExtra("flag",flag);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            finish();
             startActivity(intent);
         }
         else

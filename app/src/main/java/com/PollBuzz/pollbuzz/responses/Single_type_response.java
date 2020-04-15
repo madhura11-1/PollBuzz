@@ -276,8 +276,8 @@ public class Single_type_response extends AppCompatActivity {
                                     i.putExtra("type","SINGLE CHOICE");
                                     if(!f)
                                         i.putExtra("flag",1);
-
                                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    i.putExtra("from",1);
                                     startActivity(i);
                                 }
 

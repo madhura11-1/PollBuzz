@@ -287,8 +287,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                         intent.putExtra("type","MULTI SELECT");
                                         if(!f)
                                             intent.putExtra("flag",1);
-
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        finish();
                                         startActivity(intent);
                                     }
 

@@ -84,6 +84,7 @@ public class PercentageResult extends AppCompatActivity {
     public static String question;
     Boolean flagVoted = true;
     ImageView shareButton,sharePoll;
+    int from;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -613,6 +614,7 @@ public class PercentageResult extends AppCompatActivity {
         }
         if (flag == 2)
             selfVote.setVisibility(View.GONE);
+        from=intent.getIntExtra("from",0);
 
 
     }
@@ -707,5 +709,17 @@ public class PercentageResult extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(from==1)
+        {
+            Intent intent1 = new Intent(PercentageResult.this, MainActivity.class);
+            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent1);
+
+        }
+
     }
 }
