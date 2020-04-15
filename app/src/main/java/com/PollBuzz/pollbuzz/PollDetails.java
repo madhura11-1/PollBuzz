@@ -9,7 +9,7 @@ public class PollDetails {
     private String question;
     private String poll_type;
     private String author;
-    private String UID;
+    private String UID,Poll_accessID;
     private String authorUID;
     private String username;
     private String pic;
@@ -30,12 +30,21 @@ public class PollDetails {
         author_lc="";
         live=false;
         created_date=new Date();
-        expiry_date=new Date();
+        expiry_date= null;
         map=new HashMap<>();
         pollcount=0;
         timestamp=0;
         seconds =0;
+        Poll_accessID = "";
 
+    }
+
+    public String getPoll_accessID() {
+        return Poll_accessID;
+    }
+
+    public void setPoll_accessID(String poll_accessID) {
+        Poll_accessID = poll_accessID;
     }
 
     public long getSeconds() {

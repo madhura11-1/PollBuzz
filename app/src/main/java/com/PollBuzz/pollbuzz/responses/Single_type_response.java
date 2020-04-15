@@ -213,7 +213,6 @@ public class Single_type_response extends AppCompatActivity {
                             if(fb.getUserId().equals(polldetails.getAuthorUID())){
                                 fav_author.setVisibility(View.GONE);
                                 f=true;
-
                             }else {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
@@ -253,23 +252,30 @@ public class Single_type_response extends AppCompatActivity {
                             }
 
                             dialog.dismiss();
+                            Date date = Calendar.getInstance().getTime();
                             if (polldetails != null) {
                                 if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                    polldetails.setLive(false);
+                                    Boolean finalF = f;
                                     new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
                                             .setTitleText("This Live Poll has ended")
                                             .setConfirmText("OK")
                                             .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                                                 @Override
                                                 public void onClick(KAlertDialog kAlertDialog) {
-                                                    Intent intent1 = new Intent(Single_type_response.this, MainActivity.class);
-                                                    intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    startActivity(intent1);
+                                                    Intent i = new Intent(Single_type_response.this, PercentageResult.class);
+                                                    i.putExtra("UID",key);
+                                                    i.putExtra("type","SINGLE CHOICE");
+                                                    if(!finalF)
+                                                        i.putExtra("flag",1);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    i.putExtra("from",1);
+                                                    startActivity(i);
                                                 }
                                             })
                                             .show();
                                 }
-                                Date date = Calendar.getInstance().getTime();
-                                if(polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )
+                                else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1) )
                                 {
                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                     i.putExtra("UID",key);
