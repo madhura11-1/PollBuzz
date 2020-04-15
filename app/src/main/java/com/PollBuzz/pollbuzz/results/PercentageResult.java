@@ -44,6 +44,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -55,8 +56,11 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,7 +82,7 @@ public class PercentageResult extends AppCompatActivity {
     public static Double total;
     Dialog dialog;
     MaterialButton result, pie_charts, selfVote;
-    TextView vote_count;
+    TextView vote_count,status;
     Typeface typeface;
     public static Map<String, Integer> data = new HashMap<>();
     public static String question;
@@ -235,6 +239,21 @@ public class PercentageResult extends AppCompatActivity {
                             String d = "Created on: " + date.substring(0, date.length() - l - 3);
                             date_percentage.setText(d);
                             map = pollDetails.getMap();
+                            Date date1 = Calendar.getInstance().getTime();
+                            if(!pollDetails.isLive())
+                            {
+                                if(pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                                    status.setText("Status : Active");
+                                else
+                                    status.setText("Status : Expired");
+                            }
+                            else
+                            {
+                                if(Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
+                                    status.setText("Status : Expired");
+                                else
+                                    status.setText("Status : Active");
+                            }
                             total = Double.valueOf(pollDetails.getPollcount());
                             String vote = "Total Voters:" + pollDetails.getPollcount();
                             vote_count.setText(vote);
@@ -346,48 +365,6 @@ public class PercentageResult extends AppCompatActivity {
 
         } else if (type.equals("RANKED")) {
 
-            /*LinearLayout linearLayout1=new LinearLayout(getApplicationContext());
-            linearLayout1.setOrientation(LinearLayout.VERTICAL);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(10, 100, 10, 10);
-            linearLayout1.setLayoutParams(layoutParams);
-            fb.getPollsCollection()
-                    .document(uid)
-                    .collection("OptionsCount")
-                    .document("count")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            linearLayout.removeAllViews();
-                            Map<String,Object> map1=task.getResult().getData();
-                            Map<String, Long> map2 = new HashMap<>();
-                            if (map1 != null) {
-                                for(Map.Entry<String,Object> entry : map1.entrySet()){
-                                    map2=(Map<String,Long>) entry.getValue();
-                                    LinearLayout linearLayout2=new LinearLayout(getApplicationContext());
-                                    linearLayout2.setOrientation(LinearLayout.VERTICAL);
-                                    layoutParams.setMargins(12, 12, 10, 12);
-                                    linearLayout2.setLayoutParams(layoutParams);
-                                    TextView tV_main =new TextView(getApplicationContext());
-                                    tV_main.setText(entry.getKey()+" : ");
-                                    tV_main.setTextColor(getResources().getColor(R.color.black));
-                                    tV_main.setTextSize(22.0f);
-                                    tV_main.setTypeface(typeface);
-                                    linearLayout1.addView(tV_main);
-                                    for(Map.Entry<String,Long> entry1 : map2.entrySet()){
-                                        TextView tV=new TextView(getApplicationContext());
-                                        tV.setText("Priority "+entry1.getKey()+ " : " + entry1.getValue());
-                                        linearLayout2.addView(tV);
-                                        tV.setTextColor(getResources().getColor(R.color.black));
-                                        tV.setTextSize(18.0f);
-                                        tV.setTypeface(typeface);
-                                    }
-                                    linearLayout1.addView(linearLayout2);
-                                }
-                                linearLayout.addView(linearLayout1);
-                            }
-                        }
-                    });*/
             fb.getPollsCollection()
                     .document(uid)
                     .collection("OptionsCount")
@@ -635,6 +612,8 @@ public class PercentageResult extends AppCompatActivity {
         pie_charts = findViewById(R.id.pie);
         shareButton = findViewById(R.id.share_button);
         sharePoll=findViewById(R.id.share_poll);
+        status=findViewById(R.id.status);
+
     }
 
     @Override

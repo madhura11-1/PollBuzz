@@ -72,6 +72,15 @@
                     android:fontFamily="@font/maven_pro"
                     android:textStyle="bold"
                     android:textSize="20sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/status"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/maven_pro"
+                    android:textAlignment="viewStart"
+                    android:padding="5dp"/>
             </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
