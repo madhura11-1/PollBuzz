@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
-        <activity android:name=".DeepLinkActivity" android:theme="@style/DeepLinkTheme">
+        <activity android:name="Utils.DeepLinkActivity" android:theme="@style/DeepLinkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

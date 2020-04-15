@@ -1,4 +1,4 @@
-package com.PollBuzz.pollbuzz;
+package Utils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
+import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
@@ -16,11 +16,6 @@ import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import Utils.firebase;
 
 public class DeepLinkActivity extends AppCompatActivity {
     String UID, type;

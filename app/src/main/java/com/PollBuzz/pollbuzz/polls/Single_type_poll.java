@@ -279,6 +279,7 @@ public class Single_type_poll extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                Log.d("Added", doc.getId());
                                 Map<String, Object> m = new HashMap<>();
                                 m.put("pollId", doc.getId());
                                 m.put("timestamp", Timestamp.now().getSeconds());
@@ -286,7 +287,6 @@ public class Single_type_poll extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Log.d("yesi", "so");
                                             if (flagm == 1) {
                                                 dialog.dismissWithAnimation();
                                                 showDialog(Single_type_poll.this, doc);
