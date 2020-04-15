@@ -283,6 +283,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
             holder.fav_author.setVisibility(View.VISIBLE);
+            holder.live.setVisibility(View.GONE);
             if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
             {
                 holder.fav_author.setVisibility(View.GONE);
@@ -331,6 +332,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_status.setText("Active");
             }
             else {
+                holder.live.setVisibility(View.GONE);
                 if (mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
                     holder.card_status.setText("Active");
                 else

@@ -215,7 +215,7 @@
             android:textColor="#B2EBF2"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="invisible" />
+            android:visibility="gone" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 
