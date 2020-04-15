@@ -267,7 +267,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     ok.setVisibility(View.GONE);
                     loader.setVisibility(View.VISIBLE);
                     loader.playAnimation();
-                    if(code_type.getText().toString().equals("PB#"+uid.substring(16,20).toUpperCase())){
+                    if(code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())){
 
                         startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                         ok.setVisibility(View.VISIBLE);
@@ -326,7 +326,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_date.setText(date.trim());
             }
             Date date = Calendar.getInstance().getTime();
-            if(mPollDetails.get(position).isLive()){
+            if(mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()){
+                holder.card_status.setText("Expired");
+            }
+            else if(mPollDetails.get(position).isLive()){
                 Log.d("live","true");
                 holder.live.setVisibility(View.VISIBLE);
                 holder.card_status.setText("Active");
