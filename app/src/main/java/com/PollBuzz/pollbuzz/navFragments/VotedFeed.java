@@ -368,72 +368,44 @@ public class VotedFeed extends Fragment {
             }
         } else {
             try {
-                if (lastIndex == null) {
-                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
-                            .get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            if (!task.getResult().isEmpty()) {
-                                for (QueryDocumentSnapshot dS : task.getResult()) {
-                                    if (dS.exists()) {
-                                        long timestamp = (long) dS.get("timestamp");
-                                        if (flagi == 1) {
-                                            getArrayListByAuthor(name, dS.getId(), timestamp);
-                                        } else if (flagi == 2) {
-                                            try {
-                                                getArrayListByDate(start, end, timestamp, dS.getId());
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
+                userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                        .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        if (!task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                if (dS.exists()) {
+                                    long timestamp = (long) dS.get("timestamp");
+                                    if (flagi == 1) {
+                                        getArrayListByAuthor(name, dS.getId(), timestamp);
+                                    } else if (flagi == 2) {
+                                        try {
+                                            getArrayListByDate(start, end, timestamp, dS.getId());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
                                         }
                                     }
-                                    lastIndex = dS;
                                 }
-                            } else {
-                                votedRV.hideShimmerAdapter();
-                                viewed.setVisibility(View.VISIBLE);
-                                flagFetch = false;
-                            }
-                        } else {
-                            votedRV.hideShimmerAdapter();
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    userVotedRef.orderBy("timestamp", Query.Direction.DESCENDING)
-                            .startAfter(lastIndex).limit(20).get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            if (!task.getResult().isEmpty()) {
-                                for (QueryDocumentSnapshot dS : task.getResult()) {
-                                    if (dS.exists()) {
-                                        long timestamp = (long) dS.get("timestamp");
-                                        if (flagi == 1) {
-                                            getArrayListByAuthor(name, dS.getId(), timestamp);
-                                        } else if (flagi == 2) {
-                                            try {
-                                                getArrayListByDate(start, end, timestamp, dS.getId());
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                    lastIndex = dS;
-                                }
-                            } else {
-                                flagFetch = false;
+                                lastIndex = dS;
                             }
                         } else {
                             flagFetch = false;
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            votedRV.hideShimmerAdapter();
+                            viewed.setVisibility(View.VISIBLE);
+                            viewed.setText("You haven't voted yet...");
                         }
-                    });
-                }
+                    } else {
+                        votedRV.hideShimmerAdapter();
+                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (Exception e) {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         }
     }
 
-    private void getArrayListByDate(Date start, Date end, long timestamp, String docu_id) throws ParseException {
+    private void getArrayListByDate(Date start, Date end, long timestamp, String docu_id) throws
+            ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
         else if (start == null)

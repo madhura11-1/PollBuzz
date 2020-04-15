@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Poll Code"
+        android:textSize="25sp"
+        android:fontFamily="@font/maven_pro"
+        android:textColor="@color/black"
+        android:layout_weight="3"
+        android:gravity="center"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/share_button"
+            android:tooltipText="Share Result"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@drawable/ic_share_blue"/>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="ugjyawhhuwvfukfkqkih"
+        android:textColor="@color/black"
+        android:layout_margin="20dp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorAccent"
+        android:text="OK"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:id="@+id/ok"/>
+
+
+
+</LinearLayout>

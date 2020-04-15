@@ -44,6 +44,7 @@ public class Single_type_result extends AppCompatActivity {
     FirebaseAuth.AuthStateListener listener;
     Map<String, Object> response;
     Integer integer;
+    PollDetails polldetails;
 
 
     @Override
@@ -62,8 +63,6 @@ public class Single_type_result extends AppCompatActivity {
         setAuthStateListener();
         showDialog();
         retrivedata(fb);
-
-
     }
 
     private void retrivedata(firebase fb) {
@@ -78,7 +77,7 @@ public class Single_type_result extends AppCompatActivity {
                             if (data.exists()) {
                                 group.removeAllViews();
                                 dialog.dismiss();
-                                PollDetails polldetails = data.toObject(PollDetails.class);
+                                polldetails = data.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion());
                                 options = polldetails.getMap();
                                 fb.getPollsCollection().document(key).collection("Response").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

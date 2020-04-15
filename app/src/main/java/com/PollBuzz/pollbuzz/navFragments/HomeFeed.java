@@ -365,8 +365,6 @@ public class HomeFeed extends Fragment {
                                 recyclerView.hideShimmerAdapter();
                                 viewed.setVisibility(View.VISIBLE);
                                 viewed.setText("There are no polls around...");
-
-
                             }
                         } else {
                             Log.d("hello", task
@@ -396,61 +394,62 @@ public class HomeFeed extends Fragment {
                 });
             }
         } else {
-                recyclerView.showShimmerAdapter();
-                fb.getPollsCollection()
-                        .orderBy("timestamp", Query.Direction.DESCENDING)
-                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            Log.d("HomeFeedEmpty", "" + task.getResult().size());
-                            if (!task.getResult().isEmpty()) {
-                                for (QueryDocumentSnapshot dS : task.getResult()) {
-                                    PollDetails pollDetails = dS.toObject(PollDetails.class);
-                                    long timestamp = (long) dS.get("timestamp");
-                                    if (flagi == 1) {
-                                        if (adapter.getItemCount() == 0) {
-                                            recyclerView.showShimmerAdapter();
+            recyclerView.showShimmerAdapter();
+            fb.getPollsCollection()
+                    .orderBy("timestamp", Query.Direction.DESCENDING)
+                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        Log.d("HomeFeedEmpty", "" + task.getResult().size());
+                        if (!task.getResult().isEmpty()) {
+                            for (QueryDocumentSnapshot dS : task.getResult()) {
+                                PollDetails pollDetails = dS.toObject(PollDetails.class);
+                                long timestamp = (long) dS.get("timestamp");
+                                if (flagi == 1) {
+                                    if (adapter.getItemCount() == 0) {
+                                        recyclerView.showShimmerAdapter();
                                            /* viewed.setVisibility(View.VISIBLE);
                                             viewed.setText("No polls created by this author");*/
-                                        }
-                                        if (pollDetails.getAuthor_lc().equals(name.toLowerCase().trim())) {
-                                            {
-                                                addToRecyclerView(dS, pollDetails.getTimestamp());
-                                                recyclerView.hideShimmerAdapter();
-                                            }
-
-                                        } else {
-                                            recyclerView.hideShimmerAdapter();
-                                            if (adapter.getItemCount() == 0) {
-                                                viewed.setVisibility(View.VISIBLE);
-                                                viewed.setText("You have no unvoted polls created using this username.");
-                                            }
-
-                                        }
-                                    } else if (flagi == 2) {
-                                        try {
-                                            Log.d("name", pollDetails.getAuthor());
-                                            getArrayListByDate(start, end, timestamp, dS);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
                                     }
-                                    lastIndex = dS;
+                                    if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
+                                        {
+                                            addToRecyclerView(dS, pollDetails.getTimestamp());
+                                            recyclerView.hideShimmerAdapter();
+                                        }
+
+                                    } else {
+                                        recyclerView.hideShimmerAdapter();
+                                        if (adapter.getItemCount() == 0) {
+                                            viewed.setText("You have no unvoted polls created using this username.");
+                                            viewed.setVisibility(View.VISIBLE);
+                                        }
+
+                                    }
+                                } else if (flagi == 2) {
+                                    try {
+                                        Log.d("name", pollDetails.getAuthor());
+                                        getArrayListByDate(start, end, timestamp, dS);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
-                            } else {
-                                flagFetch = false;
-                                recyclerView.hideShimmerAdapter();
-                                viewed.setVisibility(View.VISIBLE);
+                                lastIndex = dS;
                             }
                         } else {
-                            Log.d("hello", task
-                                    .getException().toString());
+                            flagFetch = false;
                             recyclerView.hideShimmerAdapter();
-                            Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            viewed.setText("There are no polls around...");
+                            viewed.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        Log.d("hello", task
+                                .getException().toString());
+                        recyclerView.hideShimmerAdapter();
+                        Toast.makeText(HomeFeed.this.getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                });
+                }
+            });
         }
     }
 

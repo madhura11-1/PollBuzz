@@ -253,7 +253,6 @@ public class Image_type_responses extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot snapshot = task.getResult();
                             if (snapshot.exists()) {
-                                dialog.dismiss();
                                 polldetails = snapshot.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion().trim());
                                 options = polldetails.getMap();
@@ -285,12 +284,35 @@ public class Image_type_responses extends AppCompatActivity {
                                         imageoption2 = entry.getKey();
                                     }
                                     i++;
+
+                                }
+                                dialog.dismiss();
+                                if (polldetails != null) {
+                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+
+                                        callkalert();
+                                    }
                                 }
                             }
                         }
                     }
                 });
+    }
 
+    private void callkalert() {
+
+        new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("This Live Poll has ended")
+                .setConfirmText("OK")
+                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        Intent intent1 = new Intent(Image_type_responses.this, MainActivity.class);
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent1);
+                    }
+                })
+                .show();
     }
 
     private void setActionBarFunctionality() {

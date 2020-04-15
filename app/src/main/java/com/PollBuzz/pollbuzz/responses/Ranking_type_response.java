@@ -167,7 +167,6 @@ public class Ranking_type_response extends AppCompatActivity {
                     DocumentSnapshot data = task.getResult();
                     if (data.exists()) {
                         group.removeAllViews();
-                        dialog.dismiss();
                         polldetails = data.toObject(PollDetails.class);
                         query_ranking.setText(polldetails.getQuestion());
                         options = polldetails.getMap();
@@ -184,12 +183,11 @@ public class Ranking_type_response extends AppCompatActivity {
                                         fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
                                     }
                                 } else {
-
+                                    Toast.makeText(Ranking_type_response.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                         setOptions();
-
                     }
                 }
             }
@@ -251,6 +249,23 @@ public class Ranking_type_response extends AppCompatActivity {
                 }
             });
 
+        }
+        dialog.dismiss();
+        if (polldetails != null) {
+            if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                new KAlertDialog(this,KAlertDialog.WARNING_TYPE)
+                        .setTitleText("This Live Poll has ended")
+                        .setCancelText("OK")
+                        .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                Intent intent1 = new Intent(Ranking_type_response.this, MainActivity.class);
+                                intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent1);
+                            }
+                        })
+                        .show();
+            }
         }
 
     }

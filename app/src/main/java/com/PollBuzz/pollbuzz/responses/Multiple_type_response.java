@@ -252,6 +252,23 @@ public class Multiple_type_response extends AppCompatActivity {
                                     }
                                 });
                                 i++;
+                                dialog.dismiss();
+                                if (polldetails != null) {
+                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                        new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
+                                                .setTitleText("This Live Poll has ended")
+                                                .setConfirmText("OK")
+                                                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(KAlertDialog kAlertDialog) {
+                                                        Intent intent1 = new Intent(Multiple_type_response.this, MainActivity.class);
+                                                        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        startActivity(intent1);
+                                                    }
+                                                })
+                                                .show();
+                                    }
+                                }
                             }
                         }
                     }

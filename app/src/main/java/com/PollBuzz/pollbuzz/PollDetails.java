@@ -1,6 +1,7 @@
 package com.PollBuzz.pollbuzz;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PollDetails {
@@ -13,10 +14,45 @@ public class PollDetails {
     private String username;
     private String pic;
     private String author_lc;
+    private boolean live;
     private Date created_date, expiry_date;
     private Map<String, Integer> map;
-    private Integer pollcount=0;
+    private Integer pollcount;
+    private long timestamp,seconds;
 
+    public PollDetails(){
+        question="";
+        poll_type="";
+        author="";
+        UID="";
+        authorUID="";
+        username="";
+        author_lc="";
+        live=false;
+        created_date=new Date();
+        expiry_date=new Date();
+        map=new HashMap<>();
+        pollcount=0;
+        timestamp=0;
+        seconds =0;
+
+    }
+
+    public long getSeconds() {
+        return seconds;
+    }
+
+    public void setSeconds(long seconds) {
+        this.seconds = seconds;
+    }
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(boolean live) {
+        this.live = live;
+    }
 
     public String getAuthor_lc() {
         return author_lc;
@@ -52,7 +88,7 @@ public class PollDetails {
     public void setPollcount(Integer pollcount) {
         this.pollcount = pollcount;
     }
-    private long timestamp;
+
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
