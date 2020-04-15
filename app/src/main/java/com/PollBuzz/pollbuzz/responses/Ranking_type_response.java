@@ -172,21 +172,25 @@ public class Ranking_type_response extends AppCompatActivity {
                         options = polldetails.getMap();
                         c = options.size();
                         author.setText(polldetails.getAuthor());
-                        fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                        if(fb.getUserId().equals(polldetails.getAuthorUID())){
+                            fav_author.setVisibility(View.GONE);
+                        }else {
+                            fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                        } else {
+                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        }
                                     } else {
-                                        fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        Toast.makeText(Ranking_type_response.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-                                } else {
-                                    Toast.makeText(Ranking_type_response.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        });
+                            });
+                        }
                         setOptions();
                     }
                 }

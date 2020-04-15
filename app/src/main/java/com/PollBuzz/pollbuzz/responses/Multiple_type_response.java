@@ -206,21 +206,25 @@ public class Multiple_type_response extends AppCompatActivity {
                             author.setText(polldetails.getAuthor());
                             group.removeAllViews();
                             response.clear();
-                            fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        DocumentSnapshot document = task.getResult();
-                                        if (document.exists()) {
-                                            fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                            if(fb.getUserId().equals(polldetails.getAuthorUID())){
+                                fav_author.setVisibility(View.GONE);
+                            }else {
+                                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                            } else {
+                                                fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                            }
                                         } else {
-                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
-                                        }
-                                    } else {
 
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
 
                             int i = 0;
                             for (Map.Entry<String, Integer> entry : options.entrySet()) {
