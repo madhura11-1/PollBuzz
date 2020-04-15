@@ -296,13 +296,13 @@ public class Image_type_responses extends AppCompatActivity {
 
                                 }
                                 dialog.dismiss();
+                                Date date = Calendar.getInstance().getTime();
                                 if (polldetails != null) {
                                     if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
-
+                                        polldetails.setLive(false);
                                         callkalert();
                                     }
-                                    Date date = Calendar.getInstance().getTime();
-                                    if(polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )
+                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 ))
                                     {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                                         intent.putExtra("UID",key);
@@ -328,9 +328,13 @@ public class Image_type_responses extends AppCompatActivity {
                 .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(KAlertDialog kAlertDialog) {
-                        Intent intent1 = new Intent(Image_type_responses.this, MainActivity.class);
-                        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent1);
+                        Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
+                        intent.putExtra("UID",key);
+                        intent.putExtra("type","PICTURE BASED");
+                        if(!f)
+                            intent.putExtra("flag",1);
+                        finish();
+                        startActivity(intent);
                     }
                 })
                 .show();

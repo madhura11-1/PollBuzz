@@ -419,6 +419,7 @@ public class Image_type_poll extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog.dismiss();
                 flagm = 0;
                 Toast.makeText(Image_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Image_type_poll.this, MainActivity.class);

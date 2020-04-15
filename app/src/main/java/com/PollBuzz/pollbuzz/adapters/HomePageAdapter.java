@@ -274,6 +274,10 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                         loader.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
+                    else{
+                        code_type.setError("Incorrect Poll ID");
+                        code_type.requestFocus();
+                    }
                 }
             }
         });
