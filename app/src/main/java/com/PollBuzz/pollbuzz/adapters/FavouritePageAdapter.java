@@ -288,7 +288,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
             holder.fav_author.setVisibility(View.GONE);
             holder.live.setVisibility(View.GONE);
-            if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
+            /*if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
             {
                 holder.fav_author.setVisibility(View.GONE);
             }
@@ -317,7 +317,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                         }
                     }
                 });
-            }
+            }*/
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             if (mPollDetails.get(position).getPoll_type() != null)
                 holder.card_type.setText(mPollDetails.get(position).getPoll_type());
