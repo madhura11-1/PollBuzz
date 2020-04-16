@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -29,8 +27,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,8 +46,6 @@ public class Multiple_type_result extends AppCompatActivity {
     Map<String, Object> response;
     Integer integer;
     firebase fb = new firebase();
-    PollDetails polldetails;
-    ImageView id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,22 +64,6 @@ public class Multiple_type_result extends AppCompatActivity {
         showDialog();
         retriveData(fb);
 
-        id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String y = polldetails.getPoll_accessID().toString();
-                new PowerMenu.Builder(Multiple_type_result.this)
-                        .setTextColor(R.color.black)
-                        .setTextSize(18)
-                        .setTextGravity(Gravity.CENTER)
-                        .setMenuRadius(10f) // sets the corner radius.
-                        .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
-                        .build()
-                        .showAsAnchorCenter(view);
-            }
-        });
-
     }
 
     private void retriveData(firebase fb) {
@@ -102,7 +80,7 @@ public class Multiple_type_result extends AppCompatActivity {
                             if (data.exists()) {
                                 group.removeAllViews();
                                 dialog.dismiss();
-                                polldetails = data.toObject(PollDetails.class);
+                                PollDetails polldetails = data.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion());
                                 options = polldetails.getMap();
                                 fb.getPollsCollection().document(key)
@@ -209,7 +187,6 @@ public class Multiple_type_result extends AppCompatActivity {
         group = findViewById(R.id.options);
         options = new HashMap<>();
         response = new HashMap<>();
-        id = findViewById(R.id.id1);
 
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Multiple_type_result.this);

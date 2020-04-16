@@ -34,7 +34,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.OnProgressListener;
@@ -135,8 +134,6 @@ public class ProfileSetUp extends AppCompatActivity {
         });
         save.setOnClickListener(view -> {
             closeKeyboard();
-            name.clearFocus();
-            Uname.clearFocus();
             saveProfile();
         });
     }
@@ -315,53 +312,30 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void createProfile(String nameS, String unameS, String bday) {
-        showDialog();
-        save.setEnabled(false);
-        fb.getUsersCollection().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    boolean flag = true;
-                    for (QueryDocumentSnapshot dS : task.getResult()) {
-                        if (unameS.equals(dS.get("username").toString())) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                    if (flag) {
-                        Map<String, String> data = new HashMap<>();
-                        data.put("name", nameS);
-                        data.put("username", unameS);
-                        data.put("birthdate", bday);
-                        data.put("age", String.valueOf(age));
-                        data.put("gender", gender);
-                        try {
-                            if (uri == null) {
-                                if (fb.getUser().getPhotoUrl() == null)
-                                    data.put("pic", null);
-                                else
-                                    data.put("pic", fb.getUser().getPhotoUrl().toString());
-                                addToDatabase(unameS, data);
-                            } else {
-                                addToStorage(unameS, data);
-                            }
-                        } catch (Exception e) {
-                            FirebaseCrashlytics.getInstance().log(e.getMessage());
-                        }
-                    } else {
-                        dialog.dismissWithAnimation();
-                        save.setEnabled(true);
-                        Uname.requestFocus();
-                        Toast.makeText(ProfileSetUp.this, "Please try different username!\nThis username already exists!", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(ProfileSetUp.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+        Map<String, String> data = new HashMap<>();
+        data.put("name", nameS);
+        data.put("username", unameS);
+        data.put("birthdate", bday);
+        data.put("age", String.valueOf(age));
+        data.put("gender", gender);
+        try {
+            if (uri == null) {
+                if (fb.getUser().getPhotoUrl() == null)
+                    data.put("pic", null);
+                else
+                    data.put("pic", fb.getUser().getPhotoUrl().toString());
+                addToDatabase(unameS, data);
+            } else {
+                addToStorage(unameS, data);
             }
-        });
+        } catch (Exception e) {
+            FirebaseCrashlytics.getInstance().log(e.getMessage());
+        }
     }
 
     private void addToDatabase(String unameS, Map<String, String> data) {
+        showDialog();
+        save.setEnabled(false);
         fb.getUserDocument()
                 .set(data)
                 .addOnCompleteListener(task -> {
@@ -384,6 +358,8 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void addToStorage(String unameS, Map<String, String> data) {
+        showDialog();
+
         StorageReference mRef = fb.getStorageReference().child("images/" + fb.getUserId());
         byte[] compressedImage = compressImage();
         if (compressedImage != null) {

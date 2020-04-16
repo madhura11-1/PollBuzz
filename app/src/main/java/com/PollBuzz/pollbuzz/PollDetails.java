@@ -44,7 +44,7 @@ public class PollDetails {
     }
 
     public void setPoll_accessID(String poll_accessID) {
-        this.poll_accessID = poll_accessID;
+        poll_accessID = poll_accessID;
     }
 
     public long getSeconds() {

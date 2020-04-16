@@ -93,7 +93,7 @@ public class Ranking_type_poll extends AppCompatActivity {
     String name,expirydate;
     TextInputEditText question_ranking;
     MaterialButton post_ranking;
-    int c, flagm = 0,yeari,monthi,dayi;
+    int c,flagm=0;
     long sec;
     RadioButton b;
     TextView page_title;
@@ -110,7 +110,6 @@ public class Ranking_type_poll extends AppCompatActivity {
     Date default_date;
     MaterialSpinner materialSpinner;
     ToggleButton toggleButton;
-    String alpha_numeric;
     private static final String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     @Override
@@ -238,9 +237,13 @@ public class Ranking_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
-                                String sday = Integer.toString(dayi +1);
-                                String smonth = Integer.toString(monthi);
-                                String sint = Integer.toString(yeari);
+                                Calendar cali = Calendar.getInstance();
+                                int year = cali.get(Calendar.YEAR);
+                                int month = cali.get(Calendar.MONTH) + 1;
+                                int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
+                                String sday = Integer.toString(day);
+                                String smonth = Integer.toString(month);
+                                String sint = Integer.toString(year);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
                                 addToDatabase(formatteddate);
                             }
@@ -269,9 +272,6 @@ public class Ranking_type_poll extends AppCompatActivity {
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 String date=day+"-"+(month+1)+"-"+year;
                                 expiry.setText(date);
-                                yeari = year;
-                                monthi = month + 1;
-                                dayi = day;
 
                             }
                         }, mYear, mMonth, mDay);
@@ -302,8 +302,6 @@ public class Ranking_type_poll extends AppCompatActivity {
                 else
                 {
                     polldetails.setExpiry_date(dateFormat.parse(expirydate));
-                    alpha_numeric = alpha_numeric(4);
-                    polldetails.setPoll_accessID("PB#"+alpha_numeric);
                 }
 
                 Map<String,Object> option=new HashMap<>();
@@ -476,7 +474,7 @@ public class Ranking_type_poll extends AppCompatActivity {
         final TextView code = dialog.findViewById(R.id.code);
         dialog.setCancelable(false);
 
-        alpha_numeric = alpha_numeric(4);
+        String alpha_numeric = alpha_numeric(4);
         Toast.makeText(activity, doc.getId(), Toast.LENGTH_SHORT).show();
         doc.update("poll_accessID","PB#"+alpha_numeric);
         code.setText("PB#"+alpha_numeric);

@@ -10,12 +10,10 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,8 +29,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,8 +49,6 @@ public class Ranking_type_result extends AppCompatActivity {
     TreeMap<String, Object> options;
     Integer integer;
     TextView poll_stats;
-    PollDetails polldetails;
-    ImageView id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,21 +68,6 @@ public class Ranking_type_result extends AppCompatActivity {
         setAuthStateListener();
         showDialog();
         retriveData(fb);
-        id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String y = polldetails.getPoll_accessID().toString();
-                new PowerMenu.Builder(Ranking_type_result.this)
-                        .setTextColor(R.color.black)
-                        .setTextSize(18)
-                        .setTextGravity(Gravity.CENTER)
-                        .setMenuRadius(10f) // sets the corner radius.
-                        .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
-                        .build()
-                        .showAsAnchorCenter(view);
-            }
-        });
 
     }
 
@@ -120,7 +99,8 @@ public class Ranking_type_result extends AppCompatActivity {
                             DocumentSnapshot data = task.getResult();
                             if (data.exists()) {
                                 group.removeAllViews();
-                                polldetails = data.toObject(PollDetails.class);
+
+                                PollDetails polldetails = data.toObject(PollDetails.class);
                                 query_ranking_result.setText(polldetails.getQuestion());
                                 fb.getPollsCollection().document(key).collection("Response").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
@@ -186,7 +166,6 @@ public class Ranking_type_result extends AppCompatActivity {
 
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Ranking_type_result.this);
-        id = findViewById(R.id.id1);
 
 
     }

@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,8 +35,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,7 +64,6 @@ public class Ranking_type_response extends AppCompatActivity {
     KAlertDialog dialog1;
     ArrayList<String> resp = new ArrayList<>();
     SpotsDialog dialog2;
-    ImageView id;
     int flag;
     Boolean f=false;
 
@@ -168,22 +163,6 @@ public class Ranking_type_response extends AppCompatActivity {
                 });
             }
         });
-
-        id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String y = polldetails.getPoll_accessID().toString();
-                new PowerMenu.Builder(Ranking_type_response.this)
-                        .setTextColor(R.color.black)
-                        .setTextSize(18)
-                        .setTextGravity(Gravity.CENTER)
-                        .setMenuRadius(10f) // sets the corner radius.
-                        .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
-                        .build()
-                        .showAsAnchorCenter(view);
-            }
-        });
     }
 
     private void retrieveData() {
@@ -253,7 +232,6 @@ public class Ranking_type_response extends AppCompatActivity {
         fb = new firebase();
         dialog1 = new KAlertDialog(Ranking_type_response.this, SweetAlertDialog.PROGRESS_TYPE);
         fav_author=findViewById(R.id.fav_author);
-        id = findViewById(R.id.id1);
         dialog2= new SpotsDialog(Ranking_type_response.this,R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
         author=findViewById(R.id.author);

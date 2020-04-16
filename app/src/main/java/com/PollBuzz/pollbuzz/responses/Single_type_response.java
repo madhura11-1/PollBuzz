@@ -1,17 +1,13 @@
 package com.PollBuzz.pollbuzz.responses;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -34,9 +30,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
-import com.skydoves.powermenu.MenuAnimation;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -64,7 +57,6 @@ public class Single_type_response extends AppCompatActivity {
     Map<String, Integer> update;
     KAlertDialog dialog1;
     ImageButton fav_author;
-    ImageView id;
     SpotsDialog dialog2;
     int flag;
 
@@ -161,22 +153,6 @@ public class Single_type_response extends AppCompatActivity {
                         }
                     }
                 });
-            }
-        });
-
-        id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String y = polldetails.getPoll_accessID().toString();
-                new PowerMenu.Builder(Single_type_response.this)
-                        .setTextColor(R.color.black)
-                        .setTextSize(18)
-                        .setTextGravity(Gravity.CENTER)
-                        .setMenuRadius(10f) // sets the corner radius.
-                        .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
-                        .build()
-                        .showAsAnchorCenter(view);
             }
         });
     }
@@ -350,7 +326,6 @@ public class Single_type_response extends AppCompatActivity {
         dialog2 = new SpotsDialog(Single_type_response.this, R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
         author = findViewById(R.id.author);
-        id = findViewById(R.id.id1);
         //dialog2.create();
     }
 
