@@ -81,7 +81,7 @@ public class PercentageResult extends AppCompatActivity {
     LinearLayout linearLayout;
     public static Double total;
     Dialog dialog;
-    MaterialButton result, pie_charts, selfVote;
+    MaterialButton result, pie_charts, selfVote,custom_stop;
     TextView vote_count,status;
     Typeface typeface;
     public static Map<String, Integer> data = new HashMap<>();
@@ -89,6 +89,7 @@ public class PercentageResult extends AppCompatActivity {
     Boolean flagVoted = true;
     ImageView shareButton,sharePoll;
     int from;
+    PollDetails pollDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +186,17 @@ public class PercentageResult extends AppCompatActivity {
                 startActivity(Intent.createChooser(sharingIntent, "Share link via"));
             }
         });
+
+        custom_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pollDetails.setLive(false);
+                fb.getPollsCollection().document(uid).update("live",false);
+                status.setText("Status : Expired");
+                Toast.makeText(PercentageResult.this, "Your Live Poll has Expired", Toast.LENGTH_SHORT).show();
+                custom_stop.setVisibility(View.GONE);
+            }
+        });
     }
 
     private int getType() {
@@ -231,7 +243,7 @@ public class PercentageResult extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
-                            PollDetails pollDetails = documentSnapshot.toObject(PollDetails.class);
+                            pollDetails = documentSnapshot.toObject(PollDetails.class);
                             question_percentage.setText(pollDetails.getQuestion());
                             question = pollDetails.getQuestion();
                             int l = "at 00:00:00 UTC+5:30".length();
@@ -251,8 +263,10 @@ public class PercentageResult extends AppCompatActivity {
                             {
                                 if(Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
                                     status.setText("Status : Expired");
-                                else
+                                else {
                                     status.setText("Status : Active");
+                                    custom_stop.setVisibility(View.VISIBLE);
+                                }
                             }
                             total = Double.valueOf(pollDetails.getPollcount());
                             String vote = "Total Voters:" + pollDetails.getPollcount();
@@ -613,6 +627,7 @@ public class PercentageResult extends AppCompatActivity {
         shareButton = findViewById(R.id.share_button);
         sharePoll=findViewById(R.id.share_poll);
         status=findViewById(R.id.status);
+        custom_stop = findViewById(R.id.custom_stop);
 
     }
 

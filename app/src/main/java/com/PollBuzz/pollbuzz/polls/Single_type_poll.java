@@ -139,6 +139,9 @@ public class Single_type_poll extends AppCompatActivity {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 flagm = 1;
+                if(item.equals("Custom Stop"))
+                    sec = Long.MAX_VALUE;
+                else
                 sec = Long.parseLong(item);
             }
         });
@@ -392,7 +395,7 @@ public class Single_type_poll extends AppCompatActivity {
         registerForContextMenu(option2);
         toggleButton = findViewById(R.id.toggle);
         materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
-        materialSpinner.setItems("30", "60", "90");
+        materialSpinner.setItems("30", "60", "90","Custom Stop");
         expiry = findViewById(R.id.expiry_date);
         if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
