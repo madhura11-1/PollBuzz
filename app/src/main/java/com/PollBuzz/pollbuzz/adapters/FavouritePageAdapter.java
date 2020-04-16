@@ -286,7 +286,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
         try {
             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
-            holder.fav_author.setVisibility(View.VISIBLE);
+            holder.fav_author.setVisibility(View.GONE);
             holder.live.setVisibility(View.GONE);
             if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
             {
@@ -423,8 +423,10 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
             fav_author=itemView.findViewById(R.id.fav_author);
+            fav_author.setVisibility(View.GONE);
             live = itemView.findViewById(R.id.live);
             cardV=itemView.findViewById(R.id.cardV);
+
         }
     }
 }
