@@ -17,11 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.responses.Image_type_responses;
-import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
-import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
-import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -80,30 +77,26 @@ public class NotificationService extends FirebaseMessagingService {
         String title = "New Poll By " + username + "!";
         String message = pollTitle;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent intent;
-            firebase fb = new firebase();
-
-            if (fb.getUser() == null) {
-                intent = new Intent(getApplicationContext(), LoginSignupActivity.class);
-            } else {
-                switch (type) {
-                    case "SINGLE CHOICE":
-                        intent = new Intent(getApplicationContext(), Single_type_response.class);
-                        break;
-                    case "MULTI SELECT":
-                        intent = new Intent(getApplicationContext(), Multiple_type_response.class);
-                        break;
-                    case "RANKED":
-                        intent = new Intent(getApplicationContext(), Ranking_type_response.class);
-                        break;
-                    case "PICTURE BASED":
-                        intent = new Intent(getApplicationContext(), Image_type_responses.class);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + type);
-                }
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            String type_int = null;
+            switch (type) {
+                case "SINGLE CHOICE":
+                    type_int = "0";
+                    break;
+                case "MULTI SELECT":
+                    type_int = "1";
+                    break;
+                case "RANKED":
+                    type_int = "2";
+                    break;
+                case "PICTURE BASED":
+                    type_int = "3";
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
             }
-            intent.putExtra("UID", pollId);
+            intent.putExtra(MainActivity.PARAMS_UID, pollId);
+            intent.putExtra(MainActivity.PARAMS_TYPE, type_int);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -129,29 +122,26 @@ public class NotificationService extends FirebaseMessagingService {
             channel.setDescription("Desc");
             notificationManager.notify(id /* ID of notification */, notificationBuilder.build());
         } else {
-            Intent intent;
-            firebase fb = new firebase();
-            if (fb.getUser() == null) {
-                intent = new Intent(getApplicationContext(), LoginSignupActivity.class);
-            } else {
-                switch (type) {
-                    case "SINGLE CHOICE":
-                        intent = new Intent(getApplicationContext(), Single_type_response.class);
-                        break;
-                    case "MULTI SELECT":
-                        intent = new Intent(getApplicationContext(), Multiple_type_response.class);
-                        break;
-                    case "RANKED":
-                        intent = new Intent(getApplicationContext(), Ranking_type_response.class);
-                        break;
-                    case "PICTURE BASED":
-                        intent = new Intent(getApplicationContext(), Image_type_responses.class);
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + type);
-                }
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            String type_int = null;
+            switch (type) {
+                case "SINGLE CHOICE":
+                    type_int = "0";
+                    break;
+                case "MULTI SELECT":
+                    type_int = "1";
+                    break;
+                case "RANKED":
+                    type_int = "2";
+                    break;
+                case "PICTURE BASED":
+                    type_int = "3";
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
             }
-            intent.putExtra("UID", pollId);
+            intent.putExtra(MainActivity.PARAMS_UID, pollId);
+            intent.putExtra(MainActivity.PARAMS_TYPE, type_int);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, id /* Request code */, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);

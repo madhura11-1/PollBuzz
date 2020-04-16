@@ -1,9 +1,7 @@
 package com.PollBuzz.pollbuzz.responses;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -34,7 +32,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
-import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
@@ -83,7 +80,10 @@ public class Single_type_response extends AppCompatActivity {
         setActionBarFunctionality();
         showDialog();
         retrieveData(fb);
+        setListeners();
+    }
 
+    private void setListeners() {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,9 +292,10 @@ public class Single_type_response extends AppCompatActivity {
                                                     i.putExtra("type", "SINGLE CHOICE");
                                                     if (!finalF)
                                                         i.putExtra("flag", 1);
-                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     i.putExtra("from", 1);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(i);
+                                                    finish();
                                                 }
                                             })
                                             .show();
@@ -304,9 +305,10 @@ public class Single_type_response extends AppCompatActivity {
                                     i.putExtra("type", "SINGLE CHOICE");
                                     if (!f)
                                         i.putExtra("flag", 1);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     i.putExtra("from", 1);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
+                                    finish();
                                 }
 
                             }
@@ -372,15 +374,6 @@ public class Single_type_response extends AppCompatActivity {
         dialog1.setTitleText("Uploading your response");
         dialog1.setCancelable(false);
         dialog1.show();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent1 = new Intent(Single_type_response.this, MainActivity.class);
-        intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent1);
-
     }
 
 }

@@ -330,8 +330,9 @@ public class Image_type_responses extends AppCompatActivity {
                                         intent.putExtra("type","PICTURE BASED");
                                         if(!f)
                                             intent.putExtra("flag",1);
-                                        finish();
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
+                                        finish();
                                     }
 
                                 }

@@ -300,8 +300,9 @@ public class Ranking_type_response extends AppCompatActivity {
                                 i.putExtra("type","RANKED");
                                 if(!f)
                                     i.putExtra("flag",1);
-                                finish();
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(i);
+                                finish();
                             }
                         })
                         .show();
@@ -313,8 +314,9 @@ public class Ranking_type_response extends AppCompatActivity {
                 i.putExtra("type","RANKED");
                 if(!f)
                     i.putExtra("flag",1);
-                finish();
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
+                finish();
             }
         }
 
