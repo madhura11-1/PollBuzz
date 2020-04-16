@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -19,11 +21,14 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +50,7 @@ public class Single_type_result extends AppCompatActivity {
     Map<String, Object> response;
     Integer integer;
     PollDetails polldetails;
+    ImageView id;
 
 
     @Override
@@ -63,6 +69,22 @@ public class Single_type_result extends AppCompatActivity {
         setAuthStateListener();
         showDialog();
         retrivedata(fb);
+
+        id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String y = polldetails.getPoll_accessID().toString();
+                new PowerMenu.Builder(Single_type_result.this)
+                        .setTextColor(R.color.black)
+                        .setTextSize(18)
+                        .setTextGravity(Gravity.CENTER)
+                        .setMenuRadius(10f) // sets the corner radius.
+                        .setMenuShadow(10f)
+                        .addItem(new PowerMenuItem(y,false))
+                        .build()
+                        .showAsAnchorCenter(view);
+            }
+        });
     }
 
     private void retrivedata(firebase fb) {
@@ -154,6 +176,7 @@ public class Single_type_result extends AppCompatActivity {
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Single_type_result.this);
         poll_stats = view.findViewById(R.id.poll_stats);
+        id = findViewById(R.id.id1);
     }
 
     private void showDialog() {
