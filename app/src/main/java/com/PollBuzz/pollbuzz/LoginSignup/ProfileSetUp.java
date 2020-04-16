@@ -349,7 +349,7 @@ public class ProfileSetUp extends AppCompatActivity {
                     } else {
                         dialog.dismissWithAnimation();
                         save.setEnabled(true);
-                        Toast.makeText(ProfileSetUp.this, "This username already exists!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProfileSetUp.this, "Please try different username!\nThis username already exists!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(ProfileSetUp.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
