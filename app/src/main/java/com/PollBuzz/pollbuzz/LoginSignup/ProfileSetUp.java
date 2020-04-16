@@ -381,8 +381,6 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void addToStorage(String unameS, Map<String, String> data) {
-        showDialog();
-
         StorageReference mRef = fb.getStorageReference().child("images/" + fb.getUserId());
         byte[] compressedImage = compressImage();
         if (compressedImage != null) {
