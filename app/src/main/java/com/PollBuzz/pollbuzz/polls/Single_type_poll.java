@@ -86,13 +86,14 @@ public class Single_type_poll extends AppCompatActivity {
     Button add;
     RadioGroup group;
     String name, expirydate;
-    int c, flagm = 0;
+    int c, flagm = 0,yeari,monthi,dayi;
     long sec;
     RadioButton b;
     TextInputEditText question;
     DatePickerDialog datePickerDialog;
     MaterialButton button;
     TextView text1;
+    String alpha_numeric;
     Date date = Calendar.getInstance().getTime();
     firebase fb;
     ImageButton home, logout;
@@ -206,13 +207,9 @@ public class Single_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate)) >= 0) {
-                                Calendar cali = Calendar.getInstance();
-                                int year = cali.get(Calendar.YEAR);
-                                int month = cali.get(Calendar.MONTH) + 1;
-                                int day = cali.get(Calendar.DAY_OF_MONTH) + 1;
-                                String sday = Integer.toString(day);
-                                String smonth = Integer.toString(month);
-                                String sint = Integer.toString(year);
+                                String sday = Integer.toString(dayi +1);
+                                String smonth = Integer.toString(monthi);
+                                String sint = Integer.toString(yeari);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
                                 addToDatabase(formattedDate);
                             }
@@ -240,7 +237,9 @@ public class Single_type_poll extends AppCompatActivity {
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 String date = day + "-" + (month + 1) + "-" + year;
                                 expiry.setText(date);
-
+                                yeari = year;
+                                monthi = month + 1;
+                                dayi = day;
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
@@ -267,6 +266,8 @@ public class Single_type_poll extends AppCompatActivity {
                     polldetails.setSeconds(sec);
                 } else {
                     polldetails.setExpiry_date(df.parse(expirydate));
+                    alpha_numeric = alpha_numeric(4);
+                    polldetails.setPoll_accessID("PB#"+alpha_numeric);
                 }
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
@@ -414,7 +415,7 @@ public class Single_type_poll extends AppCompatActivity {
         final TextView code = dialog.findViewById(R.id.code);
         dialog.setCancelable(false);
 
-        String alpha_numeric = alpha_numeric(4);
+        alpha_numeric = alpha_numeric(4);
         doc.update("poll_accessID", "PB#" + alpha_numeric);
         code.setText("PB#" + alpha_numeric);
 
