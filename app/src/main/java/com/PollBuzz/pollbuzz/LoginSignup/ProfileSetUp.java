@@ -135,6 +135,8 @@ public class ProfileSetUp extends AppCompatActivity {
         });
         save.setOnClickListener(view -> {
             closeKeyboard();
+            name.clearFocus();
+            Uname.clearFocus();
             saveProfile();
         });
     }
@@ -349,6 +351,7 @@ public class ProfileSetUp extends AppCompatActivity {
                     } else {
                         dialog.dismissWithAnimation();
                         save.setEnabled(true);
+                        Uname.requestFocus();
                         Toast.makeText(ProfileSetUp.this, "Please try different username!\nThis username already exists!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
