@@ -430,47 +430,52 @@ public class FavouriteFeed extends Fragment {
         polldetails.setUID(dS.getId());
         fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                DocumentSnapshot document=task.getResult();
+                DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                        fb.getPollsCollection().document(dS.getId()).collection("Response").document(fb.getUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                Boolean flag = Boolean.FALSE;
-                                DocumentSnapshot document1=task.getResult();
-                                if(!document1.exists())
-                                    flag=Boolean.TRUE;
-                                if (flagFirst)
-                                    recyclerView.hideShimmerAdapter();
-                                if (flag) {
-                                    fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
-                                        if (task1.isSuccessful() && task1.getResult() != null) {
-                                            if (task1.getResult().get("pic") != null)
-                                                polldetails.setPic(task1.getResult().get("pic").toString());
-                                            else
-                                                polldetails.setPic(null);
-                                            polldetails.setUsername(task1.getResult().get("username").toString());
-                                            arrayList.add(polldetails);
-                                            Log.d("ArraySize", arrayList.size() + "");
-                                            Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
-                                            viewed.setVisibility(View.GONE);
-                                            adapter.notifyDataSetChanged();
-                                            flagFetch = true;
-                                            if (flagFirst) {
-                                                recyclerView.hideShimmerAdapter();
-                                                recyclerView.scheduleLayoutAnimation();
-                                                flagFirst = false;
-                                            }
-                                        } else {
-                                            Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    fb.getPollsCollection().document(dS.getId()).collection("Response").document(fb.getUserId()).get().addOnCompleteListener(task12 -> {
+                        if (task12.isSuccessful() && task12.getResult() != null) {
+                            if (!task12.getResult().exists()) {
+                                fb.getUsersCollection().document(dS.get("authorUID").toString()).get().addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful() && task1.getResult() != null) {
+                                        if (task1.getResult().get("pic") != null)
+                                            polldetails.setPic(task1.getResult().get("pic").toString());
+                                        else
+                                            polldetails.setPic(null);
+                                        polldetails.setUsername(task1.getResult().get("username").toString());
+                                        arrayList.add(polldetails);
+                                        Log.d("ArraySize", arrayList.size() + "");
+                                        Collections.sort(arrayList, (pollDetails, t1) -> Long.compare(t1.getTimestamp(), pollDetails.getTimestamp()));
+                                        viewed.setVisibility(View.GONE);
+                                        adapter.notifyDataSetChanged();
+                                        flagFetch = true;
+                                        if (flagFirst) {
+                                            recyclerView.hideShimmerAdapter();
+                                            recyclerView.scheduleLayoutAnimation();
+                                            flagFirst = false;
                                         }
-                                    });
+                                    } else {
+                                        Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                if (flagFirst) {
+                                    recyclerView.hideShimmerAdapter();
+                                    flagFirst = false;
+                                    viewed.setText("There are no polls around...");
+                                    viewed.setVisibility(View.VISIBLE);
                                 }
                             }
-                        });
+                        }
+                    });
 
+                } else {
+                    if (flagFirst) {
+                        recyclerView.hideShimmerAdapter();
+                        flagFetch = false;
+                        viewed.setText("There are no polls around...");
+                        viewed.setVisibility(View.VISIBLE);
                     }
-
-
+                }
             }
         });
     }
