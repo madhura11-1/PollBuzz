@@ -80,7 +80,7 @@ public class Multiple_type_result extends AppCompatActivity {
                         .setTextGravity(Gravity.CENTER)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -93,41 +93,38 @@ public class Multiple_type_result extends AppCompatActivity {
         fb.getPollsCollection()
                 .document(key)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
+                .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
 
-                            DocumentSnapshot data = task.getResult();
-                            if (data.exists()) {
-                                group.removeAllViews();
-                                dialog.dismiss();
-                                polldetails = data.toObject(PollDetails.class);
-                                query.setText(polldetails.getQuestion());
-                                options = polldetails.getMap();
-                                fb.getPollsCollection().document(key)
-                                        .collection("Response").document(uid)
-                                        .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                if (task.isSuccessful()) {
-                                                    DocumentSnapshot data = task.getResult();
-                                                    if (data.exists()) {
-                                                        response = data.getData();
-                                                        setOptions();
-                                                    }
+                                DocumentSnapshot data = task.getResult();
+                                if (data.exists()) {
+                                    group.removeAllViews();
+                                    polldetails = data.toObject(PollDetails.class);
+                                    query.setText(polldetails.getQuestion());
+                                    options = polldetails.getMap();
+                                    fb.getPollsCollection().document(key)
+                                            .collection("Response").document(uid)
+                                            .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot data = task.getResult();
+                                                if (data.exists()) {
+                                                    response = data.getData();
+                                                    setOptions();
                                                 }
-
                                             }
-                                        });
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
+                            }else{
+                                dialog.dismiss();
                             }
+
                         }
-
-                    }
-                }
-        );
-   group.setEnabled(false);
-
+                );
+        group.setEnabled(false);
     }
 
     private void setAuthStateListener() {
@@ -214,7 +211,7 @@ public class Multiple_type_result extends AppCompatActivity {
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.didact_gothic);
         dialog = new Dialog(Multiple_type_result.this);
         auth = FirebaseAuth.getInstance();
-        poll_stats=view.findViewById(R.id.poll_stats);
+        poll_stats = view.findViewById(R.id.poll_stats);
         poll_stats.setClickable(true);
 
     }
@@ -223,10 +220,10 @@ public class Multiple_type_result extends AppCompatActivity {
         poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(Multiple_type_result.this,PercentageResult.class);
-                i.putExtra("UID",key);
-                i.putExtra("type","MULTI SELECT");
-                i.putExtra("flag",1);
+                Intent i = new Intent(Multiple_type_result.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "MULTI SELECT");
+                i.putExtra("flag", 1);
                 startActivity(i);
 
             }

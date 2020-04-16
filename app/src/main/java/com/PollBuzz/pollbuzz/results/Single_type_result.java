@@ -98,7 +98,6 @@ public class Single_type_result extends AppCompatActivity {
                             DocumentSnapshot data = task.getResult();
                             if (data.exists()) {
                                 group.removeAllViews();
-                                dialog.dismiss();
                                 polldetails = data.toObject(PollDetails.class);
                                 query.setText(polldetails.getQuestion());
                                 options = polldetails.getMap();
@@ -111,6 +110,7 @@ public class Single_type_result extends AppCompatActivity {
                                                 response = data.getData();
                                                 setOptions();
                                             }
+                                            dialog.dismiss();
                                         }
                                     }
                                 });

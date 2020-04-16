@@ -31,7 +31,6 @@ public class DeepLinkActivity extends AppCompatActivity {
             UID = code.substring(1);
         }
         startIntent(UID, type);
-        //startIntent(UID,type);
     }
 
     private void startIntent(String uid, String type) {

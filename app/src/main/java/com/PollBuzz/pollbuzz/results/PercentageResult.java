@@ -79,15 +79,15 @@ public class PercentageResult extends AppCompatActivity {
     int flag;
     Map<String, Integer> map;
     LinearLayout linearLayout;
-    public static Double total;
+    public static int total;
     Dialog dialog;
-    MaterialButton result, pie_charts, selfVote,custom_stop;
-    TextView vote_count,status;
+    MaterialButton result, pie_charts, selfVote, custom_stop;
+    TextView vote_count, status;
     Typeface typeface;
     public static Map<String, Integer> data = new HashMap<>();
     public static String question;
     Boolean flagVoted = true;
-    ImageView shareButton,sharePoll;
+    ImageView shareButton, sharePoll;
     int from;
     PollDetails pollDetails;
 
@@ -177,8 +177,8 @@ public class PercentageResult extends AppCompatActivity {
         sharePoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int type=getType();
-                String shareBody = "https://pollbuzz.com/share/"+type+uid;
+                int type = getType();
+                String shareBody = "https://pollbuzz.com/share/" + type + uid;
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
@@ -191,7 +191,7 @@ public class PercentageResult extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 pollDetails.setLive(false);
-                fb.getPollsCollection().document(uid).update("live",false);
+                fb.getPollsCollection().document(uid).update("live", false);
                 status.setText("Status : Expired");
                 Toast.makeText(PercentageResult.this, "Your Live Poll has Expired", Toast.LENGTH_SHORT).show();
                 custom_stop.setVisibility(View.GONE);
@@ -252,23 +252,20 @@ public class PercentageResult extends AppCompatActivity {
                             date_percentage.setText(d);
                             map = pollDetails.getMap();
                             Date date1 = Calendar.getInstance().getTime();
-                            if(!pollDetails.isLive())
-                            {
-                                if(pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                            if (!pollDetails.isLive()) {
+                                if (pollDetails.getExpiry_date().compareTo(date1) >= 0)
                                     status.setText("Status : Active");
                                 else
                                     status.setText("Status : Expired");
-                            }
-                            else
-                            {
-                                if(Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
+                            } else {
+                                if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
                                     status.setText("Status : Expired");
                                 else {
                                     status.setText("Status : Active");
                                     custom_stop.setVisibility(View.VISIBLE);
                                 }
                             }
-                            total = Double.valueOf(pollDetails.getPollcount());
+                            total = pollDetails.getPollcount();
                             String vote = "Total Voters:" + pollDetails.getPollcount();
                             vote_count.setText(vote);
                             fb.getPollsCollection().document(uid).collection("Response").get().addOnCompleteListener(task1 -> {
@@ -290,7 +287,7 @@ public class PercentageResult extends AppCompatActivity {
                                 }
                                 setProgressbar(map);
                             });
-                        } else{
+                        } else {
                             Log.d("PercentageResult", Objects.requireNonNull(task.getException().getMessage()));
                         }
                     }
@@ -346,7 +343,7 @@ public class PercentageResult extends AppCompatActivity {
                 voted_by.setTypeface(typeface);
                 int v_by;
                 if (total != 0) {
-                    per = (int) ((entry.getValue() / total) * 100);
+                    per = (int) ((entry.getValue() / Double.valueOf(total)) * 100);
                     textView.setText(per + "%");
                     progressBar.setProgress(per);
                     v_by = entry.getValue();
@@ -424,8 +421,7 @@ public class PercentageResult extends AppCompatActivity {
                 Integer per;
                 Log.d("option", entry.getKey());
                 if (total != 0) {
-
-                    per = (int) ((entry.getValue() / total) * 100);
+                    per = (int) ((entry.getValue() / Double.valueOf(total)) * 100);
                     v_by = entry.getValue();
                     String text = "Voted by: " + v_by;
                     voted_by.setText(text);
@@ -605,7 +601,7 @@ public class PercentageResult extends AppCompatActivity {
         }
         if (flag == 2)
             selfVote.setVisibility(View.GONE);
-        from=intent.getIntExtra("from",0);
+        from = intent.getIntExtra("from", 0);
 
 
     }
@@ -625,8 +621,8 @@ public class PercentageResult extends AppCompatActivity {
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
         pie_charts = findViewById(R.id.pie);
         shareButton = findViewById(R.id.share_button);
-        sharePoll=findViewById(R.id.share_poll);
-        status=findViewById(R.id.status);
+        sharePoll = findViewById(R.id.share_poll);
+        status = findViewById(R.id.status);
         custom_stop = findViewById(R.id.custom_stop);
 
     }
@@ -704,11 +700,11 @@ public class PercentageResult extends AppCompatActivity {
             return false;
         }
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(from==1)
-        {
+        if (from == 1) {
             Intent intent1 = new Intent(PercentageResult.this, MainActivity.class);
             intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent1);

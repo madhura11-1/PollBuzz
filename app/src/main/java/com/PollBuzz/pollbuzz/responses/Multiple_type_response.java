@@ -308,8 +308,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                                 })
                                                 .show();
                                     }
-                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 ))
-                                    {
+                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 )) {
                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                         intent.putExtra("UID",key);
                                         intent.putExtra("type","MULTI SELECT");

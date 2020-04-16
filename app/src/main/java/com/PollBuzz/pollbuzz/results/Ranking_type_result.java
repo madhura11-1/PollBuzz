@@ -130,8 +130,6 @@ public class Ranking_type_result extends AppCompatActivity {
                                             if (documentSnapshot != null) {
                                                 response = documentSnapshot.getData();
                                                 setAccordingToPriority();
-
-
                                             }
                                         }
 
@@ -209,12 +207,8 @@ public class Ranking_type_result extends AppCompatActivity {
                 String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
                 v.setText(s);
             }
-
-
-
         }
         dialog.dismiss();
-
     }
 
     private void showDialog()
