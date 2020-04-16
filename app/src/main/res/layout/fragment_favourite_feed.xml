@@ -28,12 +28,12 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_weight="2"
             android:fontFamily="@font/fascinate_inline"
             android:gravity="center"
-            android:text="@string/home_feed_title"
+            android:text="Favourite Author Polls"
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="40sp" />
