@@ -37,6 +37,10 @@
             android:textAlignment="center"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="40sp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/search"
@@ -48,6 +52,17 @@
             android:background="@color/white"
             android:padding="5dp"
             />
+            <ImageButton
+                android:id="@+id/visit_authors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_authors_dark_24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:padding="5dp"
+                />
+        </LinearLayout>
 
 
     </LinearLayout>

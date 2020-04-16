@@ -26,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,7 +65,7 @@ public class FavouriteFeed extends Fragment {
     private firebase fb;
     private LayoutAnimationController controller;
     MaterialTextView viewed;
-    private ImageButton search, check, back1, back2;
+    private ImageButton search, check, back1, back2, visit_authors;
     private String name = "";
     private Button search_button;
     private TextView starting, ending;
@@ -100,6 +102,18 @@ public class FavouriteFeed extends Fragment {
     }
 
     private void setListeners() {
+        visit_authors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String backStateName = getClass().getName();
+                Fragment authors_feed=new FavouriteAuthorFeed();
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction =        fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.container, authors_feed);
+                fragmentTransaction.addToBackStack(backStateName);
+                fragmentTransaction.commit();
+            }
+        });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -486,6 +500,7 @@ public class FavouriteFeed extends Fragment {
         search_type = view.findViewById(R.id.search_type);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
+        visit_authors=view.findViewById(R.id.visit_authors);
     }
 
     private void showPopup(View v) {
