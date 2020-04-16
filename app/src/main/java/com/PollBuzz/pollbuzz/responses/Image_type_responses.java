@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,6 +36,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -62,6 +65,7 @@ public class Image_type_responses extends AppCompatActivity {
     PollDetails polldetails;
     KAlertDialog dialog1;
     SpotsDialog dialog2;
+    ImageView id;
     Boolean f=false;
     int flag;
 
@@ -190,6 +194,22 @@ public class Image_type_responses extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String y = polldetails.getPoll_accessID().toString();
+                new PowerMenu.Builder(Image_type_responses.this)
+                        .setTextColor(R.color.black)
+                        .setTextGravity(Gravity.CENTER)
+                        .setTextSize(18)
+                        .setMenuRadius(10f) // sets the corner radius.
+                        .setMenuShadow(10f)
+                        .addItem(new PowerMenuItem(y,false))
+                        .build()
+                        .showAsAnchorCenter(view);
             }
         });
 
@@ -375,6 +395,7 @@ public class Image_type_responses extends AppCompatActivity {
         b1 = findViewById(R.id.option1);
         b2 = findViewById(R.id.option2);
         fb = new firebase();
+        id = findViewById(R.id.id1);
         dialog1 = new KAlertDialog(Image_type_responses.this, SweetAlertDialog.PROGRESS_TYPE);
         fav_author=findViewById(R.id.fav_author);
         dialog2= new SpotsDialog(Image_type_responses.this,R.style.Custom);

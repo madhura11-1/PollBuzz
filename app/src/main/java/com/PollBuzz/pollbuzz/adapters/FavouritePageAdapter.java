@@ -134,7 +134,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
         });
-        holder.fav_author.setOnClickListener(new View.OnClickListener() {
+        /*holder.fav_author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -157,14 +157,14 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
-                                            /*FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                            *//*FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<InstanceIdResult> task) {
                                                     if(task.isSuccessful()){
                                                         Log.d("InstanceId",task.getResult().getToken());
                                                     }
                                                 }
-                                            });*/
+                                            });*//*
                                             FirebaseMessaging.getInstance().unsubscribeFromTopic(mPollDetails.get(position).getAuthorUID())
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
@@ -235,7 +235,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                     }
                 });
             }
-        });
+        });*/
     }
 
     private void showcodedialog(String uid, int position) {
