@@ -79,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     newFragment(new HomeFeed(), "0");
                     break;
-                case 2:
+                case 1:
                     newFragment(new FavouriteFeed(), "1");
                     break;
-                case 1:
+                case 2:
                     newFragment(new VotedFeed(), "2");
                     break;
                 case 3:
