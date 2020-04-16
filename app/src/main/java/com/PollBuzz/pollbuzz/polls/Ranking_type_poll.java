@@ -147,6 +147,9 @@ public class Ranking_type_poll extends AppCompatActivity {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
 
                 flagm = 1;
+                if(item.equals("Custom Stop"))
+                    sec = Long.MAX_VALUE;
+                else
                 sec = Long.parseLong(item);
 
             }

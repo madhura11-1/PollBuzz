@@ -300,6 +300,7 @@ public class Image_type_responses extends AppCompatActivity {
                                 if (polldetails != null) {
                                     if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                         polldetails.setLive(false);
+                                        fb.getPollsCollection().document(key).update("live", false);
                                         callkalert();
                                     }
                                     else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 ))

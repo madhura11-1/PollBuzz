@@ -268,6 +268,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                 if (polldetails != null) {
                                     if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                         polldetails.setLive(false);
+                                        fb.getPollsCollection().document(key).update("live", false);
                                         new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
                                                 .setTitleText("This Live Poll has ended")
                                                 .setConfirmText("OK")
