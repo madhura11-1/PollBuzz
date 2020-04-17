@@ -247,7 +247,7 @@ public class Image_type_responses extends AppCompatActivity {
                             dialog1.dismissWithAnimation();
                             Toast.makeText(Image_type_responses.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                             Intent i1 = new Intent(Image_type_responses.this, MainActivity.class);
-                            i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i1);
                         } else {
                             dialog1.dismissWithAnimation();

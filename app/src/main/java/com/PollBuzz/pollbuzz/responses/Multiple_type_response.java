@@ -202,7 +202,7 @@ public class Multiple_type_response extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(Multiple_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(Multiple_type_response.this, MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 })
                 .addOnFailureListener(new OnFailureListener() {

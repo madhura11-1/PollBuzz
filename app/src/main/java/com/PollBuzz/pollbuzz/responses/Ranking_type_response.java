@@ -395,6 +395,7 @@ public class Ranking_type_response extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Successfully submitted your response", Toast.LENGTH_LONG).show();
                             Intent i = new Intent(Ranking_type_response.this, MainActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         } else {
                             dialog1.dismissWithAnimation();

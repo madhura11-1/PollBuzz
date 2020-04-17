@@ -204,6 +204,7 @@ public class Single_type_response extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(Single_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(Single_type_response.this, MainActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
                                 }
                             })
