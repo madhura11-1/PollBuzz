@@ -27,9 +27,10 @@
             android:id="@+id/linear_id_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="10dp"
             android:orientation="horizontal"
-            android:visibility="invisible"
+            android:visibility="gone"
             >
 
             <EditText
@@ -46,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
                 android:background="@color/colorPrimaryDark"
                 android:text="Search"
                 app:cornerRadius="20dp" />
@@ -55,7 +55,7 @@
             <ImageButton
                 android:id="@+id/id_search_back"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_chevron_right_black_24dp"
                 android:background="@color/white"
                 android:layout_alignParentEnd="true"
@@ -72,13 +72,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-      >
+        android:layout_marginTop="5dp"
+        >
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_weight="4"
             android:fontFamily="@font/fascinate_inline"
             android:gravity="center"
@@ -93,19 +93,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="0.5"
             android:background="@color/white"
-            android:padding="5dp"
+            android:padding="10dp"
             android:src="@drawable/ic_filter_list_dark_24dp" />
 
         <ImageButton
+            android:tooltipText="Quick Search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/id_search"
+            android:padding="10dp"
             android:src="@drawable/ic_chevron_left_black_24dp"
             android:background="@color/white"
-            android:layout_gravity="center"
-            android:layout_weight="0.5"/>
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
