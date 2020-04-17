@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -87,7 +88,7 @@ public class PercentageResult extends AppCompatActivity {
     public static Map<String, Integer> data = new HashMap<>();
     public static String question;
     Boolean flagVoted = true;
-    ImageView shareButton, sharePoll;
+    ImageView shareImage, sharePoll;
     int from;
     PollDetails pollDetails;
 
@@ -149,8 +150,8 @@ public class PercentageResult extends AppCompatActivity {
             }
         });
 
-        shareButton.setOnClickListener(v -> {
-            shareButton.setEnabled(false);
+        shareImage.setOnClickListener(v -> {
+            shareImage.setEnabled(false);
             try {
                 Dexter.withActivity(this)
                         .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -181,6 +182,10 @@ public class PercentageResult extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("timestamp", Timestamp.now().toDate().toString());
+                    bundle.putString("UID",uid);
+                    FirebaseAnalytics.getInstance(PercentageResult.this).logEvent("linkShared", bundle);
                     int type = getType();
                     String shareBody = "https://pollbuzz.com/share/" + type + uid;
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -625,7 +630,7 @@ public class PercentageResult extends AppCompatActivity {
         dialog = new Dialog(PercentageResult.this);
         typeface = ResourcesCompat.getFont(getApplicationContext(), R.font.maven_pro);
         pie_charts = findViewById(R.id.pie);
-        shareButton = findViewById(R.id.share_button);
+        shareImage = findViewById(R.id.share_button);
         sharePoll = findViewById(R.id.share_poll);
         status = findViewById(R.id.status);
         custom_stop = findViewById(R.id.custom_stop);
@@ -647,7 +652,7 @@ public class PercentageResult extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
-            shareButton.setEnabled(true);
+            shareImage.setEnabled(true);
             shareScreenshot(file);
         } catch (Throwable e) {
             e.printStackTrace();
@@ -655,6 +660,10 @@ public class PercentageResult extends AppCompatActivity {
     }
 
     private void shareScreenshot(File imageFile) {
+        Bundle bundle = new Bundle();
+        bundle.putString("timestamp", Timestamp.now().toDate().toString());
+        bundle.putString("UID",uid);
+        FirebaseAnalytics.getInstance(this).logEvent("screenshotShared", bundle);
         Intent intent = new Intent(Intent.ACTION_SEND);
         Uri imageuri;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
