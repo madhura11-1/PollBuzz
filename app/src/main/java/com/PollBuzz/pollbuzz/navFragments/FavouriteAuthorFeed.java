@@ -163,6 +163,7 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
                     }
                 } else {
                     recyclerView.hideShimmerAdapter();
+                    viewed.setText("You have no favourite authors.");
                     viewed.setVisibility(View.VISIBLE);
                 }
         });
@@ -171,7 +172,7 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
     private void setGlobals(View view) {
         arrayList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerview);
-        adapter = new FavouriteAuthorAdapter(getContext(), arrayList,this);
+        adapter = new FavouriteAuthorAdapter(getContext(), arrayList, this);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -179,7 +180,7 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
         recyclerView.setAdapter(adapter);
         recyclerView.showShimmerAdapter();
         viewed = view.findViewById(R.id.viewed);
-        search=view.findViewById(R.id.search);
+        search = view.findViewById(R.id.search);
         fb = new firebase();
     }
 
@@ -191,6 +192,12 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
             }
         }
         adapter.filterList(filteredList);
+        if (filteredList.size() == 0) {
+            viewed.setText("No search results for " + text + ".");
+            viewed.setVisibility(View.VISIBLE);
+        }else{
+            viewed.setVisibility(View.GONE);
+        }
     }
 
     private void closeKeyboard() {

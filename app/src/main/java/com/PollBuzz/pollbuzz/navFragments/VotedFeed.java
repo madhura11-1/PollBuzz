@@ -417,11 +417,8 @@ public class VotedFeed extends Fragment {
 
                     } else {
                         votedRV.hideShimmerAdapter();
-
-                        viewed.setVisibility(View.VISIBLE);
                         viewed.setText("You have no voted polls created in that date span.");
-
-
+                        viewed.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -448,7 +445,7 @@ public class VotedFeed extends Fragment {
                     } else {
                         viewed.setVisibility(View.VISIBLE);
                         votedRV.hideShimmerAdapter();
-                        viewed.setText("You haven't voted any polls of that author");
+                        viewed.setText("You have no voted polls for "+ name + ".");
                     }
                 }
 

@@ -295,10 +295,11 @@ public class FavouriteFeed extends Fragment {
             addToRecyclerView(id);
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
         } else {
-            recyclerView.hideShimmerAdapter();
+            if (recyclerView.getActualAdapter() != adapter)
+                recyclerView.hideShimmerAdapter();
             if (adapter.getItemCount() == 0) {
-                viewed.setVisibility(View.VISIBLE);
                 viewed.setText("You have no unvoted polls created in that date span.");
+                viewed.setVisibility(View.VISIBLE);
             }
 
         }
@@ -392,7 +393,7 @@ public class FavouriteFeed extends Fragment {
                                     } else {
                                         recyclerView.hideShimmerAdapter();
                                         if (adapter.getItemCount() == 0) {
-                                            viewed.setText("You have no unvoted polls in favourite feed created using this username.");
+                                            viewed.setText("You have no unvoted favourite polls for " + name + ".");
                                             viewed.setVisibility(View.VISIBLE);
                                         }
                                     }

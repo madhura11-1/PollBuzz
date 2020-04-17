@@ -61,7 +61,7 @@ import java.util.Objects;
 
 import Utils.firebase;
 
-public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
+public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private ArrayList<PollDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
@@ -70,14 +70,14 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
     private LayoutAnimationController controller;
     MaterialTextView viewed;
     private EditText id_search_edittext;
-    private ImageButton search, check, back1, back2,id_search,id_search_back;
+    private ImageButton search, check, back1, back2, id_search, id_search_back;
     private String name = "";
-    private Button search_button,id_search_button;
+    private Button search_button, id_search_button;
     private TextView starting, ending;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private LinearLayout search_layout, date_layout,linear_search,linear_id_search;
+    private LinearLayout search_layout, date_layout, linear_search, linear_id_search;
     Date date = Calendar.getInstance().getTime();
     Boolean flagFirst = true, flagFetch = true;
     Calendar c = Calendar.getInstance();
@@ -256,9 +256,9 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
         id_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                     linear_search.setVisibility(View.GONE);
-                     linear_id_search.setVisibility(View.VISIBLE);
-                     YoYo.with(Techniques.SlideInRight).duration(700).playOn(linear_id_search);
+                linear_search.setVisibility(View.GONE);
+                linear_id_search.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.SlideInRight).duration(700).playOn(linear_id_search);
             }
         });
 
@@ -274,7 +274,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
                         linear_search.setVisibility(View.VISIBLE);
                         id_search_edittext.setText("");
                     }
-                },700);
+                }, 700);
 
             }
         });
@@ -283,17 +283,16 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
             @Override
             public void onClick(View view) {
 
-                if(id_search_edittext.getText().toString().trim().isEmpty()){
+                if (id_search_edittext.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getContext(), "Please enter the poll ID", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     String poll_id = id_search_edittext.getText().toString().trim();
-                    fb.getPollsCollection().whereEqualTo("poll_accessID",poll_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    fb.getPollsCollection().whereEqualTo("poll_accessID", poll_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful() && task.getResult() != null){
-                                PollDetails pollDetails=null;
-                                for(QueryDocumentSnapshot q : task.getResult()){
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                PollDetails pollDetails = null;
+                                for (QueryDocumentSnapshot q : task.getResult()) {
                                     pollDetails = q.toObject(PollDetails.class);
                                     pollDetails.setUID(q.getId());
                                 }
@@ -303,9 +302,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
                                     linear_search.setVisibility(View.VISIBLE);
 
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -315,7 +312,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
         });
     }
 
-    private void GotoActivity( PollDetails pollDetails) {
+    private void GotoActivity(PollDetails pollDetails) {
         String uid = pollDetails.getUID();
         Intent intent;
         switch (pollDetails.getPoll_type()) {
@@ -376,7 +373,8 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
             addToRecyclerView(id);
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
         } else {
-            recyclerView.hideShimmerAdapter();
+            if (recyclerView.getActualAdapter() != adapter)
+                recyclerView.hideShimmerAdapter();
             if (adapter.getItemCount() == 0) {
                 viewed.setVisibility(View.VISIBLE);
                 viewed.setText("You have no unvoted polls created in that date span.");
@@ -473,7 +471,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
                                     } else {
                                         recyclerView.hideShimmerAdapter();
                                         if (adapter.getItemCount() == 0) {
-                                            viewed.setText("You have no unvoted polls created using this username.");
+                                            viewed.setText("You have no unvoted polls for " + name + ".");
                                             viewed.setVisibility(View.VISIBLE);
                                         }
                                     }
@@ -532,10 +530,10 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
                                 Toast.makeText(HomeFeed.this.getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                    }else{
-                        if(flagFirst){
+                    } else {
+                        if (flagFirst) {
                             recyclerView.hideShimmerAdapter();
-                            flagFirst=false;
+                            flagFirst = false;
                             viewed.setText("There are no polls around...");
                             viewed.setVisibility(View.VISIBLE);
                         }
@@ -556,7 +554,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        adapter = new HomePageAdapter(getContext(), arrayList,this);
+        adapter = new HomePageAdapter(getContext(), arrayList, this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
