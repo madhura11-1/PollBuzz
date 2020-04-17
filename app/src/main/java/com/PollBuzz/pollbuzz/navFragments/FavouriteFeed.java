@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -105,13 +106,15 @@ public class FavouriteFeed extends Fragment {
         visit_authors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String backStateName = getClass().getName();
-                Fragment authors_feed=new FavouriteAuthorFeed();
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction =        fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.container, authors_feed);
-                fragmentTransaction.addToBackStack(backStateName);
-                fragmentTransaction.commit();
+                FragmentManager fm = getActivity().getSupportFragmentManager();
+                fm.beginTransaction().add(R.id.container, new FavouriteAuthorFeed(), "authors").addToBackStack("authors").commit();
+//                String backStateName = getClass().getName();
+//                Fragment authors_feed = new FavouriteAuthorFeed();
+//                FragmentManager fragmentManager = getFragmentManager();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.add(R.id.container, authors_feed);
+//                fragmentTransaction.addToBackStack(backStateName);
+//                fragmentTransaction.commit();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -505,7 +508,7 @@ public class FavouriteFeed extends Fragment {
         search_type = view.findViewById(R.id.search_type);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
-        visit_authors=view.findViewById(R.id.visit_authors);
+        visit_authors = view.findViewById(R.id.visit_authors);
     }
 
     private void showPopup(View v) {

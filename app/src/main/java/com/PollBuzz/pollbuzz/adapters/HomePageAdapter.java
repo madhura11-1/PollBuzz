@@ -102,7 +102,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                 mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
                 if (holder.live.getVisibility() == View.VISIBLE) {
-                    showcodedialog(mPollDetails.get(position).getUID(), position);
+                    showcodedialog(position);
                 } else
                     startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
             } else {
@@ -141,8 +141,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             //dialog1.dismissWithAnimation();
-
-
                                             Toast.makeText(mContext, mPollDetails.get(position).getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
                                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
@@ -181,17 +179,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
                                 }
                             } else {
-                                //Log.d(TAG, "Document does not exist!");
-
-//
+                                //Log.d(TAG, "Document does not exist!")
                                 Map<String, String> map = new HashMap<>();
                                 map.put("Username", (mPollDetails.get(position).getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
-
-//
                                         Toast.makeText(mContext, mPollDetails.get(position).getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
                                         holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
@@ -228,7 +222,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         });
     }
 
-    private void showcodedialog(String uid, int position) {
+    private void showcodedialog(int position) {
 
         final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -312,6 +306,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             Date date = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.card_status.setText("Expired");
+                holder.live.setVisibility(View.GONE);
             } else if (mPollDetails.get(position).isLive()) {
                 Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);
