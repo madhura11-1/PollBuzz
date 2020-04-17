@@ -291,7 +291,6 @@ public class ProfileFeed extends Fragment {
         tB = view.findViewById(R.id.htab_toolbar2);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         viewed = view.findViewById(R.id.viewed);
-        viewed.setTypeface(typeface);
         fb = new firebase();
         Uname = view.findViewById(R.id.username);
         edit = view.findViewById(R.id.edit);
