@@ -89,6 +89,9 @@ public class SignupFragment extends Fragment {
                         Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
                         passwordL.getEditText().getText().clear();
                         password2L.getEditText().getText().clear();
+                        emailL.clearFocus();
+                        passwordL.clearFocus();
+                        password2L.clearFocus();
                     }
                 });
             } catch (Exception e) {
