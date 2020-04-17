@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;

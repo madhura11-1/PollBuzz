@@ -1,4 +1,4 @@
-package com.PollBuzz.pollbuzz;
+package com.PollBuzz.pollbuzz.objects;
 
 import java.util.Date;
 import java.util.HashMap;

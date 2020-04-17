@@ -13,9 +13,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.jaredrummler.materialspinner.MaterialSpinner;
@@ -53,7 +52,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +64,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import Utils.firebase;
 import Utils.helper;

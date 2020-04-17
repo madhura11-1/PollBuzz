@@ -1,4 +1,4 @@
-package com.PollBuzz.pollbuzz;
+package com.PollBuzz.pollbuzz.objects;
 
 public class UserDetails {
     String age;

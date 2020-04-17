@@ -25,7 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
@@ -33,7 +33,6 @@ import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
 import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.OnCompleteListener;

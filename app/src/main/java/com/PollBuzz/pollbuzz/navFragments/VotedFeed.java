@@ -29,7 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;

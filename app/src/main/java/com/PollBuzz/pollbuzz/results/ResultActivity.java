@@ -4,10 +4,9 @@ import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.VoteDetails;
+import com.PollBuzz.pollbuzz.objects.VoteDetails;
 import com.PollBuzz.pollbuzz.adapters.VoterPageAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 

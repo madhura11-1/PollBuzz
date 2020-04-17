@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -20,8 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;

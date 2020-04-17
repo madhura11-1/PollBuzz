@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.VoteDetails;
+import com.PollBuzz.pollbuzz.objects.VoteDetails;
 import com.PollBuzz.pollbuzz.results.Descriptive_type_result;
 import com.PollBuzz.pollbuzz.results.Image_type_result;
 import com.PollBuzz.pollbuzz.results.Multiple_type_result;

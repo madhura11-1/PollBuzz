@@ -32,9 +32,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.PollBuzz.pollbuzz.BuildConfig;
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.responses.Descriptive_type_response;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
@@ -59,7 +58,6 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;

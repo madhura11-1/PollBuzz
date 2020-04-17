@@ -19,26 +19,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.UserDetails;
+import com.PollBuzz.pollbuzz.objects.UserDetails;
 import com.PollBuzz.pollbuzz.adapters.FavouriteAuthorAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import Utils.firebase;
 

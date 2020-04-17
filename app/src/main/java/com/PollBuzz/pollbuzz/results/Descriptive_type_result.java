@@ -17,7 +17,7 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.PollDetails;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

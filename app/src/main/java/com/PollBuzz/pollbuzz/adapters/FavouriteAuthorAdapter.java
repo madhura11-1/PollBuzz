@@ -1,13 +1,11 @@
 package com.PollBuzz.pollbuzz.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,31 +17,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.UserDetails;
-import com.PollBuzz.pollbuzz.VoteDetails;
-import com.PollBuzz.pollbuzz.navFragments.FavouriteAuthorFeed;
+import com.PollBuzz.pollbuzz.objects.UserDetails;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
-import com.PollBuzz.pollbuzz.results.Descriptive_type_result;
-import com.PollBuzz.pollbuzz.results.Image_type_result;
-import com.PollBuzz.pollbuzz.results.Multiple_type_result;
-import com.PollBuzz.pollbuzz.results.Ranking_type_result;
-import com.PollBuzz.pollbuzz.results.Single_type_result;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.security.auth.callback.Callback;
 
 import Utils.firebase;
-import dmax.dialog.SpotsDialog;
 
 public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthorAdapter.VoterViewHolder> {
 
