@@ -71,5 +71,4 @@
         app:shimmer_demo_shimmer_color="@color/white"
         app:shimmer_demo_view_holder_item_background="@color/white" />
 
-
 </RelativeLayout>

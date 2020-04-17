@@ -106,15 +106,8 @@ public class FavouriteFeed extends Fragment {
         visit_authors.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
+                FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
                 fm.beginTransaction().add(R.id.container, new FavouriteAuthorFeed(), "authors").addToBackStack("authors").commit();
-//                String backStateName = getClass().getName();
-//                Fragment authors_feed = new FavouriteAuthorFeed();
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.add(R.id.container, authors_feed);
-//                fragmentTransaction.addToBackStack(backStateName);
-//                fragmentTransaction.commit();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

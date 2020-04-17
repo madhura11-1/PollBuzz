@@ -177,6 +177,7 @@ public class FavouriteAuthorFeed extends Fragment {
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.showShimmerAdapter();
         viewed = view.findViewById(R.id.viewed);
         search=view.findViewById(R.id.search);
         fb = new firebase();
