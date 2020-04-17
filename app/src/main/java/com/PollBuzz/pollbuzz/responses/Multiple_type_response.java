@@ -276,25 +276,14 @@ public class Multiple_type_response extends AppCompatActivity {
                                 dialog.dismiss();
                                 Date date = Calendar.getInstance().getTime();
                                 if (polldetails != null) {
-                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
-                                        polldetails.setLive(false);
-                                        fb.getPollsCollection().document(key).update("live", false);
-                                        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
-                                        dialog.setCancelable(false);
-                                        dialog.setTitleText("This Live Poll has ended")
-                                                .setConfirmText("OK")
-                                                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(KAlertDialog kAlertDialog) {
-                                                        kAlertDialog.dismissWithAnimation();
-                                                        Intent i = new Intent(Multiple_type_response.this, PercentageResult.class);
-                                                        i.putExtra("UID", key);
-                                                        i.putExtra("type", "SINGLE CHOICE");
-                                                        startActivity(i);
-                                                        finish();
-                                                    }
-                                                })
-                                                .show();
+                                    if (polldetails.isLivePoll()) {
+                                        if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                            polldetails.setLive(false);
+                                            fb.getPollsCollection().document(key).update("live", false);
+                                            callKAlert();
+                                        } else if (!polldetails.isLive()) {
+                                            callKAlert();
+                                        }
                                     } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                         intent.putExtra("UID", key);
@@ -313,6 +302,25 @@ public class Multiple_type_response extends AppCompatActivity {
 
                 }
         );
+    }
+
+    private void callKAlert() {
+        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+        dialog.setCancelable(false);
+        dialog.setTitleText("This Live Poll has ended")
+                .setConfirmText("OK")
+                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                        Intent i = new Intent(Multiple_type_response.this, PercentageResult.class);
+                        i.putExtra("UID", key);
+                        i.putExtra("type", "SINGLE CHOICE");
+                        startActivity(i);
+                        finish();
+                    }
+                })
+                .show();
     }
 
     private void setActionBarFunctionality() {

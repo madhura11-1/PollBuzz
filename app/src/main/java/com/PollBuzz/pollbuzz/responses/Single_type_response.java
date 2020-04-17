@@ -242,13 +242,13 @@ public class Single_type_response extends AppCompatActivity {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         DocumentSnapshot document = task1.getResult();
-//                                        if (document != null) {
-                                        if (document.exists()) {
-                                            fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
-                                        } else {
-                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        if (document != null) {
+                                            if (document.exists()) {
+                                                fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                            } else {
+                                                fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                            }
                                         }
-//                                        }
                                     } else {
                                         Toast.makeText(Single_type_response.this, task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
@@ -278,25 +278,14 @@ public class Single_type_response extends AppCompatActivity {
                             dialog.dismiss();
                             Date date = Calendar.getInstance().getTime();
                             if (polldetails != null) {
-                                if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
-                                    polldetails.setLive(false);
-                                    fb.getPollsCollection().document(key).update("live", false);
-                                    KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
-                                    dialog.setCancelable(false);
-                                    dialog.setTitleText("This Live Poll has ended")
-                                            .setConfirmText("OK")
-                                            .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
-                                                @Override
-                                                public void onClick(KAlertDialog kAlertDialog) {
-                                                    kAlertDialog.dismissWithAnimation();
-                                                    Intent i = new Intent(Single_type_response.this, PercentageResult.class);
-                                                    i.putExtra("UID", key);
-                                                    i.putExtra("type", "SINGLE CHOICE");
-                                                    startActivity(i);
-                                                    finish();
-                                                }
-                                            })
-                                            .show();
+                                if (polldetails.isLivePoll()) {
+                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                        polldetails.setLive(false);
+                                        fb.getPollsCollection().document(key).update("live", false);
+                                        callKAlert();
+                                    } else if (!polldetails.isLive()) {
+                                        callKAlert();
+                                    }
                                 } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                     Intent intent = new Intent(Single_type_response.this, PercentageResult.class);
                                     intent.putExtra("UID", key);
@@ -314,10 +303,29 @@ public class Single_type_response extends AppCompatActivity {
                 });
     }
 
+    private void callKAlert() {
+        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+        dialog.setCancelable(false);
+        dialog.setTitleText("This Live Poll has ended")
+                .setConfirmText("OK")
+                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                        Intent i = new Intent(Single_type_response.this, PercentageResult.class);
+                        i.putExtra("UID", key);
+                        i.putExtra("type", "SINGLE CHOICE");
+                        startActivity(i);
+                        finish();
+                    }
+                })
+                .show();
+    }
+
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-        Log.d("SingleType",key);
+        Log.d("SingleType", key);
     }
 
     private void setActionBarFunctionality() {

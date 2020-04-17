@@ -316,10 +316,13 @@ public class Image_type_responses extends AppCompatActivity {
                                 dialog.dismiss();
                                 Date date = Calendar.getInstance().getTime();
                                 if (polldetails != null) {
-                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
-                                        polldetails.setLive(false);
-                                        fb.getPollsCollection().document(key).update("live", false);
-                                        callkalert();
+                                    if (polldetails.isLivePoll()) {
+                                        if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                            polldetails.setLive(false);
+                                            fb.getPollsCollection().document(key).update("live", false);
+                                            callKalert();
+                                        } else if (!polldetails.isLive())
+                                            callKalert();
                                     } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                                         intent.putExtra("UID", key);
@@ -338,7 +341,7 @@ public class Image_type_responses extends AppCompatActivity {
                 });
     }
 
-    private void callkalert() {
+    private void callKalert() {
         KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
         dialog.setCancelable(false);
         dialog.setTitleText("This Live Poll has ended")
