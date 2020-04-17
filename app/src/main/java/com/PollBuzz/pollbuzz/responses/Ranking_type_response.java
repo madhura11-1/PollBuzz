@@ -217,7 +217,7 @@ public class Ranking_type_response extends AppCompatActivity {
                                 });
                             }
                             setOptions();
-                        }else{
+                        } else {
                             finish();
                             Toast.makeText(Ranking_type_response.this, "This url does not exist.", Toast.LENGTH_SHORT).show();
                         }
@@ -289,16 +289,17 @@ public class Ranking_type_response extends AppCompatActivity {
             if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                 polldetails.setLive(false);
                 fb.getPollsCollection().document(key).update("live", false);
-                new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
-                        .setTitleText("This Live Poll has ended")
-                        .setCancelText("OK")
+                KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+                dialog.setCancelable(false);
+                dialog.setTitleText("This Live Poll has ended")
+                        .setConfirmText("OK")
                         .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(KAlertDialog kAlertDialog) {
                                 kAlertDialog.dismissWithAnimation();
                                 Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
                                 i.putExtra("UID", key);
-                                i.putExtra("type", "RANKED");
+                                i.putExtra("type", "SINGLE CHOICE");
                                 startActivity(i);
                                 finish();
                             }
@@ -396,7 +397,7 @@ public class Ranking_type_response extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Successfully submitted your response", Toast.LENGTH_LONG).show();
                             Intent i = new Intent(Ranking_type_response.this, MainActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         } else {
                             dialog1.dismissWithAnimation();

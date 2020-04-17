@@ -50,7 +50,7 @@ import dmax.dialog.SpotsDialog;
 
 public class Image_type_responses extends AppCompatActivity {
 
-    TextView query,author;
+    TextView query, author;
     ImageView image1, image2;
     RadioGroup group;
     RadioButton b1, b2;
@@ -117,10 +117,10 @@ public class Image_type_responses extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!(b1.isChecked() || b2.isChecked())){
+                if (!(b1.isChecked() || b2.isChecked())) {
                     Toast.makeText(Image_type_responses.this, "Please section a option...", Toast.LENGTH_SHORT).show();
-                }else
-                submitResponse();
+                } else
+                    submitResponse();
 
             }
         });
@@ -144,7 +144,7 @@ public class Image_type_responses extends AppCompatActivity {
                                             //dialog1.dismissWithAnimation();
                                             dialog2.dismiss();
                                             fav_author.setEnabled(true);
-                                            Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
                                             fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
                                         }
                                     })
@@ -154,7 +154,7 @@ public class Image_type_responses extends AppCompatActivity {
                                                     // dialog1.dismissWithAnimation();
                                                     dialog2.dismiss();
                                                     fav_author.setEnabled(true);
-                                                    Toast.makeText(getApplicationContext(),"Failed "+polldetails.getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), "Failed " + polldetails.getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
@@ -164,15 +164,15 @@ public class Image_type_responses extends AppCompatActivity {
                                 //Log.d(TAG, "Document does not exist!");
 
                                 fav_author.setEnabled(false);
-                                Map<String,String> map=new HashMap<>();
-                                map.put("Username",(polldetails.getAuthor()));
+                                Map<String, String> map = new HashMap<>();
+                                map.put("Username", (polldetails.getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
                                         dialog2.dismiss();
                                         fav_author.setEnabled(true);
-                                        Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
                                         fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
 
                                     }
@@ -183,7 +183,7 @@ public class Image_type_responses extends AppCompatActivity {
                                                 //dialog1.dismissWithAnimation();
                                                 dialog2.dismiss();
                                                 fav_author.setEnabled(true);
-                                                Toast.makeText(getApplicationContext(),"Failed to add "+polldetails.getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), "Failed to add " + polldetails.getAuthor() + " to your favourite authors", Toast.LENGTH_LONG).show();
                                             }
                                         });
                             }
@@ -205,7 +205,7 @@ public class Image_type_responses extends AppCompatActivity {
                         .setTextSize(18)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -247,7 +247,7 @@ public class Image_type_responses extends AppCompatActivity {
                             dialog1.dismissWithAnimation();
                             Toast.makeText(Image_type_responses.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                             Intent i1 = new Intent(Image_type_responses.this, MainActivity.class);
-                            i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i1);
                         } else {
                             dialog1.dismissWithAnimation();
@@ -280,9 +280,9 @@ public class Image_type_responses extends AppCompatActivity {
                                 query.setText(polldetails.getQuestion().trim());
                                 options = polldetails.getMap();
                                 author.setText(polldetails.getAuthor());
-                                if(fb.getUserId().equals(polldetails.getAuthorUID())){
+                                if (fb.getUserId().equals(polldetails.getAuthorUID())) {
                                     fav_author.setVisibility(View.GONE);
-                                }else {
+                                } else {
                                     fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -320,18 +320,16 @@ public class Image_type_responses extends AppCompatActivity {
                                         polldetails.setLive(false);
                                         fb.getPollsCollection().document(key).update("live", false);
                                         callkalert();
-                                    }
-                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0))
-                                    {
+                                    } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
-                                        intent.putExtra("UID",key);
-                                        intent.putExtra("type","PICTURE BASED");
+                                        intent.putExtra("UID", key);
+                                        intent.putExtra("type", "PICTURE BASED");
                                         startActivity(intent);
                                         finish();
                                     }
 
                                 }
-                            }else{
+                            } else {
                                 finish();
                                 Toast.makeText(Image_type_responses.this, "This url does not exist.", Toast.LENGTH_SHORT).show();
                             }
@@ -341,17 +339,18 @@ public class Image_type_responses extends AppCompatActivity {
     }
 
     private void callkalert() {
-        new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
-                .setTitleText("This Live Poll has ended")
+        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+        dialog.setCancelable(false);
+        dialog.setTitleText("This Live Poll has ended")
                 .setConfirmText("OK")
                 .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(KAlertDialog kAlertDialog) {
                         kAlertDialog.dismissWithAnimation();
-                        Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
-                        intent.putExtra("UID",key);
-                        intent.putExtra("type","PICTURE BASED");
-                        startActivity(intent);
+                        Intent i = new Intent(Image_type_responses.this, PercentageResult.class);
+                        i.putExtra("UID", key);
+                        i.putExtra("type", "SINGLE CHOICE");
+                        startActivity(i);
                         finish();
                     }
                 })
@@ -393,10 +392,10 @@ public class Image_type_responses extends AppCompatActivity {
         fb = new firebase();
         id = findViewById(R.id.id1);
         dialog1 = new KAlertDialog(Image_type_responses.this, SweetAlertDialog.PROGRESS_TYPE);
-        fav_author=findViewById(R.id.fav_author);
-        dialog2= new SpotsDialog(Image_type_responses.this,R.style.Custom);
+        fav_author = findViewById(R.id.fav_author);
+        dialog2 = new SpotsDialog(Image_type_responses.this, R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        author=findViewById(R.id.author);
+        author = findViewById(R.id.author);
     }
 
 
