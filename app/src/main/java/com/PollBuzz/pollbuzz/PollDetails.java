@@ -30,7 +30,7 @@ public class PollDetails {
         author_lc = "";
         live = false;
         created_date = new Date();
-        expiry_date = new Date();
+        expiry_date = null;
         map = new HashMap<>();
         pollcount = 0;
         timestamp = 0;

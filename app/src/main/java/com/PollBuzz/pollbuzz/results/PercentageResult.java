@@ -267,13 +267,18 @@ public class PercentageResult extends AppCompatActivity {
                                 map = pollDetails.getMap();
                                 Date date1 = Calendar.getInstance().getTime();
                                 if (!pollDetails.isLive()) {
-                                    if (pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                                    if (pollDetails.getExpiry_date()!= null && pollDetails.getExpiry_date().compareTo(date1) >= 0)
                                         status.setText("Status : Active");
-                                    else
+                                    else {
                                         status.setText("Status : Expired");
+                                        selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
+                                        selfVote.setEnabled(false);
+                                    }
                                 } else {
-                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
+                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds()){
                                         status.setText("Status : Expired");
+                                        selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
+                                        selfVote.setEnabled(false);}
                                     else {
                                         status.setText("Status : Active");
                                         custom_stop.setVisibility(View.VISIBLE);
