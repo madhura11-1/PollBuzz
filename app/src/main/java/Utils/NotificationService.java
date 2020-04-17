@@ -16,7 +16,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -33,6 +32,11 @@ public class NotificationService extends FirebaseMessagingService {
     public static int id = 0;
     String TAG = "NotificationService";
     String channel_id = "PollBuzz";
+
+    @Override
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+    }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {

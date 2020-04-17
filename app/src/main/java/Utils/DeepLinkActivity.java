@@ -1,23 +1,15 @@
 package Utils;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.responses.Image_type_responses;
-import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
-import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
-import com.PollBuzz.pollbuzz.responses.Single_type_response;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class DeepLinkActivity extends AppCompatActivity {
     String UID, type;
@@ -26,7 +18,6 @@ public class DeepLinkActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_deep_link);
         Log.d(TAG,"onCreate");
         String code = getData(getIntent().getData());
         if (code != null) {
@@ -49,6 +40,10 @@ public class DeepLinkActivity extends AppCompatActivity {
     private String getData(Uri data) {
         if (data != null && data.isHierarchical()) {
             String url = data.toString();
+            Bundle bundle = new Bundle();
+            bundle.putString("timestamp", Timestamp.now().toDate().toString());
+            bundle.putString("link",url);
+            FirebaseAnalytics.getInstance(this).logEvent("linkClicked", bundle);
             int lastIndex = url.lastIndexOf("/");
             return url.substring(lastIndex + 1);
         }
