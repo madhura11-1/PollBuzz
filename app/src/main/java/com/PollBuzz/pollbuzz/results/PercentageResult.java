@@ -92,6 +92,7 @@ public class PercentageResult extends AppCompatActivity {
     ImageView shareImage, sharePoll;
     PollDetails pollDetails;
     ImageView id;
+    Boolean isAuthor = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,10 +206,21 @@ public class PercentageResult extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 pollDetails.setLive(false);
-                fb.getPollsCollection().document(uid).update("live", false);
-                status.setText("Status : Expired");
-                Toast.makeText(PercentageResult.this, "Your Live Poll has Expired", Toast.LENGTH_SHORT).show();
-                custom_stop.setVisibility(View.GONE);
+                fb.getPollsCollection().document(uid).update("live", false)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    status.setText("Status : Expired");
+                                    Toast.makeText(PercentageResult.this, "Your Live Poll has been Ended", Toast.LENGTH_SHORT).show();
+                                    custom_stop.setVisibility(View.GONE);
+                                }
+                                else
+                                {
+                                    Toast.makeText(PercentageResult.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
             }
         });
 
@@ -274,6 +286,7 @@ public class PercentageResult extends AppCompatActivity {
                             pollDetails = documentSnapshot.toObject(PollDetails.class);
                             if (pollDetails != null) {
                                 if (pollDetails.getAuthorUID().equals(fb.getUserId())) {
+                                    isAuthor = true;
                                     result.setVisibility(View.VISIBLE);
                                     selfVote.setVisibility(View.VISIBLE);
                                 }
@@ -286,7 +299,7 @@ public class PercentageResult extends AppCompatActivity {
                                 map = pollDetails.getMap();
                                 Date date1 = Calendar.getInstance().getTime();
                                 if (!pollDetails.isLive()) {
-                                    if (pollDetails.getExpiry_date()!= null && pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                                    if (pollDetails.getExpiry_date() != null && pollDetails.getExpiry_date().compareTo(date1) >= 0)
                                         status.setText("Status : Active");
                                     else {
                                         status.setText("Status : Expired");
@@ -294,13 +307,18 @@ public class PercentageResult extends AppCompatActivity {
                                         selfVote.setEnabled(false);
                                     }
                                 } else {
-                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds()){
+                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds()) {
                                         status.setText("Status : Expired");
                                         selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
-                                        selfVote.setEnabled(false);}
+                                        selfVote.setEnabled(false);
+                                        custom_stop.setVisibility(View.GONE);
+                                    }
                                     else {
                                         status.setText("Status : Active");
-                                        custom_stop.setVisibility(View.VISIBLE);
+                                        if(isAuthor && pollDetails.getSeconds() == Long.MAX_VALUE)
+                                            custom_stop.setVisibility(View.VISIBLE);
+                                        else
+                                            custom_stop.setVisibility(View.GONE);
                                     }
                                 }
                                 total = pollDetails.getPollcount();
@@ -316,9 +334,7 @@ public class PercentageResult extends AppCompatActivity {
                                                 }
                                             }
                                         } else flagVoted = true;
-                                        if (flagVoted) {
-                                            selfVote.setEnabled(true);
-                                        } else {
+                                        if (!flagVoted) {
                                             selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
                                             selfVote.setEnabled(false);
                                         }
@@ -630,7 +646,7 @@ public class PercentageResult extends AppCompatActivity {
         uid = intent.getExtras().getString("UID");
         type = intent.getExtras().getString("type");
         if (type != null && type.equals("RANKED")) pie_charts.setVisibility(View.GONE);
-        if(intent.getBooleanExtra("selfVote",false)){
+        if (intent.getBooleanExtra("selfVote", false)) {
             selfVote.setVisibility(View.VISIBLE);
         }
     }

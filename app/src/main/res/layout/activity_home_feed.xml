@@ -18,19 +18,67 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
+    <RelativeLayout
+        android:id="@+id/new1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/linear_id_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            >
+
+            <EditText
+                android:id="@+id/id_search_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter poll ID"
+                android:layout_weight="1"
+                android:layout_marginEnd="20dp"
+                />
+
+            <Button
+                android:id="@+id/search_pollid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Search"
+                app:cornerRadius="20dp" />
+
+
+            <ImageButton
+                android:id="@+id/id_search_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                android:background="@color/white"
+                android:layout_alignParentEnd="true"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical" />
+
+
+
+        </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/linear_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+      >
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:fontFamily="@font/fascinate_inline"
             android:gravity="center"
             android:text="@string/home_feed_title"
@@ -39,23 +87,34 @@
             android:textSize="32sp" />
 
         <ImageButton
+            android:tooltipText="Filter"
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:background="@color/white"
             android:padding="5dp"
             android:src="@drawable/ic_filter_list_dark_24dp" />
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/id_search"
+            android:src="@drawable/ic_chevron_left_black_24dp"
+            android:background="@color/white"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"/>
 
     </LinearLayout>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/type_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linear_search"
+        android:layout_below="@id/new1"
         android:background="@color/white"
         android:orientation="horizontal"
         android:visibility="gone">

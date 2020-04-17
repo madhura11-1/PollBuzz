@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -204,6 +205,7 @@ public class Single_type_response extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(Single_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(Single_type_response.this, MainActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
                                 }
                             })
@@ -279,12 +281,14 @@ public class Single_type_response extends AppCompatActivity {
                                 if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                     polldetails.setLive(false);
                                     fb.getPollsCollection().document(key).update("live", false);
-                                    new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
-                                            .setTitleText("This Live Poll has ended")
+                                    KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+                                    dialog.setCancelable(false);
+                                    dialog.setTitleText("This Live Poll has ended")
                                             .setConfirmText("OK")
                                             .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                                                 @Override
                                                 public void onClick(KAlertDialog kAlertDialog) {
+                                                    kAlertDialog.dismissWithAnimation();
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                                     i.putExtra("UID", key);
                                                     i.putExtra("type", "SINGLE CHOICE");
@@ -313,6 +317,7 @@ public class Single_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
+        Log.d("SingleType",key);
     }
 
     private void setActionBarFunctionality() {

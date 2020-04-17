@@ -2,7 +2,9 @@ package com.PollBuzz.pollbuzz.navFragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -29,9 +31,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
+import com.PollBuzz.pollbuzz.responses.Image_type_responses;
+import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
+import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -54,7 +61,7 @@ import java.util.Objects;
 
 import Utils.firebase;
 
-public class HomeFeed extends Fragment {
+public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
     private ArrayList<PollDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
@@ -62,14 +69,15 @@ public class HomeFeed extends Fragment {
     private firebase fb;
     private LayoutAnimationController controller;
     MaterialTextView viewed;
-    private ImageButton search, check, back1, back2;
+    private EditText id_search_edittext;
+    private ImageButton search, check, back1, back2,id_search,id_search_back;
     private String name = "";
-    private Button search_button;
+    private Button search_button,id_search_button;
     private TextView starting, ending;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private LinearLayout search_layout, date_layout;
+    private LinearLayout search_layout, date_layout,linear_search,linear_id_search;
     Date date = Calendar.getInstance().getTime();
     Boolean flagFirst = true, flagFetch = true;
     Calendar c = Calendar.getInstance();
@@ -244,6 +252,90 @@ public class HomeFeed extends Fragment {
                 e.printStackTrace();
             }
         });
+
+        id_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                     linear_search.setVisibility(View.GONE);
+                     linear_id_search.setVisibility(View.VISIBLE);
+                     YoYo.with(Techniques.SlideInRight).duration(700).playOn(linear_id_search);
+            }
+        });
+
+        id_search_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                YoYo.with(Techniques.SlideOutRight).duration(700).playOn(linear_id_search);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        linear_id_search.setVisibility(View.INVISIBLE);
+                        linear_search.setVisibility(View.VISIBLE);
+                        id_search_edittext.setText("");
+                    }
+                },700);
+
+            }
+        });
+
+        id_search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(id_search_edittext.getText().toString().trim().isEmpty()){
+                    Toast.makeText(getContext(), "Please enter the poll ID", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    String poll_id = id_search_edittext.getText().toString().trim();
+                    fb.getPollsCollection().whereEqualTo("poll_accessID",poll_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful() && task.getResult() != null){
+                                PollDetails pollDetails=null;
+                                for(QueryDocumentSnapshot q : task.getResult()){
+                                    pollDetails = q.toObject(PollDetails.class);
+                                    pollDetails.setUID(q.getId());
+                                }
+                                if (pollDetails != null) {
+                                    GotoActivity(pollDetails);
+                                    linear_id_search.setVisibility(View.INVISIBLE);
+                                    linear_search.setVisibility(View.VISIBLE);
+
+                                }
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void GotoActivity( PollDetails pollDetails) {
+        String uid = pollDetails.getUID();
+        Intent intent;
+        switch (pollDetails.getPoll_type()) {
+            case "SINGLE CHOICE":
+                intent = new Intent(getContext(), Single_type_response.class);
+                break;
+            case "MULTI SELECT":
+                intent = new Intent(getContext(), Multiple_type_response.class);
+                break;
+            case "RANKED":
+                intent = new Intent(getContext(), Ranking_type_response.class);
+                break;
+            case "PICTURE BASED":
+                intent = new Intent(getContext(), Image_type_responses.class);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + pollDetails.getPoll_type());
+        }
+        intent.putExtra("UID", uid);
+        getContext().startActivity(intent);
     }
 
 /*    private void getArrayListByAuthor(String name,String id,long timestamp) {
@@ -464,7 +556,7 @@ public class HomeFeed extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        adapter = new HomePageAdapter(getContext(), arrayList);
+        adapter = new HomePageAdapter(getContext(), arrayList,this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
@@ -476,8 +568,14 @@ public class HomeFeed extends Fragment {
         back1 = view.findViewById(R.id.back1);
         back2 = view.findViewById(R.id.back2);
         search_type = view.findViewById(R.id.search_type);
+        id_search = view.findViewById(R.id.id_search);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
+        linear_search = view.findViewById(R.id.linear_search);
+        linear_id_search = view.findViewById(R.id.linear_id_search);
+        id_search_edittext = view.findViewById(R.id.id_search_edittext);
+        id_search_back = view.findViewById(R.id.id_search_back);
+        id_search_button = view.findViewById(R.id.search_pollid);
     }
 
     private void showPopup(View v) {
@@ -522,5 +620,10 @@ public class HomeFeed extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked() {
+        closeKeyboard();
     }
 }

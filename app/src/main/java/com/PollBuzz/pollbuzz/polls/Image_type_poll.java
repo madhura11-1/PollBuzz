@@ -223,7 +223,6 @@ public class Image_type_poll extends AppCompatActivity {
                                 if (report.areAllPermissionsGranted()) {
                                     showImagePickerOptions();
                                 }
-
                                 if (report.isAnyPermissionPermanentlyDenied()) {
                                     showSettingsDialog();
                                 }
@@ -719,6 +718,7 @@ public class Image_type_poll extends AppCompatActivity {
             if(flagm == 1){
                 Log.d("yes","item");
                 polldetails.setLive(true);
+                polldetails.setLivePoll(true);
                 polldetails.setSeconds(sec);
             }
             else
