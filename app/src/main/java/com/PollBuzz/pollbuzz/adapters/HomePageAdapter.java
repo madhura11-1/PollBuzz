@@ -318,7 +318,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_status.setText("Active");
             } else {
                 holder.live.setVisibility(View.GONE);
-                if (mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
+                if (mPollDetails.get(position).getExpiry_date() != null && mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
                     holder.card_status.setText("Active");
                 else
                     holder.card_status.setText("Expired");
