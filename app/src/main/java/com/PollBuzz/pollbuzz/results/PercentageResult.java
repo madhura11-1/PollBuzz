@@ -185,7 +185,7 @@ public class PercentageResult extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
                     bundle.putString("UID",uid);
-                    FirebaseAnalytics.getInstance(PercentageResult.this).logEvent("linkShared", bundle);
+                    FirebaseAnalytics.getInstance(PercentageResult.this).logEvent("share_link", bundle);
                     int type = getType();
                     String shareBody = "https://pollbuzz.com/share/" + type + uid;
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -663,7 +663,7 @@ public class PercentageResult extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString("timestamp", Timestamp.now().toDate().toString());
         bundle.putString("UID",uid);
-        FirebaseAnalytics.getInstance(this).logEvent("screenshotShared", bundle);
+        FirebaseAnalytics.getInstance(this).logEvent("share_screenshot", bundle);
         Intent intent = new Intent(Intent.ACTION_SEND);
         Uri imageuri;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

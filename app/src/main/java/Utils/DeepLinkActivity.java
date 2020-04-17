@@ -43,7 +43,7 @@ public class DeepLinkActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             bundle.putString("link",url);
-            FirebaseAnalytics.getInstance(this).logEvent("linkClicked", bundle);
+            FirebaseAnalytics.getInstance(this).logEvent("link_clicked", bundle);
             int lastIndex = url.lastIndexOf("/");
             return url.substring(lastIndex + 1);
         }
