@@ -97,6 +97,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
         holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
         holder.voteArea.setOnClickListener(view -> {
+            Log.d("CardId",mPollDetails.get(position).getUID());
             if (holder.card_status.getText().toString().equals("Active")) {
                 Bundle bundle = new Bundle();
                 bundle.putString("user_id", fb.getUserId());
@@ -116,6 +117,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
         });
         holder.pPicArea.setOnClickListener(v -> {
+            Log.d("CardId",mPollDetails.get(position).getUID());
             Bundle bundle = new Bundle();
             bundle.putString("user_id", fb.getUserId());
             bundle.putString("poll_id", mPollDetails.get(position).getUID());
@@ -129,7 +131,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         holder.fav_author.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d("CardId",mPollDetails.get(position).getUID());
                 dialog.show();
                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override

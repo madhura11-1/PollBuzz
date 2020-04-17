@@ -68,6 +68,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
     private void clickListener(@NonNull ProfileViewHolder holder, int position) {
         if (bool) {
             holder.cardV.setOnClickListener(view -> {
+                Log.d("CardId",mPollDetails.get(position).getUID());
                 Intent intent = new Intent(mContext, PercentageResult.class);
                 intent.putExtra("UID", mPollDetails.get(position).getUID());
                 intent.putExtra("type", mPollDetails.get(position).getPoll_type());
@@ -78,10 +79,12 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
             if (mPollDetails.get(position).getExpiry_date() != null) {
                 if (mPollDetails.get(position).getExpiry_date().compareTo(Timestamp.now().toDate()) >= 0)
                     holder.cardV.setOnClickListener(view -> {
+                        Log.d("CardId",mPollDetails.get(position).getUID());
                         startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                     });
                 else {
                     holder.cardV.setOnClickListener(view -> {
+                        Log.d("CardId",mPollDetails.get(position).getUID());
                         Intent i = new Intent(mContext, PercentageResult.class);
                         i.putExtra("UID", mPollDetails.get(position).getUID());
                         i.putExtra("type", mPollDetails.get(position).getPoll_type());
@@ -93,6 +96,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 holder.cardV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.d("CardId",mPollDetails.get(position).getUID());
                         Bundle bundle = new Bundle();
                         bundle.putString("user_id", fb.getUserId());
                         bundle.putString("poll_id", mPollDetails.get(position).getUID());
