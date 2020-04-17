@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:text="Generating Code..."
+        android:textIsSelectable="true"
         android:textColor="@color/black"
         android:layout_margin="20dp"
         android:textStyle="bold"

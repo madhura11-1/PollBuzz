@@ -286,6 +286,7 @@ public class Single_type_response extends AppCompatActivity {
                                             .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                                                 @Override
                                                 public void onClick(KAlertDialog kAlertDialog) {
+                                                    kAlertDialog.dismissWithAnimation();
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                                     i.putExtra("UID", key);
                                                     i.putExtra("type", "SINGLE CHOICE");

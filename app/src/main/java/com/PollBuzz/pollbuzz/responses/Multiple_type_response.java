@@ -285,6 +285,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                                 .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                                                     @Override
                                                     public void onClick(KAlertDialog kAlertDialog) {
+                                                        kAlertDialog.dismissWithAnimation();
                                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                                         intent.putExtra("UID", key);
                                                         intent.putExtra("type", "MULTI SELECT");

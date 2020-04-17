@@ -341,13 +341,13 @@ public class Image_type_responses extends AppCompatActivity {
     }
 
     private void callkalert() {
-
         new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
                 .setTitleText("This Live Poll has ended")
                 .setConfirmText("OK")
                 .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                         intent.putExtra("UID",key);
                         intent.putExtra("type","PICTURE BASED");
