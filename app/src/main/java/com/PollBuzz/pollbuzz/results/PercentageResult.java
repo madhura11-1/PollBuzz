@@ -54,6 +54,8 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -89,6 +91,7 @@ public class PercentageResult extends AppCompatActivity {
     Boolean flagVoted = true;
     ImageView shareImage, sharePoll;
     PollDetails pollDetails;
+    ImageView id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +209,22 @@ public class PercentageResult extends AppCompatActivity {
                 status.setText("Status : Expired");
                 Toast.makeText(PercentageResult.this, "Your Live Poll has Expired", Toast.LENGTH_SHORT).show();
                 custom_stop.setVisibility(View.GONE);
+            }
+        });
+
+        id.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String y = pollDetails.getPoll_accessID().toString();
+                new PowerMenu.Builder(PercentageResult.this)
+                        .setTextColor(R.color.black)
+                        .setTextSize(18)
+                        .setTextGravity(Gravity.CENTER)
+                        .setMenuRadius(10f) // sets the corner radius.
+                        .setMenuShadow(10f)
+                        .addItem(new PowerMenuItem(y, false))
+                        .build()
+                        .showAsAnchorCenter(view);
             }
         });
     }
@@ -634,6 +653,7 @@ public class PercentageResult extends AppCompatActivity {
         sharePoll = findViewById(R.id.share_poll);
         status = findViewById(R.id.status);
         custom_stop = findViewById(R.id.custom_stop);
+        id = findViewById(R.id.id1);
 
     }
 
