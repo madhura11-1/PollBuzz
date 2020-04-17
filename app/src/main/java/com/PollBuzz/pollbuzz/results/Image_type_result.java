@@ -35,7 +35,7 @@ import com.skydoves.powermenu.PowerMenuItem;
 import java.util.HashMap;
 import java.util.Map;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Image_type_result extends AppCompatActivity {
 

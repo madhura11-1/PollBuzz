@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Utils.ImagePickerActivity;
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.ImagePickerActivity;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileSetUp extends AppCompatActivity {
@@ -454,12 +454,12 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void setSharedPreference(String unameS, String imagePath) {
-        Utils.helper.setProfileSetUpPref(getApplicationContext(), true);
+        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getApplicationContext(), true);
         if (imagePath == null)
-            Utils.helper.setpPicPref(getApplicationContext(), null);
+            com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getApplicationContext(), null);
         else
-            Utils.helper.setpPicPref(getApplicationContext(), imagePath);
-        Utils.helper.setusernamePref(getApplicationContext(), unameS);
+            com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getApplicationContext(), imagePath);
+        com.PollBuzz.pollbuzz.Utils.helper.setusernamePref(getApplicationContext(), unameS);
     }
 
     private void showSettingsDialog() {

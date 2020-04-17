@@ -59,8 +59,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import Utils.ImagePickerActivity;
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.ImagePickerActivity;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileFeed extends Fragment {
@@ -130,8 +130,8 @@ public class ProfileFeed extends Fragment {
             tB.setTitle("Your Polls");
             viewed.setText("You have not created any polls...");
             edit.setVisibility(View.VISIBLE);
-            Uname.setText(Utils.helper.getusernamePref(getContext()));
-            loadProfilePic(Utils.helper.getpPicPref(getContext()), false);
+            Uname.setText(com.PollBuzz.pollbuzz.Utils.helper.getusernamePref(getContext()));
+            loadProfilePic(com.PollBuzz.pollbuzz.Utils.helper.getpPicPref(getContext()), false);
         } else {
             mAdapter = new ProfileFeedAdapter(getContext(), mArrayList, false);
             profileRV.setAdapter(mAdapter);
@@ -443,13 +443,13 @@ public class ProfileFeed extends Fragment {
                         .load(url)
                         .into(pPic);
                 if (update) {
-                    Utils.helper.setpPicPref(getContext(), url);
+                    com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getContext(), url);
                     fb.getUserDocument().update("pic", url);
                 }
             } else {
                 pPic.setImageResource(R.drawable.ic_person_black_24dp);
                 if (update) {
-                    Utils.helper.setpPicPref(getContext(), null);
+                    com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getContext(), null);
                     fb.getUserDocument().update("pic", null);
                 }
             }

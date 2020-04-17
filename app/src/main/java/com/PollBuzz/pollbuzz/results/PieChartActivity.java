@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class PieChartActivity extends AppCompatActivity {
     TextView voters, question;

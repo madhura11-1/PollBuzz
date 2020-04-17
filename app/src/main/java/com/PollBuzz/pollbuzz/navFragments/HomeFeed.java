@@ -57,7 +57,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private ArrayList<PollDetails> arrayList;

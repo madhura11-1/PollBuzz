@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-import Utils.AuthCheck;
+import com.PollBuzz.pollbuzz.Utils.AuthCheck;
 
 public class SplashScreen extends AppCompatActivity {
 

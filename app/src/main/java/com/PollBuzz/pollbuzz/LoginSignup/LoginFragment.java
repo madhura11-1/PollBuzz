@@ -36,9 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 
-import java.util.Objects;
-
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class LoginFragment extends Fragment {
@@ -158,16 +156,16 @@ public class LoginFragment extends Fragment {
     }
 
     private void removeSharedPreference() {
-        Utils.helper.setProfileSetUpPref(getContext(), false);
+        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getContext(), false);
     }
 
     private void setSharedPreference(DocumentSnapshot dS) {
-        Utils.helper.setProfileSetUpPref(getContext(), true);
+        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getContext(), true);
         if (dS.get("pic") != null)
-            Utils.helper.setpPicPref(getContext(), String.valueOf(dS.get("pic")));
+            com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getContext(), String.valueOf(dS.get("pic")));
         else
-            Utils.helper.setpPicPref(getContext(), null);
-        Utils.helper.setusernamePref(getContext(), String.valueOf(dS.get("username")));
+            com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getContext(), null);
+        com.PollBuzz.pollbuzz.Utils.helper.setusernamePref(getContext(), String.valueOf(dS.get("username")));
     }
 
     private void googleSignin() {

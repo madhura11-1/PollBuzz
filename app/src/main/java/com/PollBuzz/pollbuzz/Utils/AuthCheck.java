@@ -1,4 +1,4 @@
-package Utils;
+package com.PollBuzz.pollbuzz.Utils;
 
 import android.content.Intent;
 import android.os.Bundle;

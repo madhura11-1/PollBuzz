@@ -54,7 +54,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import dmax.dialog.SpotsDialog;
 
 public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeViewHolder> {

@@ -1,4 +1,4 @@
-package Utils;
+package com.PollBuzz.pollbuzz.Utils;
 
 import com.PollBuzz.pollbuzz.R;
 import com.karumi.dexter.Dexter;

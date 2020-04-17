@@ -19,9 +19,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kinda.alert.KAlertDialog;
 
-import java.util.Objects;
-
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class SignupFragment extends Fragment {

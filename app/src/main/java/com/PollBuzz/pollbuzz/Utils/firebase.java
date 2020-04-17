@@ -1,23 +1,17 @@
-package Utils;
+package com.PollBuzz.pollbuzz.Utils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -60,7 +54,7 @@ public class firebase {
         dialog.setTitleText("Logging Out...");
         dialog.setCancelable(false);
         dialog.show();
-        Utils.helper.removeProfileSetUpPref(context);
+        com.PollBuzz.pollbuzz.Utils.helper.removeProfileSetUpPref(context);
         if (getUser() != null) {
             getUserDocument().collection("Favourite Authors").get().addOnCompleteListener(task -> {
                 if(task.isSuccessful() && task.getResult()!=null){

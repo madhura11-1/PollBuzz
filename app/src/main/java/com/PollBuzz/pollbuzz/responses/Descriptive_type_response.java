@@ -29,7 +29,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Descriptive_type_response extends AppCompatActivity {
     Button submit;

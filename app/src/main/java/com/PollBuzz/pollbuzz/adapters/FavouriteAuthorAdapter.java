@@ -26,7 +26,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.util.List;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthorAdapter.VoterViewHolder> {
 

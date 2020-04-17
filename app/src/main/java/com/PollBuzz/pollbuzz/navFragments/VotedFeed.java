@@ -53,7 +53,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class VotedFeed extends Fragment {
     private ShimmerRecyclerView votedRV;

@@ -34,7 +34,7 @@ import com.skydoves.powermenu.PowerMenuItem;
 import java.util.Map;
 import java.util.TreeMap;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Ranking_type_result extends AppCompatActivity {
 

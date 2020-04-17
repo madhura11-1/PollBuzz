@@ -1,4 +1,4 @@
-package Utils;
+package com.PollBuzz.pollbuzz.Utils;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

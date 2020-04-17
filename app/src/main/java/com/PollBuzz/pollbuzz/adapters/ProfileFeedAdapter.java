@@ -34,7 +34,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.ProfileViewHolder> {
 

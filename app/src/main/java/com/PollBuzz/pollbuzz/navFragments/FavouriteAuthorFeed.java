@@ -34,7 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 
 
 public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdapter.itemClicked {

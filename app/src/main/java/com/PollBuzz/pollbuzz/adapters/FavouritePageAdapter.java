@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import Utils.firebase;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import dmax.dialog.SpotsDialog;
 
 public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdapter.HomeViewHolder> {
