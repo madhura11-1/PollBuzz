@@ -464,7 +464,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        adapter = new HomePageAdapter(getContext(), arrayList);
+        adapter = new HomePageAdapter(getContext(), arrayList,this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
