@@ -30,9 +30,8 @@
 
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/maven_pro"
                 android:text="Type : "
                 android:textColor="@color/white"
@@ -59,9 +58,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/maven_pro"
                 android:text="Query : "
                 android:textColor="@color/white"
@@ -87,9 +85,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/maven_pro"
                 android:text="Author : "
                 android:textColor="@color/white"
@@ -115,9 +112,8 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:fontFamily="@font/maven_pro"
                 android:text="Date : "
                 android:textColor="@color/white"
