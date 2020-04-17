@@ -15,6 +15,16 @@ public class PollDetails {
     private String pic;
     private String author_lc;
     private boolean live;
+
+    public void setLivePoll(boolean livePoll) {
+        this.livePoll = livePoll;
+    }
+
+    public boolean isLivePoll() {
+        return livePoll;
+    }
+
+    private boolean livePoll;
     private Date created_date, expiry_date;
     private Map<String, Integer> map;
     private Integer pollcount;
@@ -36,6 +46,7 @@ public class PollDetails {
         timestamp = 0;
         seconds = 0;
         poll_accessID = "";
+        livePoll=false;
 
     }
 

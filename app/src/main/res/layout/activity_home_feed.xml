@@ -87,6 +87,7 @@
             android:textSize="32sp" />
 
         <ImageButton
+            android:tooltipText="Filter"
             android:id="@+id/search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

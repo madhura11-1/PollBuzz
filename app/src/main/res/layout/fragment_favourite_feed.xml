@@ -23,13 +23,13 @@
         android:id="@+id/linear_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:layout_weight="2"
             android:fontFamily="@font/fascinate_inline"
             android:gravity="center"
@@ -39,15 +39,15 @@
             android:textSize="32sp" />
 
         <LinearLayout
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
             <ImageButton
-                android:layout_marginBottom="10dp"
+                android:tooltipText="Filter"
+                android:layout_gravity="top"
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,7 +57,9 @@
                 android:src="@drawable/ic_filter_list_dark_24dp" />
 
             <ImageButton
+                android:tooltipText="Favourite Authors"
                 android:id="@+id/visit_authors"
+                android:layout_gravity="bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

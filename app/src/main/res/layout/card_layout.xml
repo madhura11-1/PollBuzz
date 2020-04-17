@@ -134,7 +134,18 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="15dp"
+            android:text="LIVE"
+            android:textColor="#B2EBF2"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
 

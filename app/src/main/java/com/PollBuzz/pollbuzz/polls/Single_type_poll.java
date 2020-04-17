@@ -263,6 +263,7 @@ public class Single_type_poll extends AppCompatActivity {
                 if (flagm == 1) {
                     Log.d("yes", "item");
                     polldetails.setLive(true);
+                    polldetails.setLivePoll(true);
                     polldetails.setSeconds(sec);
                 } else {
                     polldetails.setExpiry_date(df.parse(expirydate));

@@ -41,7 +41,6 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d("LOG_DATA", "Inside Notification service");
-        remoteMessage.getData();
         try {
             Log.d(TAG, "ResponseNotif: " + remoteMessage.getData().toString());
             JSONObject jsonObject = new JSONObject(remoteMessage.getData());

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,7 +19,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.UserDetails;
 import com.PollBuzz.pollbuzz.VoteDetails;
+import com.PollBuzz.pollbuzz.navFragments.FavouriteAuthorFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.results.Descriptive_type_result;
 import com.PollBuzz.pollbuzz.results.Image_type_result;
@@ -31,24 +34,30 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.security.auth.callback.Callback;
 
 import Utils.firebase;
 import dmax.dialog.SpotsDialog;
 
 public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthorAdapter.VoterViewHolder> {
 
-    private ArrayList<Map<String, Object>> authorDetails;
+    private List<UserDetails> authorDetails;
     private Context mContext;
     firebase fb;
     FirebaseAnalytics mFirebaseAnalytics;
+    itemClicked callBack;
 
-    public FavouriteAuthorAdapter(Context mContext, ArrayList<Map<String, Object>>mDetails) {
+    public FavouriteAuthorAdapter(Context mContext, List<UserDetails> mDetails, itemClicked callBack) {
         this.mContext = mContext;
         this.authorDetails = mDetails;
-        fb=new firebase();
+        this.callBack = callBack;
+        fb = new firebase();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         setHasStableIds(true);
     }
@@ -69,11 +78,12 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
 
     private void clickListener(@NonNull VoterViewHolder holder, int position) {
         holder.card_view.setOnClickListener(view -> {
+            callBack.onItemClicked();
             Bundle bundle = new Bundle();
             bundle.putString("user_id", fb.getUserId());
             mFirebaseAnalytics.logEvent("favourite_clicked", bundle);
-            Log.d("HomeAdapter",authorDetails.get(position).get("username").toString());
-            Fragment profileFeed = ProfileFeed.newInstance(authorDetails.get(position).get("UID").toString());
+            Log.d("HomeAdapter", authorDetails.get(position).getUsername());
+            Fragment profileFeed = ProfileFeed.newInstance(authorDetails.get(position).getUid());
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
         });
@@ -81,13 +91,13 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
 
     private void setData(@NonNull VoterViewHolder holder, int position) {
         try {
-            if (authorDetails.get(position).containsKey("username"))
-                holder.voterUsername.setText(authorDetails.get(position).get("username").toString());
-            if (!authorDetails.get(position).containsKey("pic")) {
+            if (authorDetails.get(position).getUsername() != null)
+                holder.voterUsername.setText(authorDetails.get(position).getUsername());
+            if (authorDetails.get(position).getPic() == null) {
                 holder.voterPhoto.setImageResource(R.drawable.ic_person_black_24dp);
             } else {
                 Glide.with(mContext)
-                        .load(authorDetails.get(position).get("pic").toString())
+                        .load(authorDetails.get(position).getPic())
                         .transform(new CircleCrop())
                         .into(holder.voterPhoto);
             }
@@ -95,8 +105,6 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -129,5 +137,14 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
             voterUsername = itemView.findViewById(R.id.voterUsername);
             voterPhoto = itemView.findViewById(R.id.voterPhoto);
         }
+    }
+
+    public void filterList(List<UserDetails> filteredList) {
+        authorDetails = filteredList;
+        notifyDataSetChanged();
+    }
+
+    public interface itemClicked {
+        void onItemClicked();
     }
 }

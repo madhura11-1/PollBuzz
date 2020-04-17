@@ -61,7 +61,7 @@ import java.util.Objects;
 
 import Utils.firebase;
 
-public class HomeFeed extends Fragment {
+public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
     private ArrayList<PollDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
@@ -556,7 +556,7 @@ public class HomeFeed extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
-        adapter = new HomePageAdapter(getContext(), arrayList);
+        adapter = new HomePageAdapter(getContext(), arrayList,this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
@@ -620,5 +620,10 @@ public class HomeFeed extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked() {
+        closeKeyboard();
     }
 }
