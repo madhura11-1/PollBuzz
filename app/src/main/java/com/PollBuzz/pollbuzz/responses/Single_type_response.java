@@ -204,7 +204,6 @@ public class Single_type_response extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(Single_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(Single_type_response.this, MainActivity.class);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(i);
                                 }
                             })
@@ -289,7 +288,6 @@ public class Single_type_response extends AppCompatActivity {
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                                     i.putExtra("UID", key);
                                                     i.putExtra("type", "SINGLE CHOICE");
-                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(i);
                                                     finish();
                                                 }
@@ -299,7 +297,6 @@ public class Single_type_response extends AppCompatActivity {
                                     Intent intent = new Intent(Single_type_response.this, PercentageResult.class);
                                     intent.putExtra("UID", key);
                                     intent.putExtra("type", "SINGLE CHOICE");
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();
                                 }

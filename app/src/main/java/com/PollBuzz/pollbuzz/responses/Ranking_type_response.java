@@ -298,7 +298,6 @@ public class Ranking_type_response extends AppCompatActivity {
                                 Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
                                 i.putExtra("UID", key);
                                 i.putExtra("type", "RANKED");
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(i);
                                 finish();
                             }
@@ -308,7 +307,6 @@ public class Ranking_type_response extends AppCompatActivity {
                 Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
                 i.putExtra("UID", key);
                 i.putExtra("type", "RANKED");
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
             }
@@ -324,16 +322,12 @@ public class Ranking_type_response extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-
                     DocumentSnapshot result = task.getResult();
                     if (result.exists()) {
                         Map<String, Object> ans = result.getData();
                         updateRanks(ans, ref);
                     }
-
                 }
-
-
             }
         });
 
@@ -401,7 +395,6 @@ public class Ranking_type_response extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Successfully submitted your response", Toast.LENGTH_LONG).show();
                             Intent i = new Intent(Ranking_type_response.this, MainActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
                         } else {
                             dialog1.dismissWithAnimation();

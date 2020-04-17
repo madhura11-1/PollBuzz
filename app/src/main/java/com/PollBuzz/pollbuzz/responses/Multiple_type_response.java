@@ -212,8 +212,6 @@ public class Multiple_type_response extends AppCompatActivity {
                         Toast.makeText(Multiple_type_response.this, "Unable to submit.\nPlease try again", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
 
     private void retrieveData() {
@@ -290,7 +288,6 @@ public class Multiple_type_response extends AppCompatActivity {
                                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                                         intent.putExtra("UID", key);
                                                         intent.putExtra("type", "MULTI SELECT");
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         startActivity(intent);
                                                         finish();
                                                     }
@@ -300,7 +297,6 @@ public class Multiple_type_response extends AppCompatActivity {
                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                         intent.putExtra("UID", key);
                                         intent.putExtra("type", "MULTI SELECT");
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
                                     }

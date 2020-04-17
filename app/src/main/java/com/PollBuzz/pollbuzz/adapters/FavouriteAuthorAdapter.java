@@ -71,7 +71,7 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
         holder.card_view.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putString("user_id", fb.getUserId());
-            mFirebaseAnalytics.logEvent("favourite_author_card_user_clicked", bundle);
+            mFirebaseAnalytics.logEvent("favourite_clicked", bundle);
             Log.d("HomeAdapter",authorDetails.get(position).get("username").toString());
             Fragment profileFeed = ProfileFeed.newInstance(authorDetails.get(position).get("UID").toString());
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();

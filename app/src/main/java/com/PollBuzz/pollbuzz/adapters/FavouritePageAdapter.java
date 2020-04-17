@@ -235,7 +235,6 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
 
         TextInputEditText code_type = dialog.findViewById(R.id.code_type);
         MaterialButton ok = dialog.findViewById(R.id.ok);
-        LottieAnimationView loader = dialog.findViewById(R.id.loader);
 
         dialog.show();
         window.setAttributes(lp);
@@ -248,15 +247,9 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                     code_type.requestFocus();
                 }
                 else {
-                    ok.setVisibility(View.GONE);
-                    loader.setVisibility(View.VISIBLE);
-                    loader.playAnimation();
                     if(code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())){
-
-                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
-                        ok.setVisibility(View.VISIBLE);
-                        loader.setVisibility(View.GONE);
                         dialog.dismiss();
+                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                     }
                     else{
                         code_type.setError("Incorrect Poll ID");

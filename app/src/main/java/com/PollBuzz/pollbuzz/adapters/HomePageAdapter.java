@@ -64,14 +64,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     private Context mContext;
     FirebaseAnalytics mFirebaseAnalytics;
     firebase fb;
-    ArrayList<String> authors=new ArrayList<>();
+    ArrayList<String> authors = new ArrayList<>();
     SpotsDialog dialog;
 
     public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
-        dialog= new SpotsDialog(mContext,R.style.Custom);
+        dialog = new SpotsDialog(mContext, R.style.Custom);
         dialog.setCancelable(false);
         setHasStableIds(true);
         //dialog.create();
@@ -95,24 +95,20 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     private void clickListener(@NonNull HomeViewHolder holder, int position) {
         holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
         holder.voteArea.setOnClickListener(view -> {
-            if(holder.card_status.getText().toString().equals("Active"))
-            {
+            if (holder.card_status.getText().toString().equals("Active")) {
                 Bundle bundle = new Bundle();
                 bundle.putString("user_id", fb.getUserId());
                 bundle.putString("poll_id", mPollDetails.get(position).getUID());
                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                 mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
-                if(holder.live.getVisibility() == View.VISIBLE){
-                    showcodedialog(mPollDetails.get(position).getUID(),position);
-                }
-                else
+                if (holder.live.getVisibility() == View.VISIBLE) {
+                    showcodedialog(mPollDetails.get(position).getUID(), position);
+                } else
                     startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
-            }
-            else
-            {
-                Intent i=new Intent(mContext, PercentageResult.class);
-                i.putExtra("UID",mPollDetails.get(position).getUID());
-                i.putExtra("type",mPollDetails.get(position).getPoll_type());
+            } else {
+                Intent i = new Intent(mContext, PercentageResult.class);
+                i.putExtra("UID", mPollDetails.get(position).getUID());
+                i.putExtra("type", mPollDetails.get(position).getPoll_type());
                 mContext.startActivity(i);
             }
 
@@ -123,8 +119,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             bundle.putString("poll_id", mPollDetails.get(position).getUID());
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             mFirebaseAnalytics.logEvent("home_card_user_clicked", bundle);
-            Log.d("HomeAdapter",mPollDetails.get(position).getAuthorUID());
-            Fragment profileFeed =ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
+            Log.d("HomeAdapter", mPollDetails.get(position).getAuthorUID());
+            Fragment profileFeed = ProfileFeed.newInstance(mPollDetails.get(position).getAuthorUID());
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
         });
@@ -147,7 +143,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                             //dialog1.dismissWithAnimation();
 
 
-                                            Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
+                                            Toast.makeText(mContext, mPollDetails.get(position).getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
                                             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
                                             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
                                             notifyDataSetChanged();
@@ -163,8 +159,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
-                                                            if(task.isSuccessful()){
-                                                                Log.d("UnSubscribedFrom",mPollDetails.get(position).getAuthorUID());
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("UnSubscribedFrom", mPollDetails.get(position).getAuthorUID());
 
                                                             }
                                                             dialog.dismiss();
@@ -178,7 +174,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                     // dialog1.dismissWithAnimation();
                                                     dialog.dismiss();
 //                                                    holder.fav_author.setEnabled(true);
-                                                    Toast.makeText(mContext,"Failed "+mPollDetails.get(position).getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(mContext, "Failed " + mPollDetails.get(position).getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
@@ -188,15 +184,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                 //Log.d(TAG, "Document does not exist!");
 
 //
-                                Map<String,String> map=new HashMap<>();
-                                map.put("Username",(mPollDetails.get(position).getAuthor()));
+                                Map<String, String> map = new HashMap<>();
+                                map.put("Username", (mPollDetails.get(position).getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
 
 //
-                                        Toast.makeText(mContext,mPollDetails.get(position).getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(mContext, mPollDetails.get(position).getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
                                         holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
                                         holder.fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                                         notifyDataSetChanged();
@@ -204,8 +200,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
-                                                        if(task.isSuccessful()){
-                                                            Log.d("SubscribedTo",mPollDetails.get(position).getAuthorUID());
+                                                        if (task.isSuccessful()) {
+                                                            Log.d("SubscribedTo", mPollDetails.get(position).getAuthorUID());
 
                                                         }
                                                         dialog.dismiss();
@@ -219,7 +215,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                 //dialog1.dismissWithAnimation();
                                                 dialog.dismiss();
 //                                                holder.fav_author.setEnabled(true);
-                                                Toast.makeText(mContext,"Failed to add "+mPollDetails.get(position).getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(mContext, "Failed to add " + mPollDetails.get(position).getAuthor() + " to your favourite authors", Toast.LENGTH_LONG).show();
                                             }
                                         });
                             }
@@ -245,7 +241,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
         TextInputEditText code_type = dialog.findViewById(R.id.code_type);
         MaterialButton ok = dialog.findViewById(R.id.ok);
-        LottieAnimationView loader = dialog.findViewById(R.id.loader);
 
         dialog.show();
         window.setAttributes(lp);
@@ -253,41 +248,32 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(code_type.getText().toString().isEmpty()){
+                if (code_type.getText().toString().isEmpty()) {
                     code_type.setError("Please enter the code to access the poll");
                     code_type.requestFocus();
-                }
-                else {
-                    ok.setVisibility(View.GONE);
-                    loader.setVisibility(View.VISIBLE);
-                    loader.playAnimation();
-                    if(code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())){
-
-                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
-                        ok.setVisibility(View.VISIBLE);
-                        loader.setVisibility(View.GONE);
+                } else {
+                    if (code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())) {
                         dialog.dismiss();
-                    }
-                    else{
+                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                    } else {
                         code_type.setError("Incorrect Poll ID");
                         code_type.requestFocus();
                     }
+
                 }
             }
         });
     }
+
     private void setData(@NonNull HomeViewHolder holder, int position) {
         try {
             holder.fav_author.setImageResource(R.drawable.ic_star_border_white_24dp);
             holder.cardV.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
             holder.fav_author.setVisibility(View.VISIBLE);
             holder.live.setVisibility(View.GONE);
-            if(fb.getUserId().equals(mPollDetails.get(position).getAuthorUID()))
-            {
+            if (fb.getUserId().equals(mPollDetails.get(position).getAuthorUID())) {
                 holder.fav_author.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -324,15 +310,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.card_date.setText(date.trim());
             }
             Date date = Calendar.getInstance().getTime();
-            if(mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()){
+            if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.card_status.setText("Expired");
-            }
-            else if(mPollDetails.get(position).isLive()){
-                Log.d("live","true");
+            } else if (mPollDetails.get(position).isLive()) {
+                Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);
                 holder.card_status.setText("Active");
-            }
-            else {
+            } else {
                 holder.live.setVisibility(View.GONE);
                 if (mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
                     holder.card_status.setText("Active");
@@ -398,7 +382,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         private RelativeLayout pPicArea;
         private LinearLayout voteArea;
         private ImageButton fav_author;
-        private TextView card_type, card_query, card_author, card_date,card_status,live;
+        private TextView card_type, card_query, card_author, card_date, card_status, live;
         private ImageView profilePic;
         private CardView cardV;
 
@@ -412,13 +396,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             card_query = itemView.findViewById(R.id.card_query);
             card_author = itemView.findViewById(R.id.card_author);
             card_date = itemView.findViewById(R.id.card_date);
-            card_status=itemView.findViewById(R.id.card_status);
+            card_status = itemView.findViewById(R.id.card_status);
             pPicArea = itemView.findViewById(R.id.profileArea);
             voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
-            fav_author=itemView.findViewById(R.id.fav_author);
+            fav_author = itemView.findViewById(R.id.fav_author);
             live = itemView.findViewById(R.id.live);
-            cardV=itemView.findViewById(R.id.cardV);
+            cardV = itemView.findViewById(R.id.cardV);
         }
     }
 }

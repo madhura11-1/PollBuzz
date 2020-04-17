@@ -326,7 +326,6 @@ public class Image_type_responses extends AppCompatActivity {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                                         intent.putExtra("UID",key);
                                         intent.putExtra("type","PICTURE BASED");
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
                                     }
@@ -352,8 +351,8 @@ public class Image_type_responses extends AppCompatActivity {
                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                         intent.putExtra("UID",key);
                         intent.putExtra("type","PICTURE BASED");
-                        finish();
                         startActivity(intent);
+                        finish();
                     }
                 })
                 .show();
