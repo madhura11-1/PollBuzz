@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -316,6 +317,7 @@ public class Single_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
+        Log.d("SingleType",key);
     }
 
     private void setActionBarFunctionality() {
