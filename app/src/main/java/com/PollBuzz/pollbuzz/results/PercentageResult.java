@@ -267,7 +267,7 @@ public class PercentageResult extends AppCompatActivity {
                                 map = pollDetails.getMap();
                                 Date date1 = Calendar.getInstance().getTime();
                                 if (!pollDetails.isLive()) {
-                                    if (pollDetails.getExpiry_date()!= null && pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                                    if (pollDetails.getExpiry_date() != null && pollDetails.getExpiry_date().compareTo(date1) >= 0)
                                         status.setText("Status : Active");
                                     else {
                                         status.setText("Status : Expired");
@@ -275,11 +275,11 @@ public class PercentageResult extends AppCompatActivity {
                                         selfVote.setEnabled(false);
                                     }
                                 } else {
-                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds()){
+                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds()) {
                                         status.setText("Status : Expired");
                                         selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
-                                        selfVote.setEnabled(false);}
-                                    else {
+                                        selfVote.setEnabled(false);
+                                    } else {
                                         status.setText("Status : Active");
                                         custom_stop.setVisibility(View.VISIBLE);
                                     }
@@ -609,7 +609,7 @@ public class PercentageResult extends AppCompatActivity {
         uid = intent.getExtras().getString("UID");
         type = intent.getExtras().getString("type");
         if (type != null && type.equals("RANKED")) pie_charts.setVisibility(View.GONE);
-        if(intent.getBooleanExtra("selfVote",false)){
+        if (intent.getBooleanExtra("selfVote", false)) {
             selfVote.setVisibility(View.VISIBLE);
         }
     }

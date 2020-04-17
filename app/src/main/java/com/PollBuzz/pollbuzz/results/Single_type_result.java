@@ -52,7 +52,6 @@ public class Single_type_result extends AppCompatActivity {
     PollDetails polldetails;
     ImageView id;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
