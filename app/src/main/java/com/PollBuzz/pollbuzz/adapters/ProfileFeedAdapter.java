@@ -33,8 +33,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import Utils.firebase;
 
@@ -155,6 +153,9 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
             }
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.live.setVisibility(View.GONE);
+                fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live", false);
+                mPollDetails.get(position).setLive(false);
+                notifyDataSetChanged();
             } else if (mPollDetails.get(position).isLive()) {
                 Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);

@@ -310,6 +310,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.card_status.setText("Expired");
                 holder.live.setVisibility(View.GONE);
+                fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live",false);
+                mPollDetails.get(position).setLive(false);
+                notifyDataSetChanged();
             } else if (mPollDetails.get(position).isLive()) {
                 Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);

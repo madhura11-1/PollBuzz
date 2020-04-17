@@ -297,9 +297,7 @@ public class PercentageResult extends AppCompatActivity {
                                                 }
                                             }
                                         } else flagVoted = true;
-                                        if (flagVoted) {
-                                            selfVote.setEnabled(true);
-                                        } else {
+                                        if (!flagVoted) {
                                             selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
                                             selfVote.setEnabled(false);
                                         }

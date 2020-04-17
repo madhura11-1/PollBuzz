@@ -309,6 +309,10 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             Date date = Calendar.getInstance().getTime();
             if(mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()){
                 holder.card_status.setText("Expired");
+                holder.live.setVisibility(View.GONE);
+                fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live",false);
+                mPollDetails.get(position).setLive(false);
+                notifyDataSetChanged();
             }
             else if(mPollDetails.get(position).isLive()){
                 Log.d("live","true");
