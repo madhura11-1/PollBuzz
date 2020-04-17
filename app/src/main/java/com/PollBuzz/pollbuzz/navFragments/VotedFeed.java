@@ -33,6 +33,8 @@ import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -78,6 +80,7 @@ public class VotedFeed extends Fragment {
     final String formatteddate = dateFormat.format(date);
     Boolean flagFirst = true, flagFetch = true;
     int currentFlag = 0;
+
 
     public VotedFeed() {
     }
@@ -503,6 +506,7 @@ public class VotedFeed extends Fragment {
         back1 = view.findViewById(R.id.back1);
         back2 = view.findViewById(R.id.back2);
         userVotedRef = fb.getUserDocument().collection("Voted");
+        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
     }
 
     private void closeKeyboard() {

@@ -23,6 +23,8 @@ import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.objects.UserDetails;
 import com.PollBuzz.pollbuzz.adapters.FavouriteAuthorAdapter;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -174,6 +176,7 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
         viewed = view.findViewById(R.id.viewed);
         search = view.findViewById(R.id.search);
         fb = new firebase();
+        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
     }
 
     void filter(String text) {

@@ -34,6 +34,8 @@ import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.adapters.ProfileFeedAdapter;
 import com.bumptech.glide.Glide;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
@@ -302,6 +304,7 @@ public class ProfileFeed extends Fragment {
         profileRV.setLayoutManager(linearLayoutManager);
         mArrayList = new ArrayList<>();
         typeface = ResourcesCompat.getFont(getActivity(), R.font.maven_pro);
+        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.htab_toolbar));
     }
 
     private void ToolbarSetup(@NonNull View view) {
