@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -114,11 +113,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 Intent i=new Intent(mContext, PercentageResult.class);
                 i.putExtra("UID",mPollDetails.get(position).getUID());
                 i.putExtra("type",mPollDetails.get(position).getPoll_type());
-                firebase fb=new firebase();
-                if(fb.getAuth().getCurrentUser().getUid().equals(mPollDetails.get(position).getAuthorUID()))
-                    i.putExtra("flag",2);
-                else
-                    i.putExtra("flag",3);
                 mContext.startActivity(i);
             }
 

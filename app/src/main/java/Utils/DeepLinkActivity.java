@@ -12,16 +12,32 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class DeepLinkActivity extends AppCompatActivity {
-    String UID, type;
-    static String TAG="DeepLink";
+    String UID, type_int, type;
+    static String TAG = "DeepLink";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate");
+        Log.d(TAG, "onCreate");
         String code = getData(getIntent().getData());
         if (code != null) {
-            type = code.substring(0, 1);
+            type_int = code.substring(0, 1);
+            switch (type_int) {
+                case "0":
+                    type = "SINGLE CHOICE";
+                    break;
+                case "1":
+                    type = "MULTI SELECT";
+                    break;
+                case "2":
+                    type = "RANKED";
+                    break;
+                case "3":
+                    type = "PICTURE BASED";
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
+            }
             UID = code.substring(1);
         }
         startIntent(UID, type);
@@ -32,7 +48,7 @@ public class DeepLinkActivity extends AppCompatActivity {
         intent.putExtra(MainActivity.PARAMS_UID, uid);
         intent.putExtra(MainActivity.PARAMS_TYPE, type);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        Log.d(TAG,"intent");
+        Log.d(TAG, "intent");
         startActivity(intent);
         finish();
     }
@@ -42,7 +58,7 @@ public class DeepLinkActivity extends AppCompatActivity {
             String url = data.toString();
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
-            bundle.putString("link",url);
+            bundle.putString("link", url);
             FirebaseAnalytics.getInstance(this).logEvent("link_clicked", bundle);
             int lastIndex = url.lastIndexOf("/");
             return url.substring(lastIndex + 1);

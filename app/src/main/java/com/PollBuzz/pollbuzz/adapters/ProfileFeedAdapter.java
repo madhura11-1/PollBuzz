@@ -59,6 +59,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 Intent intent = new Intent(mContext, PercentageResult.class);
                 intent.putExtra("UID", mPollDetails.get(position).getUID());
                 intent.putExtra("type", mPollDetails.get(position).getPoll_type());
+                intent.putExtra("selfVote",true);
                 mContext.startActivity(intent);
             });
         } else {
@@ -68,7 +69,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 });
             else {
                 holder.cardV.setOnClickListener(view -> {
-                    Toast.makeText(mContext, "This poll has expired!\nYou can't vote this...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "This poll has expired!\nYou can't vote...", Toast.LENGTH_SHORT).show();
                 });
             }
         }

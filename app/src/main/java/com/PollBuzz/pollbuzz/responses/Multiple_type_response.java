@@ -24,7 +24,6 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.polls.Multiple_type_poll;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -63,8 +62,6 @@ public class Multiple_type_response extends AppCompatActivity {
     SpotsDialog dialog2;
     ImageView id;
     int checked = 0;
-    int flag;
-    Boolean f = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,8 +177,6 @@ public class Multiple_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-        flag = intent.getIntExtra("flag", 0);
-
     }
 
     private void submitResponse() {
@@ -236,7 +231,6 @@ public class Multiple_type_response extends AppCompatActivity {
                             response.clear();
                             if (fb.getUserId().equals(polldetails.getAuthorUID())) {
                                 fav_author.setVisibility(View.GONE);
-                                f = true;
                             } else {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
@@ -296,20 +290,16 @@ public class Multiple_type_response extends AppCompatActivity {
                                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                                         intent.putExtra("UID", key);
                                                         intent.putExtra("type", "MULTI SELECT");
-                                                        if (!f)
-                                                            intent.putExtra("flag", 1);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                         startActivity(intent);
                                                         finish();
                                                     }
                                                 })
                                                 .show();
-                                    } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0 || flag == 1)) {
+                                    } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
                                         intent.putExtra("UID", key);
                                         intent.putExtra("type", "MULTI SELECT");
-                                        if (!f)
-                                            intent.putExtra("flag", 1);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();

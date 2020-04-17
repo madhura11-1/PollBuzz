@@ -63,8 +63,6 @@ public class Single_type_response extends AppCompatActivity {
     ImageButton fav_author;
     ImageView id;
     SpotsDialog dialog2;
-    int flag;
-    Boolean f = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,29 +191,35 @@ public class Single_type_response extends AppCompatActivity {
         fb.getPollsCollection().document(key).update("map", update);
         response.put("timestamp", Timestamp.now().getSeconds());
 
-        fb.getPollsCollection().document(key).collection("Response").document(fb.getUserId()).set(response);
-
-        Map<String, Object> mapi = new HashMap<>();
-        mapi.put("pollId", fb.getUserId());
-        mapi.put("timestamp", Timestamp.now().getSeconds());
-        fb.getUserDocument().collection("Voted").document(key).set(mapi)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(Single_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(Single_type_response.this, MainActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(i);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dialog1.dismissWithAnimation();
-                        Toast.makeText(Single_type_response.this, "Unable to submit.\nPlease try again", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+        fb.getPollsCollection().document(key).collection("Response").document(fb.getUserId()).set(response).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Map<String, Object> mapi = new HashMap<>();
+                    mapi.put("pollId", fb.getUserId());
+                    mapi.put("timestamp", Timestamp.now().getSeconds());
+                    fb.getUserDocument().collection("Voted").document(key).set(mapi)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(Single_type_response.this, "Successfully submitted your response", Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent(Single_type_response.this, MainActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(i);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    dialog1.dismissWithAnimation();
+                                    Toast.makeText(Single_type_response.this, "Unable to submit.\nPlease try again", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    Toast.makeText(Single_type_response.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void retrieveData() {
@@ -233,17 +237,16 @@ public class Single_type_response extends AppCompatActivity {
                             author.setText(polldetails.getAuthor());
                             if (fb.getUserId().equals(polldetails.getAuthorUID())) {
                                 fav_author.setVisibility(View.GONE);
-                                f = true;
                             } else {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         DocumentSnapshot document = task1.getResult();
 //                                        if (document != null) {
-                                            if (document.exists()) {
-                                                fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
-                                            } else {
-                                                fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
-                                            }
+                                        if (document.exists()) {
+                                            fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                        } else {
+                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                        }
 //                                        }
                                     } else {
                                         Toast.makeText(Single_type_response.this, task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -286,22 +289,16 @@ public class Single_type_response extends AppCompatActivity {
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                                     i.putExtra("UID", key);
                                                     i.putExtra("type", "SINGLE CHOICE");
-                                                    if (!f)
-                                                        i.putExtra("flag", 1);
-                                                    i.putExtra("from", 1);
                                                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                                     startActivity(i);
                                                     finish();
                                                 }
                                             })
                                             .show();
-                                } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0 || flag == 1)) {
+                                } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                     Intent intent = new Intent(Single_type_response.this, PercentageResult.class);
                                     intent.putExtra("UID", key);
                                     intent.putExtra("type", "SINGLE CHOICE");
-                                    if (!f)
-                                        intent.putExtra("flag", 1);
-                                    intent.putExtra("from", 1);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                     finish();
@@ -319,7 +316,6 @@ public class Single_type_response extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-        flag = intent.getIntExtra("flag", 0);
     }
 
     private void setActionBarFunctionality() {

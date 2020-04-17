@@ -22,6 +22,7 @@ import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
 import com.PollBuzz.pollbuzz.responses.Single_type_response;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,9 +67,14 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document1 = task.getResult();
                             if (document1 != null) {
-                                if (document1.exists())
-                                    startIntent(UID, type, 1);
-                                else startIntent(UID, type, 0);
+                                if (!document1.exists())
+                                    startIntent(UID, type);
+                                else {
+                                    Intent intent = new Intent(MainActivity.this, PercentageResult.class);
+                                    intent.putExtra("UID",UID);
+                                    intent.putExtra("type",type);
+                                    startActivity(intent);
+                                }
                             }
                         }
                     }
@@ -87,28 +93,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startIntent(String uid, String pollType, int flag) {
+    private void startIntent(String uid, String pollType) {
         Intent intent;
         try {
             Log.d("MainActivity", uid + " " + pollType);
             switch (pollType) {
-                case "0":
+                case "SINGLE CHOICE":
                     intent = new Intent(this, Single_type_response.class);
                     break;
-                case "1":
+                case "MULTI SELECT":
                     intent = new Intent(this, Multiple_type_response.class);
                     break;
-                case "2":
+                case "RANKED":
                     intent = new Intent(this, Ranking_type_response.class);
                     break;
-                case "3":
+                case "PICTURE BASED":
                     intent = new Intent(this, Image_type_responses.class);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + pollType);
             }
             intent.putExtra("UID", uid);
-            intent.putExtra("flag", flag);
             dialog.dismissWithAnimation();
             Log.d("MainActivity", "intent");
             startActivity(intent);

@@ -82,25 +82,8 @@ public class NotificationService extends FirebaseMessagingService {
         String message = pollTitle;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            String type_int = null;
-            switch (type) {
-                case "SINGLE CHOICE":
-                    type_int = "0";
-                    break;
-                case "MULTI SELECT":
-                    type_int = "1";
-                    break;
-                case "RANKED":
-                    type_int = "2";
-                    break;
-                case "PICTURE BASED":
-                    type_int = "3";
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + type);
-            }
             intent.putExtra(MainActivity.PARAMS_UID, pollId);
-            intent.putExtra(MainActivity.PARAMS_TYPE, type_int);
+            intent.putExtra(MainActivity.PARAMS_TYPE, type);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -127,25 +110,8 @@ public class NotificationService extends FirebaseMessagingService {
             notificationManager.notify(id /* ID of notification */, notificationBuilder.build());
         } else {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            String type_int = null;
-            switch (type) {
-                case "SINGLE CHOICE":
-                    type_int = "0";
-                    break;
-                case "MULTI SELECT":
-                    type_int = "1";
-                    break;
-                case "RANKED":
-                    type_int = "2";
-                    break;
-                case "PICTURE BASED":
-                    type_int = "3";
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + type);
-            }
             intent.putExtra(MainActivity.PARAMS_UID, pollId);
-            intent.putExtra(MainActivity.PARAMS_TYPE, type_int);
+            intent.putExtra(MainActivity.PARAMS_TYPE, type);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, id /* Request code */, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);

@@ -77,7 +77,6 @@ public class PercentageResult extends AppCompatActivity {
     firebase fb;
     ImageButton home, logout;
     String uid, type;
-    int flag;
     Map<String, Integer> map;
     LinearLayout linearLayout;
     public static int total;
@@ -89,7 +88,6 @@ public class PercentageResult extends AppCompatActivity {
     public static String question;
     Boolean flagVoted = true;
     ImageView shareImage, sharePoll;
-    int from;
     PollDetails pollDetails;
 
     @Override
@@ -178,13 +176,14 @@ public class PercentageResult extends AppCompatActivity {
                 FirebaseCrashlytics.getInstance().log(e.getMessage());
             }
         });
+
         sharePoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     Bundle bundle = new Bundle();
                     bundle.putString("timestamp", Timestamp.now().toDate().toString());
-                    bundle.putString("UID",uid);
+                    bundle.putString("UID", uid);
                     FirebaseAnalytics.getInstance(PercentageResult.this).logEvent("share_link", bundle);
                     int type = getType();
                     String shareBody = "https://pollbuzz.com/share/" + type + uid;
@@ -193,7 +192,7 @@ public class PercentageResult extends AppCompatActivity {
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                     startActivity(Intent.createChooser(sharingIntent, "Share link via"));
-                }catch (IllegalStateException e){
+                } catch (IllegalStateException e) {
                     Toast.makeText(PercentageResult.this, "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -211,7 +210,7 @@ public class PercentageResult extends AppCompatActivity {
         });
     }
 
-    private int getType() throws IllegalStateException{
+    private int getType() throws IllegalStateException {
         switch (type) {
             case "SINGLE CHOICE":
                 return 0;
@@ -247,61 +246,65 @@ public class PercentageResult extends AppCompatActivity {
     }
 
     private void retrievedata(firebase fb) {
-
         showDialog();
         fb.getPollsCollection().document(uid).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot != null) {
                             pollDetails = documentSnapshot.toObject(PollDetails.class);
-                            question_percentage.setText(pollDetails.getQuestion());
-                            question = pollDetails.getQuestion();
-                            int l = "at 00:00:00 UTC+5:30".length();
-                            String date = pollDetails.getCreated_date().toString();
-                            String d = "Created on: " + date.substring(0, date.length() - l - 3);
-                            date_percentage.setText(d);
-                            map = pollDetails.getMap();
-                            Date date1 = Calendar.getInstance().getTime();
-                            if (!pollDetails.isLive()) {
-                                if (pollDetails.getExpiry_date().compareTo(date1) >= 0)
-                                    status.setText("Status : Active");
-                                else
-                                    status.setText("Status : Expired");
-                            } else {
-                                if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
-                                    status.setText("Status : Expired");
-                                else {
-                                    status.setText("Status : Active");
-                                    custom_stop.setVisibility(View.VISIBLE);
+                            if (pollDetails != null) {
+                                if (pollDetails.getAuthorUID().equals(fb.getUserId())) {
+                                    result.setVisibility(View.VISIBLE);
+                                    selfVote.setVisibility(View.VISIBLE);
                                 }
-                            }
-                            total = pollDetails.getPollcount();
-                            String vote = "Total Voters:" + pollDetails.getPollcount();
-                            vote_count.setText(vote);
-                            fb.getPollsCollection().document(uid).collection("Response").get().addOnCompleteListener(task1 -> {
-                                if (task1.isSuccessful() && task1.getResult() != null) {
-                                    if (!task1.getResult().isEmpty()) {
-                                        for (QueryDocumentSnapshot dS1 : task1.getResult()) {
-                                            if (dS1.getId().equals(fb.getUserId())) {
-                                                flagVoted = false;
-                                                break;
-                                            }
-                                        }
-                                    } else flagVoted = true;
-                                    if (flagVoted) {
-                                        selfVote.setEnabled(true);
-                                    } else {
-                                        selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
-                                        selfVote.setEnabled(false);
+                                question_percentage.setText(pollDetails.getQuestion());
+                                question = pollDetails.getQuestion();
+                                int l = "at 00:00:00 UTC+5:30".length();
+                                String date = pollDetails.getCreated_date().toString();
+                                String d = "Created on: " + date.substring(0, date.length() - l - 3);
+                                date_percentage.setText(d);
+                                map = pollDetails.getMap();
+                                Date date1 = Calendar.getInstance().getTime();
+                                if (!pollDetails.isLive()) {
+                                    if (pollDetails.getExpiry_date().compareTo(date1) >= 0)
+                                        status.setText("Status : Active");
+                                    else
+                                        status.setText("Status : Expired");
+                                } else {
+                                    if (Timestamp.now().getSeconds() - pollDetails.getTimestamp() > pollDetails.getSeconds())
+                                        status.setText("Status : Expired");
+                                    else {
+                                        status.setText("Status : Active");
+                                        custom_stop.setVisibility(View.VISIBLE);
                                     }
                                 }
-                                setProgressbar(map);
-                            });
-                        } else {
-                            Log.d("PercentageResult", Objects.requireNonNull(task.getException().getMessage()));
+                                total = pollDetails.getPollcount();
+                                String vote = "Total Voters:" + pollDetails.getPollcount();
+                                vote_count.setText(vote);
+                                fb.getPollsCollection().document(uid).collection("Response").get().addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful() && task1.getResult() != null) {
+                                        if (!task1.getResult().isEmpty()) {
+                                            for (QueryDocumentSnapshot dS1 : task1.getResult()) {
+                                                if (dS1.getId().equals(fb.getUserId())) {
+                                                    flagVoted = false;
+                                                    break;
+                                                }
+                                            }
+                                        } else flagVoted = true;
+                                        if (flagVoted) {
+                                            selfVote.setEnabled(true);
+                                        } else {
+                                            selfVote.setBackgroundColor(getResources().getColor(R.color.grey));
+                                            selfVote.setEnabled(false);
+                                        }
+                                    }
+                                    setProgressbar(map);
+                                });
+                            }
                         }
+                    } else {
+                        Log.d("PercentageResult", Objects.requireNonNull(task.getException().getMessage()));
                     }
                 });
     }
@@ -602,18 +605,10 @@ public class PercentageResult extends AppCompatActivity {
     private void getIntentExtras(Intent intent) {
         uid = intent.getExtras().getString("UID");
         type = intent.getExtras().getString("type");
-        if (type.equals("RANKED"))
-            pie_charts.setVisibility(View.GONE);
-        flag = intent.getIntExtra("flag", 0);
-        if (flag == 1 || flag == 3) {
-            result.setVisibility(View.GONE);
-            selfVote.setVisibility(View.GONE);
+        if (type != null && type.equals("RANKED")) pie_charts.setVisibility(View.GONE);
+        if(intent.getBooleanExtra("selfVote",false)){
+            selfVote.setVisibility(View.VISIBLE);
         }
-        if (flag == 2)
-            selfVote.setVisibility(View.GONE);
-        from = intent.getIntExtra("from", 0);
-
-
     }
 
     private void setGlobals(View view) {
@@ -662,7 +657,7 @@ public class PercentageResult extends AppCompatActivity {
     private void shareScreenshot(File imageFile) {
         Bundle bundle = new Bundle();
         bundle.putString("timestamp", Timestamp.now().toDate().toString());
-        bundle.putString("UID",uid);
+        bundle.putString("UID", uid);
         FirebaseAnalytics.getInstance(this).logEvent("share_screenshot", bundle);
         Intent intent = new Intent(Intent.ACTION_SEND);
         Uri imageuri;

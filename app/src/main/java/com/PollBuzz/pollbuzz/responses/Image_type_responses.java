@@ -25,7 +25,6 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.polls.Image_type_poll;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -67,8 +66,6 @@ public class Image_type_responses extends AppCompatActivity {
     KAlertDialog dialog1;
     SpotsDialog dialog2;
     ImageView id;
-    Boolean f=false;
-    int flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,13 +321,11 @@ public class Image_type_responses extends AppCompatActivity {
                                         fb.getPollsCollection().document(key).update("live", false);
                                         callkalert();
                                     }
-                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 ))
+                                    else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0))
                                     {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                                         intent.putExtra("UID",key);
                                         intent.putExtra("type","PICTURE BASED");
-                                        if(!f)
-                                            intent.putExtra("flag",1);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
@@ -357,8 +352,6 @@ public class Image_type_responses extends AppCompatActivity {
                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                         intent.putExtra("UID",key);
                         intent.putExtra("type","PICTURE BASED");
-                        if(!f)
-                            intent.putExtra("flag",1);
                         finish();
                         startActivity(intent);
                     }
@@ -380,7 +373,6 @@ public class Image_type_responses extends AppCompatActivity {
 
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
-        flag=intent.getIntExtra("flag",0);
 
     }
 

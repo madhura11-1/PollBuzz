@@ -3,7 +3,6 @@ package com.PollBuzz.pollbuzz.adapters;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,13 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,24 +34,16 @@ import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import Utils.firebase;
 import dmax.dialog.SpotsDialog;
@@ -114,11 +103,6 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                 Intent i=new Intent(mContext, PercentageResult.class);
                 i.putExtra("UID",mPollDetails.get(position).getUID());
                 i.putExtra("type",mPollDetails.get(position).getPoll_type());
-                firebase fb=new firebase();
-                if(fb.getAuth().getCurrentUser().getUid().equals(mPollDetails.get(position).getAuthorUID()))
-                    i.putExtra("flag",2);
-                else
-                    i.putExtra("flag",3);
                 mContext.startActivity(i);
             }
 
