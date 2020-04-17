@@ -122,15 +122,13 @@ public class LoginFragment extends Fragment {
                             } else {
                                 dialog.dismissWithAnimation();
                                 Toast.makeText(getContext(), task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                //password.getEditText().getText().clear();
-                                ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
+                                password.getEditText().getText().clear();
                             }
                         });
                     }
                 } else {
                     Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    //password.getEditText().getText().clear();
-                    ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
+                    password.getEditText().getText().clear();
                 }
             });
         }

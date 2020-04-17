@@ -87,9 +87,8 @@ public class SignupFragment extends Fragment {
                     } else {
                         dialog.dismissWithAnimation();
                         Toast.makeText(getContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
-//                        passwordL.getEditText().getText().clear();
-//                        password2L.getEditText().getText().clear();
-                        ((LoginSignupActivity) Objects.requireNonNull(getActivity())).refreshUI();
+                        passwordL.getEditText().getText().clear();
+                        password2L.getEditText().getText().clear();
                     }
                 });
             } catch (Exception e) {
