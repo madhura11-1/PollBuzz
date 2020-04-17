@@ -307,21 +307,19 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                 holder.card_date.setText(date.trim());
             }
             Date date = Calendar.getInstance().getTime();
-            if(mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()){
+            if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.card_status.setText("Expired");
                 holder.live.setVisibility(View.GONE);
                 fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live",false);
                 mPollDetails.get(position).setLive(false);
                 notifyDataSetChanged();
-            }
-            else if(mPollDetails.get(position).isLive()){
-                Log.d("live","true");
+            } else if (mPollDetails.get(position).isLive()) {
+                Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);
                 holder.card_status.setText("Active");
-            }
-            else {
+            } else {
                 holder.live.setVisibility(View.GONE);
-                if (mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
+                if (mPollDetails.get(position).getExpiry_date() != null && mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
                     holder.card_status.setText("Active");
                 else
                     holder.card_status.setText("Expired");
