@@ -43,7 +43,7 @@ import java.util.Map;
 import Utils.firebase;
 
 
-public class FavouriteAuthorFeed extends Fragment {
+public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdapter.itemClicked {
     private List<UserDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     FavouriteAuthorAdapter adapter;
@@ -171,7 +171,7 @@ public class FavouriteAuthorFeed extends Fragment {
     private void setGlobals(View view) {
         arrayList = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerview);
-        adapter = new FavouriteAuthorAdapter(getContext(), arrayList);
+        adapter = new FavouriteAuthorAdapter(getContext(), arrayList,this);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -199,5 +199,10 @@ public class FavouriteAuthorFeed extends Fragment {
             InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    public void onItemClicked() {
+        closeKeyboard();
     }
 }

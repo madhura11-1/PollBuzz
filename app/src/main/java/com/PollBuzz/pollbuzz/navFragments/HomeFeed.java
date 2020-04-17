@@ -54,7 +54,7 @@ import java.util.Objects;
 
 import Utils.firebase;
 
-public class HomeFeed extends Fragment {
+public class HomeFeed extends Fragment implements HomePageAdapter.okClicked{
     private ArrayList<PollDetails> arrayList;
     private ShimmerRecyclerView recyclerView;
     private com.PollBuzz.pollbuzz.adapters.HomePageAdapter adapter;
@@ -522,5 +522,10 @@ public class HomeFeed extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClicked() {
+        closeKeyboard();
     }
 }

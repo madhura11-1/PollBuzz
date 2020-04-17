@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.UserDetails;
 import com.PollBuzz.pollbuzz.VoteDetails;
+import com.PollBuzz.pollbuzz.navFragments.FavouriteAuthorFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.results.Descriptive_type_result;
 import com.PollBuzz.pollbuzz.results.Image_type_result;
@@ -38,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.callback.Callback;
+
 import Utils.firebase;
 import dmax.dialog.SpotsDialog;
 
@@ -47,11 +51,13 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
     private Context mContext;
     firebase fb;
     FirebaseAnalytics mFirebaseAnalytics;
+    itemClicked callBack;
 
-    public FavouriteAuthorAdapter(Context mContext, List<UserDetails>mDetails) {
+    public FavouriteAuthorAdapter(Context mContext, List<UserDetails> mDetails, itemClicked callBack) {
         this.mContext = mContext;
         this.authorDetails = mDetails;
-        fb=new firebase();
+        this.callBack = callBack;
+        fb = new firebase();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         setHasStableIds(true);
     }
@@ -72,10 +78,11 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
 
     private void clickListener(@NonNull VoterViewHolder holder, int position) {
         holder.card_view.setOnClickListener(view -> {
+            callBack.onItemClicked();
             Bundle bundle = new Bundle();
             bundle.putString("user_id", fb.getUserId());
             mFirebaseAnalytics.logEvent("favourite_clicked", bundle);
-            Log.d("HomeAdapter",authorDetails.get(position).getUsername());
+            Log.d("HomeAdapter", authorDetails.get(position).getUsername());
             Fragment profileFeed = ProfileFeed.newInstance(authorDetails.get(position).getUid());
             FragmentManager fm = ((AppCompatActivity) mContext).getSupportFragmentManager();
             fm.beginTransaction().add(R.id.container, profileFeed, "profile").addToBackStack("profile").commit();
@@ -84,9 +91,9 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
 
     private void setData(@NonNull VoterViewHolder holder, int position) {
         try {
-            if (authorDetails.get(position).getUsername()!=null)
+            if (authorDetails.get(position).getUsername() != null)
                 holder.voterUsername.setText(authorDetails.get(position).getUsername());
-            if (authorDetails.get(position).getPic()==null) {
+            if (authorDetails.get(position).getPic() == null) {
                 holder.voterPhoto.setImageResource(R.drawable.ic_person_black_24dp);
             } else {
                 Glide.with(mContext)
@@ -131,8 +138,13 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
             voterPhoto = itemView.findViewById(R.id.voterPhoto);
         }
     }
+
     public void filterList(List<UserDetails> filteredList) {
         authorDetails = filteredList;
         notifyDataSetChanged();
+    }
+
+    public interface itemClicked {
+        void onItemClicked();
     }
 }

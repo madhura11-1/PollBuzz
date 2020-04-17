@@ -66,10 +66,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     firebase fb;
     ArrayList<String> authors = new ArrayList<>();
     SpotsDialog dialog;
+    okClicked callBack;
 
-    public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails) {
+    public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails, okClicked callBack) {
         this.mContext = mContext;
         this.mPollDetails = mPollDetails;
+        this.callBack=callBack;
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
         dialog = new SpotsDialog(mContext, R.style.Custom);
         dialog.setCancelable(false);
@@ -248,6 +250,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 } else {
                     if (code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())) {
                         dialog.dismiss();
+                        callBack.onItemClicked();
                         startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                     } else {
                         code_type.setError("Incorrect Poll ID");
@@ -399,5 +402,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             live = itemView.findViewById(R.id.live);
             cardV = itemView.findViewById(R.id.cardV);
         }
+    }
+    public interface okClicked {
+        void onItemClicked();
     }
 }
