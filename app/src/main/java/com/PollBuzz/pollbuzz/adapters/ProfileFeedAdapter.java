@@ -99,7 +99,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                         bundle.putString("user_id", fb.getUserId());
                         bundle.putString("poll_id", mPollDetails.get(position).getUID());
                         bundle.putString("timestamp", Timestamp.now().toDate().toString());
-                        FirebaseAnalytics.getInstance(mContext).logEvent("home_card_vote_clicked", bundle);
+                        FirebaseAnalytics.getInstance(mContext).logEvent("profile_card_vote_clicked", bundle);
                         if (holder.live.getVisibility() == View.VISIBLE) {
                             showcodedialog(position);
                         } else {
@@ -107,7 +107,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                             i.putExtra("UID", mPollDetails.get(position).getUID());
                             i.putExtra("type", mPollDetails.get(position).getPoll_type());
                             mContext.startActivity(i);
-                            Toast.makeText(mContext, "This poll has ended!\nYou are late.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "This poll has ended!.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
