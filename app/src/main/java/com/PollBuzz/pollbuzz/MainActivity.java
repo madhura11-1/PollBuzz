@@ -2,8 +2,10 @@ package com.PollBuzz.pollbuzz;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -55,57 +57,65 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-        }
-        if (type != null && UID != null) {
-            showDialog();
-            fb.getPollsCollection().document(UID).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document1 = task.getResult();
-                        if (document1 != null) {
-                            if (document1.exists())
-                                startIntent(UID, type, 1);
-                            else startIntent(UID, type, 0);
+        } else {
+            if (type != null && UID != null) {
+                showDialog();
+                fb.getPollsCollection().document(UID).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document1 = task.getResult();
+                            if (document1 != null) {
+                                if (document1.exists())
+                                    startIntent(UID, type, 1);
+                                else startIntent(UID, type, 0);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+            getSupportActionBar().show();
+            final ActionBar actionBar = getSupportActionBar();
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(R.layout.action_bar);
+            View view = getSupportActionBar().getCustomView();
+            view.findViewById(R.id.home).setVisibility(View.GONE);
+            setGlobals(view);
+            setBottomBar();
+            setListeners();
         }
-        getSupportActionBar().show();
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(R.layout.action_bar);
-        View view = getSupportActionBar().getCustomView();
-        view.findViewById(R.id.home).setVisibility(View.GONE);
-        setGlobals(view);
-        setBottomBar();
-        setListeners();
     }
 
     private void startIntent(String uid, String pollType, int flag) {
         Intent intent;
-        switch (pollType) {
-            case "0":
-                intent = new Intent(this, Single_type_response.class);
-                break;
-            case "1":
-                intent = new Intent(this, Multiple_type_response.class);
-                break;
-            case "2":
-                intent = new Intent(this, Ranking_type_response.class);
-                break;
-            case "3":
-                intent = new Intent(this, Image_type_responses.class);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + pollType);
+        try {
+            Log.d("MainActivity", uid + " " + pollType);
+            switch (pollType) {
+                case "0":
+                    intent = new Intent(this, Single_type_response.class);
+                    break;
+                case "1":
+                    intent = new Intent(this, Multiple_type_response.class);
+                    break;
+                case "2":
+                    intent = new Intent(this, Ranking_type_response.class);
+                    break;
+                case "3":
+                    intent = new Intent(this, Image_type_responses.class);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + pollType);
+            }
+            intent.putExtra("UID", uid);
+            intent.putExtra("flag", flag);
+            dialog.dismissWithAnimation();
+            Log.d("MainActivity", "intent");
+            startActivity(intent);
+        } catch (IllegalStateException e) {
+            dialog.dismissWithAnimation();
+            Toast.makeText(this, "This url does not exist.", Toast.LENGTH_SHORT).show();
         }
-        intent.putExtra("UID", uid);
-        intent.putExtra("flag", flag);
-        dialog.dismissWithAnimation();
-        startActivity(intent);
     }
 
     private void showDialog() {

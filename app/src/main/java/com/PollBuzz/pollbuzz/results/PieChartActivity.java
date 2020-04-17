@@ -59,7 +59,6 @@ public class PieChartActivity extends AppCompatActivity {
 
     private void createPieChart() {
         Pie pie = AnyChart.pie();
-
         pie.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"x", "value"}) {
             @Override
             public void onClick(Event event) {

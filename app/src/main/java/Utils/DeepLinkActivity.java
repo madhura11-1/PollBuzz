@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.MainActivity;
@@ -20,11 +21,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 public class DeepLinkActivity extends AppCompatActivity {
     String UID, type;
+    static String TAG="DeepLink";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.activity_deep_link);
+        Log.d(TAG,"onCreate");
         String code = getData(getIntent().getData());
         if (code != null) {
             type = code.substring(0, 1);
@@ -37,7 +40,8 @@ public class DeepLinkActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.PARAMS_UID, uid);
         intent.putExtra(MainActivity.PARAMS_TYPE, type);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Log.d(TAG,"intent");
         startActivity(intent);
         finish();
     }

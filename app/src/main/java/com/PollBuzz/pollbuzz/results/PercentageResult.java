@@ -104,7 +104,10 @@ public class PercentageResult extends AppCompatActivity {
         getIntentExtras(intent);
         setActionBarFunctionality();
         retrievedata(fb);
+        setListeners();
+    }
 
+    private void setListeners() {
         result.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,13 +180,17 @@ public class PercentageResult extends AppCompatActivity {
         sharePoll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int type = getType();
-                String shareBody = "https://pollbuzz.com/share/" + type + uid;
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Share link via"));
+                try {
+                    int type = getType();
+                    String shareBody = "https://pollbuzz.com/share/" + type + uid;
+                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                    startActivity(Intent.createChooser(sharingIntent, "Share link via"));
+                }catch (IllegalStateException e){
+                    Toast.makeText(PercentageResult.this, "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -199,7 +206,7 @@ public class PercentageResult extends AppCompatActivity {
         });
     }
 
-    private int getType() {
+    private int getType() throws IllegalStateException{
         switch (type) {
             case "SINGLE CHOICE":
                 return 0;
@@ -551,7 +558,6 @@ public class PercentageResult extends AppCompatActivity {
         return -1;
     }
 
-
     private void loadProfilePic(ImageView view, String url) {
         if (url != null) {
             Glide.with(this)
@@ -561,7 +567,6 @@ public class PercentageResult extends AppCompatActivity {
             view.setImageResource(R.drawable.place_holder);
         }
     }
-
 
     private void setActionBarFunctionality() {
         home.setOnClickListener(v -> {
@@ -624,12 +629,6 @@ public class PercentageResult extends AppCompatActivity {
         sharePoll = findViewById(R.id.share_poll);
         status = findViewById(R.id.status);
         custom_stop = findViewById(R.id.custom_stop);
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
     }
 
@@ -701,15 +700,4 @@ public class PercentageResult extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (from == 1) {
-            Intent intent1 = new Intent(PercentageResult.this, MainActivity.class);
-            intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent1);
-
-        }
-
-    }
 }

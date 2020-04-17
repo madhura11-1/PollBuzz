@@ -64,7 +64,7 @@ public class Single_type_response extends AppCompatActivity {
     ImageView id;
     SpotsDialog dialog2;
     int flag;
-
+    Boolean f = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class Single_type_response extends AppCompatActivity {
         setGlobals(view);
         setActionBarFunctionality();
         showDialog();
-        retrieveData(fb);
+        retrieveData();
         setListeners();
     }
 
@@ -174,7 +174,7 @@ public class Single_type_response extends AppCompatActivity {
                         .setTextGravity(Gravity.CENTER)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -182,7 +182,6 @@ public class Single_type_response extends AppCompatActivity {
     }
 
     private void submitResponse(firebase fb) {
-
         showKAlertDialog();
         Integer i = polldetails.getPollcount();
         i++;
@@ -219,13 +218,12 @@ public class Single_type_response extends AppCompatActivity {
 
     }
 
-    private void retrieveData(firebase fb) {
+    private void retrieveData() {
         fb.getPollsCollection()
                 .document(key)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Boolean f = false;
                         DocumentSnapshot data = task.getResult();
                         if (data != null && data.exists()) {
                             group.removeAllViews();
@@ -237,19 +235,18 @@ public class Single_type_response extends AppCompatActivity {
                                 fav_author.setVisibility(View.GONE);
                                 f = true;
                             } else {
-                                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
+                                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful()) {
+                                        DocumentSnapshot document = task1.getResult();
+//                                        if (document != null) {
                                             if (document.exists()) {
                                                 fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
                                             } else {
                                                 fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
                                             }
-                                        } else {
-                                            Toast.makeText(Single_type_response.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
+//                                        }
+                                    } else {
+                                        Toast.makeText(Single_type_response.this, task1.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -280,7 +277,6 @@ public class Single_type_response extends AppCompatActivity {
                                 if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                     polldetails.setLive(false);
                                     fb.getPollsCollection().document(key).update("live", false);
-                                    Boolean finalF = f;
                                     new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
                                             .setTitleText("This Live Poll has ended")
                                             .setConfirmText("OK")
@@ -290,7 +286,7 @@ public class Single_type_response extends AppCompatActivity {
                                                     Intent i = new Intent(Single_type_response.this, PercentageResult.class);
                                                     i.putExtra("UID", key);
                                                     i.putExtra("type", "SINGLE CHOICE");
-                                                    if (!finalF)
+                                                    if (!f)
                                                         i.putExtra("flag", 1);
                                                     i.putExtra("from", 1);
                                                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -300,19 +296,21 @@ public class Single_type_response extends AppCompatActivity {
                                             })
                                             .show();
                                 } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0 || flag == 1)) {
-                                    Intent i = new Intent(Single_type_response.this, PercentageResult.class);
-                                    i.putExtra("UID", key);
-                                    i.putExtra("type", "SINGLE CHOICE");
+                                    Intent intent = new Intent(Single_type_response.this, PercentageResult.class);
+                                    intent.putExtra("UID", key);
+                                    intent.putExtra("type", "SINGLE CHOICE");
                                     if (!f)
-                                        i.putExtra("flag", 1);
-                                    i.putExtra("from", 1);
-                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(i);
+                                        intent.putExtra("flag", 1);
+                                    intent.putExtra("from", 1);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
                                     finish();
                                 }
-
                             }
 
+                        } else {
+                            finish();
+                            Toast.makeText(Single_type_response.this, "This url does not exist.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

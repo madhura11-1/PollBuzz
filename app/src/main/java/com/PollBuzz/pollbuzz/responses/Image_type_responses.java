@@ -25,6 +25,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.polls.Image_type_poll;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -336,6 +337,9 @@ public class Image_type_responses extends AppCompatActivity {
                                     }
 
                                 }
+                            }else{
+                                finish();
+                                Toast.makeText(Image_type_responses.this, "This url does not exist.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

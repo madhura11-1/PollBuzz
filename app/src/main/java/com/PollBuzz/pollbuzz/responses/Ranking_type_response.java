@@ -53,7 +53,7 @@ import dmax.dialog.SpotsDialog;
 public class Ranking_type_response extends AppCompatActivity {
 
     MaterialButton submit;
-    MaterialTextView query_ranking,author;
+    MaterialTextView query_ranking, author;
     LinearLayout group, sequence;
     CollectionReference ref;
     Map<String, Integer> options;
@@ -70,7 +70,7 @@ public class Ranking_type_response extends AppCompatActivity {
     SpotsDialog dialog2;
     ImageView id;
     int flag;
-    Boolean f=false;
+    Boolean f = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +82,7 @@ public class Ranking_type_response extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         Intent intent = getIntent();
         key = intent.getExtras().getString("UID");
-        flag=intent.getIntExtra("flag",0);
+        flag = intent.getIntExtra("flag", 0);
         setGlobals(view);
         showDialog();
         setActionBarFunctionality();
@@ -118,7 +118,7 @@ public class Ranking_type_response extends AppCompatActivity {
                                             //dialog1.dismissWithAnimation();
                                             dialog2.dismiss();
                                             fav_author.setEnabled(true);
-                                            Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" removed from favourite authors",Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
                                             fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
                                         }
                                     })
@@ -128,7 +128,7 @@ public class Ranking_type_response extends AppCompatActivity {
                                                     // dialog1.dismissWithAnimation();
                                                     dialog2.dismiss();
                                                     fav_author.setEnabled(true);
-                                                    Toast.makeText(getApplicationContext(),"Failed "+polldetails.getAuthor()+" removing from favourite authors",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(), "Failed " + polldetails.getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
@@ -138,15 +138,15 @@ public class Ranking_type_response extends AppCompatActivity {
                                 //Log.d(TAG, "Document does not exist!");
 
                                 fav_author.setEnabled(false);
-                                Map<String,String> map=new HashMap<>();
-                                map.put("Username",(polldetails.getAuthor()));
+                                Map<String, String> map = new HashMap<>();
+                                map.put("Username", (polldetails.getAuthor()));
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
                                         dialog2.dismiss();
                                         fav_author.setEnabled(true);
-                                        Toast.makeText(getApplicationContext(),polldetails.getAuthor()+" added to your favourite authors",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
                                         fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
 
                                     }
@@ -157,7 +157,7 @@ public class Ranking_type_response extends AppCompatActivity {
                                                 //dialog1.dismissWithAnimation();
                                                 dialog2.dismiss();
                                                 fav_author.setEnabled(true);
-                                                Toast.makeText(getApplicationContext(),"Failed to add "+polldetails.getAuthor()+" to your favourite authors",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getApplicationContext(), "Failed to add " + polldetails.getAuthor() + " to your favourite authors", Toast.LENGTH_LONG).show();
                                             }
                                         });
                             }
@@ -179,7 +179,7 @@ public class Ranking_type_response extends AppCompatActivity {
                         .setTextGravity(Gravity.CENTER)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -199,10 +199,10 @@ public class Ranking_type_response extends AppCompatActivity {
                         options = polldetails.getMap();
                         c = options.size();
                         author.setText(polldetails.getAuthor());
-                        if(fb.getUserId().equals(polldetails.getAuthorUID())){
+                        if (fb.getUserId().equals(polldetails.getAuthorUID())) {
                             fav_author.setVisibility(View.GONE);
-                            f=true;
-                        }else {
+                            f = true;
+                        } else {
                             fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -220,6 +220,9 @@ public class Ranking_type_response extends AppCompatActivity {
                             });
                         }
                         setOptions();
+                    }else{
+                        finish();
+                        Toast.makeText(Ranking_type_response.this, "This url does not exist.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -252,11 +255,11 @@ public class Ranking_type_response extends AppCompatActivity {
         submit = findViewById(R.id.submit);
         fb = new firebase();
         dialog1 = new KAlertDialog(Ranking_type_response.this, SweetAlertDialog.PROGRESS_TYPE);
-        fav_author=findViewById(R.id.fav_author);
+        fav_author = findViewById(R.id.fav_author);
         id = findViewById(R.id.id1);
-        dialog2= new SpotsDialog(Ranking_type_response.this,R.style.Custom);
+        dialog2 = new SpotsDialog(Ranking_type_response.this, R.style.Custom);
         dialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        author=findViewById(R.id.author);
+        author = findViewById(R.id.author);
     }
 
     private void setOptions() {
@@ -289,31 +292,29 @@ public class Ranking_type_response extends AppCompatActivity {
             if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                 polldetails.setLive(false);
                 fb.getPollsCollection().document(key).update("live", false);
-                new KAlertDialog(this,KAlertDialog.WARNING_TYPE)
+                new KAlertDialog(this, KAlertDialog.WARNING_TYPE)
                         .setTitleText("This Live Poll has ended")
                         .setCancelText("OK")
                         .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
                             @Override
                             public void onClick(KAlertDialog kAlertDialog) {
                                 Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
-                                i.putExtra("UID",key);
-                                i.putExtra("type","RANKED");
-                                if(!f)
-                                    i.putExtra("flag",1);
+                                i.putExtra("UID", key);
+                                i.putExtra("type", "RANKED");
+                                if (!f)
+                                    i.putExtra("flag", 1);
                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(i);
                                 finish();
                             }
                         })
                         .show();
-            }
-            else if(polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date)< 0 || flag == 1 ))
-            {
+            } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0 || flag == 1)) {
                 Intent i = new Intent(Ranking_type_response.this, PercentageResult.class);
-                i.putExtra("UID",key);
-                i.putExtra("type","RANKED");
-                if(!f)
-                    i.putExtra("flag",1);
+                i.putExtra("UID", key);
+                i.putExtra("type", "RANKED");
+                if (!f)
+                    i.putExtra("flag", 1);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
