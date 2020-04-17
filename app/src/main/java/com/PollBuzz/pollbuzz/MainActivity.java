@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (!document1.exists())
                                     startIntent(UID, type);
                                 else {
+                                    dialog.dismissWithAnimation();
                                     Intent intent = new Intent(MainActivity.this, PercentageResult.class);
                                     intent.putExtra("UID",UID);
                                     intent.putExtra("type",type);
