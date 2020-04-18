@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
@@ -154,10 +156,20 @@ public class Image_type_responses extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             //dialog1.dismissWithAnimation();
-                                            dialog2.dismiss();
-                                            fav_author.setEnabled(true);
-                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
-                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(polldetails.getAuthorUID())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("UnSubscribedFrom", polldetails.getAuthorUID());
+
+                                                            }
+                                                            dialog2.dismiss();
+                                                            fav_author.setEnabled(true);
+                                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
+                                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                                        }
+                                                    });
                                         }
                                     })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -182,11 +194,19 @@ public class Image_type_responses extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
-                                        dialog2.dismiss();
-                                        fav_author.setEnabled(true);
-                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
-                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                        FirebaseMessaging.getInstance().subscribeToTopic(polldetails.getAuthorUID())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Log.d("SubscribedTo", polldetails.getAuthorUID());
 
+                                                        }
+                                                        dialog2.dismiss();
+                                                        fav_author.setEnabled(true);
+                                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
+                                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);                                                    }
+                                                });
                                     }
                                 })
                                         .addOnFailureListener(new OnFailureListener() {

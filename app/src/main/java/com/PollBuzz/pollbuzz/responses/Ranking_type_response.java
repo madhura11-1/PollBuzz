@@ -41,6 +41,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import dmax.dialog.SpotsDialog;
 
@@ -121,10 +123,20 @@ public class Ranking_type_response extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             //dialog1.dismissWithAnimation();
-                                            dialog2.dismiss();
-                                            fav_author.setEnabled(true);
-                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
-                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(polldetails.getAuthorUID())
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                Log.d("UnSubscribedFrom", polldetails.getAuthorUID());
+
+                                                            }
+                                                            dialog2.dismiss();
+                                                            fav_author.setEnabled(true);
+                                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
+                                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+                                                        }
+                                                    });
                                         }
                                     })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -149,10 +161,20 @@ public class Ranking_type_response extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         //dialog1.dismissWithAnimation();
-                                        dialog2.dismiss();
-                                        fav_author.setEnabled(true);
-                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
-                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                        FirebaseMessaging.getInstance().subscribeToTopic(polldetails.getAuthorUID())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Log.d("SubscribedTo", polldetails.getAuthorUID());
+
+                                                        }
+                                                        dialog2.dismiss();
+                                                        fav_author.setEnabled(true);
+                                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
+                                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+                                                    }
+                                                });
 
                                     }
                                 })
@@ -178,8 +200,8 @@ public class Ranking_type_response extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String y = polldetails.getPoll_accessID().toString();
-                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Ranking_type_response.this,new IconMenuAdapter())
-                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_content_copy_black_24dp),y))
+                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Ranking_type_response.this, new IconMenuAdapter())
+                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_content_copy_black_24dp), y))
                         .setAnimation(MenuAnimation.ELASTIC_CENTER)
                         .setMenuRadius(10f)
                         .setMenuShadow(10f)
@@ -477,7 +499,7 @@ public class Ranking_type_response extends AppCompatActivity {
         public View getView(int index, View view, ViewGroup viewGroup) {
             final Context context = viewGroup.getContext();
 
-            if(view == null) {
+            if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.copy_clipboard, viewGroup, false);
             }
@@ -492,7 +514,7 @@ public class Ranking_type_response extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Toast toast = Toast.makeText(context, "Copied to clip board", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                     android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
