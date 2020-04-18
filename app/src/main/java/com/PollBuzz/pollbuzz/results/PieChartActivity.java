@@ -92,12 +92,12 @@ public class PieChartActivity extends AppCompatActivity {
                 .position("center-bottom")
                 .itemsLayout(LegendLayout.HORIZONTAL)
                 .align(Align.CENTER);
-
-        dialog.dismiss();
+        anyChartView.setZoomEnabled(true);
         anyChartView.setChart(pie);
         if(nonZeros==0){
             findViewById(R.id.noVotes).setVisibility(View.VISIBLE);
         }
+        dialog.dismiss();
     }
 
     private void setGlobals(View view) {
