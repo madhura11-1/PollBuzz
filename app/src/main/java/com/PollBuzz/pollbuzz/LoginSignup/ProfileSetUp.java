@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,9 +14,13 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.SplashScreen;
 import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
@@ -355,7 +361,7 @@ public class ProfileSetUp extends AppCompatActivity {
                         dialog.dismissWithAnimation();
                         save.setEnabled(true);
                         Uname.requestFocus();
-                        callKAlert();
+                       showUserDialog();
                     }
                 } else {
                     Toast.makeText(ProfileSetUp.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -511,21 +517,33 @@ public class ProfileSetUp extends AppCompatActivity {
         dialog.show();
     }
 
-    private void callKAlert() {
-        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+    private  void showUserDialog()
+    {
+        Dialog dialog=new Dialog(ProfileSetUp.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.no_internet_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.setCancelable(false);
-        dialog.setTitleText("Please try different username!")
-                .setContentText("This username already exists.")
-                .setConfirmText("OK")
-                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(KAlertDialog kAlertDialog) {
-                        kAlertDialog.dismissWithAnimation();
-                        Uname.getEditText().setText("");
-                        Uname.requestFocus();
-                    }
-                })
-                .show();
+        dialog.show();
+        window.setAttributes(lp);
+        Button ok=dialog.findViewById(R.id.ok);
+        TextView text=dialog.findViewById(R.id.text);
+        text.setText("This username already exists.\nPlease try different username!");
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Uname.getEditText().setText("");
+                Uname.requestFocus();
+            }
+        });
+
+
+
     }
 
 
