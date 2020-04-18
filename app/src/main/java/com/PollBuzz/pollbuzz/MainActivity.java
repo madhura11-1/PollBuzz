@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.navFragments.FavouriteFeed;
 import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
@@ -32,7 +33,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
-import com.PollBuzz.pollbuzz.Utils.firebase;
+import java.util.Objects;
+
 import me.ibrahimsn.lib.SmoothBottomBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
                                 else {
                                     dialog.dismissWithAnimation();
                                     Intent intent = new Intent(MainActivity.this, PercentageResult.class);
-                                    intent.putExtra("UID",UID);
-                                    intent.putExtra("type",type);
+                                    intent.putExtra("UID", UID);
+                                    intent.putExtra("type", type);
                                     startActivity(intent);
                                 }
                             }
@@ -141,8 +143,39 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
         fm = getSupportFragmentManager();
-        newFragment(new HomeFeed(), "0");
+        fragmentListener(fm);
+        fm.beginTransaction()
+                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                .add(R.id.container, new HomeFeed(), "home")
+                .commit();
         logout = view.findViewById(R.id.logout);
+    }
+
+    void fragmentListener(FragmentManager fm) {
+        fm.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            @Override
+            public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                super.onFragmentResumed(fm, f);
+                Log.d("FragmentResume", f.getTag());
+                if (f.getTag() != null) {
+                    Log.d("Fragmentmanager", f.getTag());
+                    switch (f.getTag()) {
+                        case "home":
+                            bottomBar.setActiveItem(0);
+                            break;
+                        case "favourite":
+                            bottomBar.setActiveItem(1);
+                            break;
+                        case "voted":
+                            bottomBar.setActiveItem(2);
+                            break;
+                        case "profile":
+                            bottomBar.setActiveItem(3);
+                            break;
+                    }
+                }
+            }
+        }, true);
     }
 
     private void setListeners() {
@@ -162,16 +195,16 @@ public class MainActivity extends AppCompatActivity {
         bottomBar.setOnItemSelectedListener(i -> {
             switch (i) {
                 case 0:
-                    newFragment(new HomeFeed(), "0");
+                    newFragment(new HomeFeed(), "home");
                     break;
                 case 1:
-                    newFragment(new FavouriteFeed(), "1");
+                    newFragment(new FavouriteFeed(), "favourite");
                     break;
                 case 2:
-                    newFragment(new VotedFeed(), "2");
+                    newFragment(new VotedFeed(), "voted");
                     break;
                 case 3:
-                    newFragment(new ProfileFeed(), "3");
+                    newFragment(new ProfileFeed(), "profile");
                     break;
 
             }
@@ -182,7 +215,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             fm.beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .replace(R.id.container, fragment, id)
+                    .add(R.id.container, fragment, id)
+                    .addToBackStack(id)
                     .commit();
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
@@ -192,10 +226,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(fragmentManager.getBackStackEntryCount() > 0) {
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            if (fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName().equals("home")) {
+                finish();
+            } else {
+                fragmentManager.popBackStack();
+                Log.d("LastFrag", fm.getBackStackEntryCount() + "");
+                for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+                    Log.d("LastFrag", fm.getBackStackEntryAt(i).getName());
+                }
+                switch (Objects.requireNonNull(fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 2).getName())) {
+                    case "home":
+                        bottomBar.setActiveItem(0);
+                        break;
+                    case "favourite":
+                        bottomBar.setActiveItem(1);
+                        break;
+                    case "voted":
+                        bottomBar.setActiveItem(2);
+                        break;
+                    case "profile":
+                        bottomBar.setActiveItem(3);
+                        break;
+                }
+            }
+        } else if (fragmentManager.getBackStackEntryCount() == 1) {
             fragmentManager.popBackStack();
+            bottomBar.setActiveItem(0);
         } else {
             super.onBackPressed();
+            finish();
         }
     }
 }
