@@ -1,17 +1,28 @@
 package com.PollBuzz.pollbuzz;
 
 import android.animation.ObjectAnimator;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.LoginSignup.ProfileSetUp;
@@ -26,12 +37,17 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class SplashScreen extends AppCompatActivity {
 
     ProgressBar splashProgress;
     int SPLASH_TIME = 3000; //3 seconds
     FirebaseAnalytics mFirebaseAnalytics;
     firebase fb;
+    TextView tv;
+    ImageView image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,16 +57,28 @@ public class SplashScreen extends AppCompatActivity {
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         fb = new firebase();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startIntent();
-            }
-        }, SPLASH_TIME);
         splashProgress = findViewById(R.id.splashProgress);
+        tv = (TextView) findViewById(R.id.txt);
+        image = (ImageView) findViewById(R.id.imagee);
         playProgress();
         fade();
         tvanim();
+        boolean f=isInternetAvailable(SplashScreen.this);
+        if(!f)
+            showDialog();
+        else
+        {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startIntent();
+                }
+            }, SPLASH_TIME);
+
+        }
+
+
+
     }
 
 
@@ -61,7 +89,6 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void fade() {
-        ImageView image = (ImageView) findViewById(R.id.imagee);
         Animation animation1 =
                 AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.fade);
@@ -69,7 +96,6 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void tvanim() {
-        TextView tv = (TextView) findViewById(R.id.txt);
         Animation animation1 =
                 AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.txt_animation_1);
@@ -115,4 +141,64 @@ public class SplashScreen extends AppCompatActivity {
     boolean isUserLoggedIn(firebase fb) {
         return fb.getUser() != null;
     }
+    private boolean isInternetAvailable(Context context) {
+        boolean result = false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (cm != null) {
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        result = true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        result = true;
+                    }
+                }
+            }
+        } else {
+            if (cm != null) {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                if (activeNetwork != null) {
+                    // connected to the internet
+                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                        result = true;
+                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        result = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    private  void showDialog()
+    {
+        Dialog dialog=new Dialog(SplashScreen.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.no_internet_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.setCancelable(false);
+        dialog.show();
+        window.setAttributes(lp);
+        splashProgress.setVisibility(View.GONE);
+        tv.getAnimation().cancel();
+        tv.clearAnimation();
+        image.getAnimation().cancel();
+        image.clearAnimation();
+        Button ok=dialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+
+
+    }
+
 }

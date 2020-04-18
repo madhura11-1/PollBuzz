@@ -108,6 +108,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 } else
                     startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
             } else {
+                Toast.makeText(mContext,"The poll is expired\nRedirecting you to the poll's result",Toast.LENGTH_LONG).show();
                 Intent i = new Intent(mContext, PercentageResult.class);
                 i.putExtra("UID", mPollDetails.get(position).getUID());
                 i.putExtra("type", mPollDetails.get(position).getPoll_type());
