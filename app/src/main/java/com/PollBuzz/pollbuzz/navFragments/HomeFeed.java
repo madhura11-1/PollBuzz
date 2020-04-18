@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -280,7 +281,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         id_search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                closeKeyboard();
                 if (id_search_edittext.getText().toString().trim().isEmpty()) {
                     Toast.makeText(getContext(), "Please enter the poll ID", Toast.LENGTH_SHORT).show();
                 } else {
@@ -298,10 +299,14 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                     GotoActivity(pollDetails);
                                     linear_id_search.setVisibility(View.INVISIBLE);
                                     linear_search.setVisibility(View.VISIBLE);
-
+                                    id_search_edittext.setText("");
                                 }
-                            } else {
-                                Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT).show();
+                                else {
+                                    Toast toast = Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER,0,0);
+                                    toast.show();
+                                }
+
                             }
                         }
                     });
