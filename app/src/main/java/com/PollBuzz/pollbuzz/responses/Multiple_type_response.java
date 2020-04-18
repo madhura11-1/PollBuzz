@@ -308,9 +308,9 @@ public class Multiple_type_response extends AppCompatActivity {
                                         if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                             polldetails.setLive(false);
                                             fb.getPollsCollection().document(key).update("live", false);
-                                            callKAlert();
+                                            showExpiredDialog();
                                         } else if (!polldetails.isLive()) {
-                                            callKAlert();
+                                            showExpiredDialog();
                                         }
                                     } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Multiple_type_response.this, PercentageResult.class);
@@ -332,24 +332,7 @@ public class Multiple_type_response extends AppCompatActivity {
         );
     }
 
-    private void callKAlert() {
-        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
-        dialog.setCancelable(false);
-        dialog.setTitleText("This Live Poll has ended")
-                .setConfirmText("OK")
-                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(KAlertDialog kAlertDialog) {
-                        kAlertDialog.dismissWithAnimation();
-                        Intent i = new Intent(Multiple_type_response.this, PercentageResult.class);
-                        i.putExtra("UID", key);
-                        i.putExtra("type", "SINGLE CHOICE");
-                        startActivity(i);
-                        finish();
-                    }
-                })
-                .show();
-    }
+
 
     private void setActionBarFunctionality() {
         home.setOnClickListener(v -> {
@@ -437,6 +420,36 @@ public class Multiple_type_response extends AppCompatActivity {
 
             return super.getView(index, view, viewGroup);
         }
+
+    }
+    private  void showExpiredDialog()
+    {
+        Dialog dialog=new Dialog(Multiple_type_response.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.expired_live_poll_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.setCancelable(false);
+        dialog.show();
+        window.setAttributes(lp);
+        Button ok=dialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(Multiple_type_response.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "MULTI SELECT");
+                startActivity(i);
+                finish();
+
+            }
+        });
+
+
 
     }
 

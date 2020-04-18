@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -349,9 +350,9 @@ public class Image_type_responses extends AppCompatActivity {
                                         if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
                                             polldetails.setLive(false);
                                             fb.getPollsCollection().document(key).update("live", false);
-                                            callKalert();
+                                            showExpiredDialog();
                                         } else if (!polldetails.isLive())
-                                            callKalert();
+                                            showExpiredDialog();
                                     } else if (polldetails.getExpiry_date() != null && (polldetails.getExpiry_date().compareTo(date) < 0)) {
                                         Intent intent = new Intent(Image_type_responses.this, PercentageResult.class);
                                         intent.putExtra("UID", key);
@@ -370,24 +371,6 @@ public class Image_type_responses extends AppCompatActivity {
                 });
     }
 
-    private void callKalert() {
-        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
-        dialog.setCancelable(false);
-        dialog.setTitleText("This Live Poll has ended")
-                .setConfirmText("OK")
-                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
-                    @Override
-                    public void onClick(KAlertDialog kAlertDialog) {
-                        kAlertDialog.dismissWithAnimation();
-                        Intent i = new Intent(Image_type_responses.this, PercentageResult.class);
-                        i.putExtra("UID", key);
-                        i.putExtra("type", "SINGLE CHOICE");
-                        startActivity(i);
-                        finish();
-                    }
-                })
-                .show();
-    }
 
     private void setActionBarFunctionality() {
         home.setOnClickListener(v -> {
@@ -498,6 +481,36 @@ public class Image_type_responses extends AppCompatActivity {
 
             return super.getView(index, view, viewGroup);
         }
+
+    }
+    private  void showExpiredDialog()
+    {
+        Dialog dialog=new Dialog(Image_type_responses.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.expired_live_poll_dialog);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = dialog.getWindow();
+        lp.copyFrom(window.getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.setCancelable(false);
+        dialog.show();
+        window.setAttributes(lp);
+        Button ok=dialog.findViewById(R.id.ok);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent i = new Intent(Image_type_responses.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "PICTURE BASED");
+                startActivity(i);
+                finish();
+
+            }
+        });
+
+
 
     }
 }
