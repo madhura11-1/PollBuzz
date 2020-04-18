@@ -29,9 +29,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.adapters.VotedFeedAdapter;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -52,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class VotedFeed extends Fragment {
     private ShimmerRecyclerView votedRV;
@@ -448,7 +447,7 @@ public class VotedFeed extends Fragment {
                     } else {
                         viewed.setVisibility(View.VISIBLE);
                         votedRV.hideShimmerAdapter();
-                        viewed.setText("You have no voted polls for "+ name + ".");
+                        viewed.setText("You have no voted polls for " + name + ".");
                     }
                 }
 

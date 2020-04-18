@@ -300,10 +300,9 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                     linear_id_search.setVisibility(View.INVISIBLE);
                                     linear_search.setVisibility(View.VISIBLE);
                                     id_search_edittext.setText("");
-                                }
-                                else {
+                                } else {
                                     Toast toast = Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.CENTER,0,0);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
                                     toast.show();
                                 }
 
@@ -365,7 +364,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
 
     }*/
 
-    private void getArrayListByDate(Date start, Date end, QueryDocumentSnapshot id) throws ParseException {
+    private void getArrayListByDate(Date start, Date end, QueryDocumentSnapshot id, boolean islast) throws ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
         else if (start == null)
@@ -373,7 +372,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         PollDetails pollDetails = id.toObject(PollDetails.class);
         if (pollDetails.getCreated_date().compareTo(start) >= 0 && pollDetails.getCreated_date().compareTo(end) <= 0) {
             Log.d("okay", "fitted");
-            addToRecyclerView(id);
+            addToRecyclerView(id, islast);
             Log.d("HomeFeedSize1", Integer.toString(arrayList.size()));
         } else {
             if (recyclerView.getActualAdapter() != adapter)
@@ -418,8 +417,13 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                         limit(20).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
+                            int z = 0;
                             for (QueryDocumentSnapshot dS : task.getResult()) {
-                                addToRecyclerView(dS);
+                                z++;
+                                if (z == task.getResult().size())
+                                    addToRecyclerView(dS, true);
+                                else
+                                    addToRecyclerView(dS, false);
                                 lastIndex = dS;
                             }
                         } else {
@@ -441,7 +445,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                     if (task.isSuccessful() && task.getResult() != null) {
                         if (!task.getResult().isEmpty()) {
                             for (QueryDocumentSnapshot dS : task.getResult()) {
-                                addToRecyclerView(dS);
+                                addToRecyclerView(dS, false);
                                 lastIndex = dS;
                             }
                         } else {
@@ -462,15 +466,20 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                     if (task.isSuccessful() && task.getResult() != null) {
                         Log.d("HomeFeedEmpty", "" + task.getResult().size());
                         if (!task.getResult().isEmpty()) {
+                            int z = 0;
                             for (QueryDocumentSnapshot dS : task.getResult()) {
+                                z++;
                                 PollDetails pollDetails = dS.toObject(PollDetails.class);
                                 if (flagi == 1) {
                                     if (adapter.getItemCount() == 0) {
                                         recyclerView.showShimmerAdapter();
                                     }
                                     if (pollDetails.getAuthor_lc().contains(name.toLowerCase().trim())) {
-                                        addToRecyclerView(dS);
-                                        recyclerView.hideShimmerAdapter();
+                                        if (z == task.getResult().size())
+                                            addToRecyclerView(dS, true);
+                                        else {
+                                            addToRecyclerView(dS, false);
+                                        }
                                     } else {
                                         recyclerView.hideShimmerAdapter();
                                         if (adapter.getItemCount() == 0) {
@@ -480,7 +489,10 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                     }
                                 } else if (flagi == 2) {
                                     try {
-                                        getArrayListByDate(start, end, dS);
+                                        if (z == task.getResult().size())
+                                            getArrayListByDate(start, end, dS, true);
+                                        else
+                                            getArrayListByDate(start, end, dS, false);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -502,7 +514,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         }
     }
 
-    private void addToRecyclerView(QueryDocumentSnapshot dS) {
+    private void addToRecyclerView(QueryDocumentSnapshot dS, boolean isLast) {
         viewed.setVisibility(View.GONE);
         PollDetails polldetails = dS.toObject(PollDetails.class);
         polldetails.setUID(dS.getId());
@@ -534,7 +546,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                             }
                         });
                     } else {
-                        if (flagFirst) {
+                        if (flagFirst && isLast) {
                             recyclerView.hideShimmerAdapter();
                             flagFirst = false;
                             viewed.setText("There are no polls around...");
