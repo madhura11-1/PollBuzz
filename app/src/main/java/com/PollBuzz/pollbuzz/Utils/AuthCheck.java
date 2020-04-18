@@ -19,29 +19,31 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class AuthCheck extends AppCompatActivity {
     FirebaseAnalytics mFirebaseAnalytics;
     firebase fb;
-    boolean isProfileSet=false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_check);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         fb = new firebase();
-        Intent i = getIntent(fb);
-        startActivity(i);
+        startIntent();
     }
 
-    private Intent getIntent(firebase fb) {
-        Intent i = new Intent(AuthCheck.this, LoginSignupActivity.class);
+    private void startIntent() {
         if (!isUserLoggedIn(fb)) {
             helper.removeProfileSetUpPref(getApplicationContext());
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             mFirebaseAnalytics.logEvent("open_by_unknown", bundle);
+            Intent i = new Intent(AuthCheck.this, LoginSignupActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         } else {
-            fb.getUserDocument().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            fb.getUsersCollection().document(fb.getUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
+                    Intent i = new Intent(AuthCheck.this, ProfileSetUp.class);
+                    if (task.getResult() != null && task.getResult().exists()) {
                         DocumentSnapshot dS = task.getResult();
                         Bundle bundle = new Bundle();
                         bundle.putString("user_id", fb.getUserId());
@@ -50,27 +52,16 @@ public class AuthCheck extends AppCompatActivity {
                         }
                         bundle.putString("timestamp", Timestamp.now().toDate().toString());
                         mFirebaseAnalytics.logEvent("opened", bundle);
+                        i = new Intent(AuthCheck.this, MainActivity.class);
                     }
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
                 }
             });
-            i = isProfileSetUp() ? new Intent(AuthCheck.this, MainActivity.class) :
-                    new Intent(AuthCheck.this, ProfileSetUp.class);
         }
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        return i;
     }
 
     Boolean isUserLoggedIn(firebase fb) {
         return fb.getUser() != null;
-    }
-
-    Boolean isProfileSetUp() {
-        fb.getUsersCollection().document(fb.getUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                isProfileSet = task.getResult() != null && task.getResult().exists();
-            }
-        });
-        return isProfileSet;
     }
 }

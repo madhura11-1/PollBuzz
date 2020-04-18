@@ -67,7 +67,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private LinearLayoutManager layoutManager;
     private firebase fb;
     private LayoutAnimationController controller;
-    MaterialTextView viewed;
+    private MaterialTextView viewed;
     private EditText id_search_edittext;
     private ImageButton search, check, back1, back2, id_search, id_search_back;
     private String name = "";
@@ -75,16 +75,16 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private TextView starting, ending;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private LinearLayout search_layout, date_layout, linear_search, linear_id_search;
-    Date date = Calendar.getInstance().getTime();
-    Boolean flagFirst = true, flagFetch = true;
-    Calendar c = Calendar.getInstance();
-    int mYear = c.get(Calendar.YEAR);
-    int mMonth = c.get(Calendar.MONTH);
-    int mDay = c.get(Calendar.DAY_OF_MONTH);
+    private Date date = Calendar.getInstance().getTime();
+    private Boolean flagFirst = true, flagFetch = true;
+    private Calendar c = Calendar.getInstance();
+    private int mYear = c.get(Calendar.YEAR);
+    private int mMonth = c.get(Calendar.MONTH);
+    private int mDay = c.get(Calendar.DAY_OF_MONTH);
     final String formatteddate = dateFormat.format(date);
-    int currentFlag = 0;
+    private int currentFlag = 0;
 
     public HomeFeed() {
     }
@@ -580,7 +580,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     }
 
     private void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), v);
+        PopupMenu popup = new PopupMenu(getContext(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
