@@ -335,8 +335,9 @@ public class FavouriteFeed extends Fragment {
                             int z = 0;
                             for (QueryDocumentSnapshot dS : task.getResult()) {
                                 z++;
-                                if (z == task.getResult().size())
+                                if (z == task.getResult().size()) {
                                     addToRecyclerView(dS, true);
+                                }
                                 else
                                     addToRecyclerView(dS, false);
                                 lastIndex = dS;
@@ -453,6 +454,7 @@ public class FavouriteFeed extends Fragment {
                                         adapter.notifyDataSetChanged();
                                         flagFetch = true;
                                         if (flagFirst) {
+                                            Log.d("FavFeed","hidden");
                                             recyclerView.hideShimmerAdapter();
                                             recyclerView.scheduleLayoutAnimation();
                                             flagFirst = false;
@@ -467,6 +469,7 @@ public class FavouriteFeed extends Fragment {
                                     flagFirst = false;
                                     viewed.setText("There are no polls around...");
                                     viewed.setVisibility(View.VISIBLE);
+                                    Log.d("FavFeed","else");
                                 }
                             }
                         }
@@ -477,6 +480,7 @@ public class FavouriteFeed extends Fragment {
                         flagFetch = false;
                         viewed.setText("There are no polls around...");
                         viewed.setVisibility(View.VISIBLE);
+                        Log.d("FavFeed","if else");
                     }
                 }
             }
@@ -512,7 +516,7 @@ public class FavouriteFeed extends Fragment {
     }
 
     private void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), v);
+        PopupMenu popup = new PopupMenu(getContext(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
