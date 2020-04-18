@@ -25,6 +25,8 @@ import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
 import com.PollBuzz.pollbuzz.responses.Single_type_response;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
@@ -35,6 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.ProfileViewHolder> {
 
@@ -68,6 +72,12 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
     private void clickListener(@NonNull ProfileViewHolder holder, int position) {
         if (bool) {
             holder.cardV.setOnClickListener(view -> {
+                FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        Log.d("tokenId",task.getResult().getToken()+ " " +task.getResult().getId());
+                    }
+                });
                 Log.d("CardId",mPollDetails.get(position).getUID());
                 Intent intent = new Intent(mContext, PercentageResult.class);
                 intent.putExtra("UID", mPollDetails.get(position).getUID());

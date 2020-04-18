@@ -1,10 +1,5 @@
 package com.PollBuzz.pollbuzz.results;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -17,24 +12,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Ranking_type_result extends AppCompatActivity {
 
@@ -43,7 +40,7 @@ public class Ranking_type_result extends AppCompatActivity {
     firebase fb = new firebase();
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener listener;
-    String key,uid;
+    String key, uid;
     Typeface typeface;
     Dialog dialog;
     Map<String, Object> response;
@@ -63,7 +60,6 @@ public class Ranking_type_result extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
 
 
-
         setGlobals(view);
         Intent intent = getIntent();
         getIntentExtras(intent);
@@ -81,7 +77,7 @@ public class Ranking_type_result extends AppCompatActivity {
                         .setTextGravity(Gravity.CENTER)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -92,14 +88,12 @@ public class Ranking_type_result extends AppCompatActivity {
     private void setAuthStateListener() {
 
 
-
-        listener=new FirebaseAuth.AuthStateListener() {
+        listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user=firebaseAuth.getCurrentUser();
-                if(user==null)
-                {
-                    Intent i=new Intent(Ranking_type_result.this, LoginSignupActivity.class);
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    Intent i = new Intent(Ranking_type_result.this, LoginSignupActivity.class);
                     startActivity(i);
                 }
 
@@ -143,9 +137,9 @@ public class Ranking_type_result extends AppCompatActivity {
         poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(Ranking_type_result.this,PercentageResult.class);
-                i.putExtra("UID",key);
-                i.putExtra("type","RANKED");
+                Intent i = new Intent(Ranking_type_result.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "RANKED");
                 startActivity(i);
             }
         });
@@ -159,12 +153,11 @@ public class Ranking_type_result extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
         integer = intent.getExtras().getInt("flag");
 
-        if(integer == 1)
-        {
+        if (integer == 1) {
             uid = intent.getExtras().getString("UIDUser");
+            poll_stats.setVisibility(View.GONE);
         }
-        if(integer == 0)
-        {
+        if (integer == 0) {
             uid = auth.getCurrentUser().getUid();
         }
 
@@ -172,9 +165,9 @@ public class Ranking_type_result extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-        poll_stats=view.findViewById(R.id.poll_stats);
+        poll_stats = view.findViewById(R.id.poll_stats);
         auth = FirebaseAuth.getInstance();
-        options=new TreeMap<>();
+        options = new TreeMap<>();
         query_ranking_result = findViewById(R.id.query_ranking_result);
         group = findViewById(R.id.options_ranking_result);
 
@@ -187,11 +180,9 @@ public class Ranking_type_result extends AppCompatActivity {
 
     private void setAccordingToPriority() {
         options.putAll(response);
-        for(Map.Entry<String,Object> entry : options.entrySet())
-        {
-            if(!entry.getKey().equals("timestamp"))
-            {
-                TextView v=new TextView(getApplicationContext());
+        for (Map.Entry<String, Object> entry : options.entrySet()) {
+            if (!entry.getKey().equals("timestamp")) {
+                TextView v = new TextView(getApplicationContext());
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(8, 20, 5, 20);
                 v.setLayoutParams(layoutParams);
@@ -200,15 +191,14 @@ public class Ranking_type_result extends AppCompatActivity {
                 v.setTextSize(20.0f);
                 v.setTextColor(getResources().getColor(R.color.black));
                 group.addView(v);
-                String s=(Integer.parseInt(entry.getKey().substring(6))+1)+". "+entry.getValue().toString();
+                String s = (Integer.parseInt(entry.getKey().substring(6)) + 1) + ". " + entry.getValue().toString();
                 v.setText(s);
             }
         }
         dialog.dismiss();
     }
 
-    private void showDialog()
-    {
+    private void showDialog() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading_dialog);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -222,6 +212,7 @@ public class Ranking_type_result extends AppCompatActivity {
         dialog.show();
         window.setAttributes(lp);
     }
+
     @Override
     protected void onStart() {
         super.onStart();

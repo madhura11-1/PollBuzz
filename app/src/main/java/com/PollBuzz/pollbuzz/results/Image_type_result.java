@@ -19,8 +19,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,8 +35,6 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Image_type_result extends AppCompatActivity {
 
@@ -81,7 +80,7 @@ public class Image_type_result extends AppCompatActivity {
                         .setTextGravity(Gravity.CENTER)
                         .setMenuRadius(10f) // sets the corner radius.
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y,false))
+                        .addItem(new PowerMenuItem(y, false))
                         .build()
                         .showAsAnchorCenter(view);
             }
@@ -96,6 +95,7 @@ public class Image_type_result extends AppCompatActivity {
 
         if (integer == 1) {
             uid = intent.getExtras().getString("UIDUser");
+            poll_stats.setVisibility(View.GONE);
         }
         if (integer == 0) {
             uid = fb.getUserId();
@@ -159,7 +159,7 @@ public class Image_type_result extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-        poll_stats=view.findViewById(R.id.poll_stats);
+        poll_stats = view.findViewById(R.id.poll_stats);
         group = findViewById(R.id.options);
         response = new HashMap<>();
         options = new HashMap<>();
@@ -180,9 +180,9 @@ public class Image_type_result extends AppCompatActivity {
         poll_stats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i=new Intent(Image_type_result.this,PercentageResult.class);
-                i.putExtra("UID",key);
-                i.putExtra("type","PICTURE BASED");
+                Intent i = new Intent(Image_type_result.this, PercentageResult.class);
+                i.putExtra("UID", key);
+                i.putExtra("type", "PICTURE BASED");
                 startActivity(i);
 
             }

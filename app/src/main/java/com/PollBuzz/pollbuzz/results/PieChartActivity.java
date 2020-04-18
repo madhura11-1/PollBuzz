@@ -59,6 +59,7 @@ public class PieChartActivity extends AppCompatActivity {
 
     private void createPieChart() {
         Pie pie = AnyChart.pie();
+
         pie.setOnClickListener(new ListenersInterface.OnClickListener(new String[]{"x", "value"}) {
             @Override
             public void onClick(Event event) {
@@ -71,12 +72,12 @@ public class PieChartActivity extends AppCompatActivity {
             }
         });
         Map<String, Integer> map = PercentageResult.data;
-
+        int nonZeros=0;
         List<DataEntry> data = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             data.add(new ValueDataEntry(entry.getKey(), entry.getValue()));
+            if(entry.getValue()!=0) nonZeros++;
         }
-
         pie.data(data);
         pie.legend().fontSize(25).fontColor("Black").fontWeight(500).fontFamily("Maven Pro");
 
@@ -94,7 +95,9 @@ public class PieChartActivity extends AppCompatActivity {
 
         dialog.dismiss();
         anyChartView.setChart(pie);
-
+        if(nonZeros==0){
+            findViewById(R.id.noVotes).setVisibility(View.VISIBLE);
+        }
     }
 
     private void setGlobals(View view) {
@@ -119,8 +122,6 @@ public class PieChartActivity extends AppCompatActivity {
         lp.copyFrom(window.getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-
         dialog.setCancelable(false);
         dialog.show();
         window.setAttributes(lp);

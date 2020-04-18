@@ -19,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
-import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,8 +32,6 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class Multiple_type_result extends AppCompatActivity {
     TextView query;
@@ -115,7 +114,7 @@ public class Multiple_type_result extends AppCompatActivity {
                                         }
                                     });
                                 }
-                            }else{
+                            } else {
                                 dialog.dismiss();
                             }
 
@@ -232,6 +231,7 @@ public class Multiple_type_result extends AppCompatActivity {
 
         if (integer == 1) {
             uid = intent.getExtras().getString("UIDUser");
+            poll_stats.setVisibility(View.GONE);
         }
         if (integer == 0) {
             uid = auth.getCurrentUser().getUid();

@@ -1,15 +1,5 @@
 package com.PollBuzz.pollbuzz.results;
 
-import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.R;
-import com.PollBuzz.pollbuzz.objects.VoteDetails;
-import com.PollBuzz.pollbuzz.adapters.VoterPageAdapter;
-import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,17 +10,25 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.PollBuzz.pollbuzz.adapters.VoterPageAdapter;
+import com.PollBuzz.pollbuzz.objects.VoteDetails;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class ResultActivity extends AppCompatActivity {
 
