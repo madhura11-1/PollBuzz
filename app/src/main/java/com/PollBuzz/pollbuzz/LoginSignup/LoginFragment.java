@@ -147,7 +147,6 @@ public class LoginFragment extends Fragment {
             });
             setSharedPreference(dS);
         } else {
-            removeSharedPreference();
             i = new Intent(getActivity(), ProfileSetUp.class);
         }
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -155,12 +154,7 @@ public class LoginFragment extends Fragment {
         startActivity(i);
     }
 
-    private void removeSharedPreference() {
-        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getContext(), false);
-    }
-
     private void setSharedPreference(DocumentSnapshot dS) {
-        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getContext(), true);
         if (dS.get("pic") != null)
             com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getContext(), String.valueOf(dS.get("pic")));
         else

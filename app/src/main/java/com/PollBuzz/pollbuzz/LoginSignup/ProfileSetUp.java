@@ -457,7 +457,6 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void setSharedPreference(String unameS, String imagePath) {
-        com.PollBuzz.pollbuzz.Utils.helper.setProfileSetUpPref(getApplicationContext(), true);
         if (imagePath == null)
             com.PollBuzz.pollbuzz.Utils.helper.setpPicPref(getApplicationContext(), null);
         else

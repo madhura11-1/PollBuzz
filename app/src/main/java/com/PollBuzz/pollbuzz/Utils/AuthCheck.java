@@ -18,13 +18,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 public class AuthCheck extends AppCompatActivity {
     FirebaseAnalytics mFirebaseAnalytics;
-
+    firebase fb;
+    boolean isProfileSet=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth_check);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebase fb = new firebase();
+        fb = new firebase();
         Intent i = getIntent(fb);
         startActivity(i);
     }
@@ -64,6 +65,12 @@ public class AuthCheck extends AppCompatActivity {
     }
 
     Boolean isProfileSetUp() {
-        return helper.getProfileSetUpPref(getApplicationContext());
+        fb.getUsersCollection().document(fb.getUserId()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                isProfileSet = task.getResult() != null && task.getResult().exists();
+            }
+        });
+        return isProfileSet;
     }
 }

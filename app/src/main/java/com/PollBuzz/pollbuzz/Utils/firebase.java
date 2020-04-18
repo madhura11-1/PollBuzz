@@ -32,7 +32,7 @@ public class firebase {
         return getUser().getUid();
     }
 
-    public FirebaseFirestore getDatabase() {
+    private FirebaseFirestore getDatabase() {
         return FirebaseFirestore.getInstance();
     }
 
