@@ -76,7 +76,6 @@ public class LoginFragment extends Fragment {
         password = (TextInputLayout) view.findViewById(R.id.password);
         login = view.findViewById(R.id.login);
         gsignin = view.findViewById(R.id.gsignin);
-        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.client_id))
@@ -125,6 +124,7 @@ public class LoginFragment extends Fragment {
                         });
                     }
                 } else {
+                    dialog.dismissWithAnimation();
                     Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     password.getEditText().getText().clear();
                 }
@@ -220,6 +220,7 @@ public class LoginFragment extends Fragment {
                                 }
                             });
                         } else {
+                            dialog.dismissWithAnimation();
                             Toast.makeText(getContext(), "Google Sign In Failed!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -229,6 +230,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void showDialog() {
+        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Getting things ready for you...");
         dialog.setCancelable(false);

@@ -104,12 +104,12 @@ public class SignupFragment extends Fragment {
         passwordL = (TextInputLayout) view.findViewById(R.id.password);
         password2L = (TextInputLayout) view.findViewById(R.id.password2);
         signup = view.findViewById(R.id.signup);
-        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         fb = new firebase();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
     }
 
     private void showDialog() {
+        dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
         dialog.setTitleText("Creating account...");
         dialog.setCancelable(false);
