@@ -1,12 +1,15 @@
 package com.PollBuzz.pollbuzz.responses;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -19,9 +22,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.transition.Slide;
 
 import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.objects.ClipFunction;
 import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
@@ -33,6 +39,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
+import com.skydoves.powermenu.CustomPowerMenu;
+import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.MenuBaseAdapter;
+import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
@@ -167,15 +177,14 @@ public class Single_type_response extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String y = polldetails.getPoll_accessID().toString();
-                new PowerMenu.Builder(Single_type_response.this)
-                        .setTextColor(R.color.black)
-                        .setTextSize(18)
-                        .setTextGravity(Gravity.CENTER)
-                        .setMenuRadius(10f) // sets the corner radius.
+
+                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Single_type_response.this,new IconMenuAdapter())
+                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_content_copy_black_24dp),y))
+                        .setAnimation(MenuAnimation.ELASTIC_CENTER)
+                        .setMenuRadius(10f)
                         .setMenuShadow(10f)
-                        .addItem(new PowerMenuItem(y, false))
-                        .build()
-                        .showAsAnchorCenter(view);
+                        .build();
+                customPowerMenu.showAsAnchorCenter(view);
             }
         });
     }
@@ -380,4 +389,42 @@ public class Single_type_response extends AppCompatActivity {
         dialog1.show();
     }
 
+    public class IconMenuAdapter extends MenuBaseAdapter<ClipFunction> {
+
+        @Override
+        public View getView(int index, View view, ViewGroup viewGroup) {
+            final Context context = viewGroup.getContext();
+
+            if(view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.copy_clipboard, viewGroup, false);
+            }
+
+            ClipFunction item = (ClipFunction) getItem(index);
+            final ImageView icon = view.findViewById(R.id.clip_image);
+            icon.setImageDrawable(item.getIcon());
+            final TextView title = view.findViewById(R.id.clip_id);
+            title.setText(item.getTitle());
+
+            icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast toast = Toast.makeText(context, "Copied to clip board", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboard.setText(item.getTitle());
+                    } else {
+                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
+                        clipboard.setPrimaryClip(clip);
+                    }
+                }
+            });
+
+            return super.getView(index, view, viewGroup);
+        }
+
+    }
 }
