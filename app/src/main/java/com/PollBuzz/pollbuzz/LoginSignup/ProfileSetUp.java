@@ -24,6 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.responses.Single_type_response;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +59,7 @@ import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.ImagePickerActivity;
 import com.PollBuzz.pollbuzz.Utils.firebase;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class ProfileSetUp extends AppCompatActivity {
@@ -292,9 +295,9 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void saveProfile() {
-        String nameS = name.getEditText().getText().toString();
-        String UnameS = Uname.getEditText().getText().toString();
-        String Bday = date.getEditText().getText().toString();
+        String nameS = name.getEditText().getText().toString().trim();
+        String UnameS = Uname.getEditText().getText().toString().trim();
+        String Bday = date.getEditText().getText().toString().trim();
         if (nameS.isEmpty()) {
             Toast.makeText(this, "Please enter your full name!", Toast.LENGTH_SHORT).show();
             name.requestFocus();
@@ -352,7 +355,7 @@ public class ProfileSetUp extends AppCompatActivity {
                         dialog.dismissWithAnimation();
                         save.setEnabled(true);
                         Uname.requestFocus();
-                        Toast.makeText(ProfileSetUp.this, "Please try different username!\nThis username already exists!", Toast.LENGTH_SHORT).show();
+                        callKAlert();
                     }
                 } else {
                     Toast.makeText(ProfileSetUp.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -508,5 +511,23 @@ public class ProfileSetUp extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
     }
+
+    private void callKAlert() {
+        KAlertDialog dialog = new KAlertDialog(this, KAlertDialog.WARNING_TYPE);
+        dialog.setCancelable(false);
+        dialog.setTitleText("Please try different username!")
+                .setContentText("This username already exists.")
+                .setConfirmText("OK")
+                .setConfirmClickListener(new KAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                        Uname.getEditText().setText("");
+                        Uname.requestFocus();
+                    }
+                })
+                .show();
+    }
+
 
 }
