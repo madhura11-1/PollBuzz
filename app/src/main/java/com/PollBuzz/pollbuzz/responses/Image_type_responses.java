@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import dmax.dialog.SpotsDialog;
 
@@ -86,9 +87,13 @@ public class Image_type_responses extends AppCompatActivity {
         Intent intent = getIntent();
         getIntentExtras(intent);
         setGlobals(view);
+        setListeners();
         setActionBarFunctionality();
         showDialog();
+        retrieveData();
+    }
 
+    private void setListeners() {
         b1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -119,7 +124,6 @@ public class Image_type_responses extends AppCompatActivity {
                 b1.setChecked(false);
             }
         });
-        retrieveData();
 
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -207,8 +211,8 @@ public class Image_type_responses extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String y = polldetails.getPoll_accessID().toString();
-                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Image_type_responses.this,new IconMenuAdapter())
-                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_content_copy_black_24dp),y))
+                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Image_type_responses.this, new IconMenuAdapter())
+                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_content_copy_black_24dp), y))
                         .setAnimation(MenuAnimation.ELASTIC_CENTER)
                         .setMenuRadius(10f)
                         .setMenuShadow(10f)
@@ -216,7 +220,6 @@ public class Image_type_responses extends AppCompatActivity {
                 customPowerMenu.showAsAnchorCenter(view);
             }
         });
-
     }
 
     private void submitResponse() {
@@ -448,7 +451,7 @@ public class Image_type_responses extends AppCompatActivity {
         public View getView(int index, View view, ViewGroup viewGroup) {
             final Context context = viewGroup.getContext();
 
-            if(view == null) {
+            if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.copy_clipboard, viewGroup, false);
             }
@@ -463,14 +466,11 @@ public class Image_type_responses extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Toast toast = Toast.makeText(context, "Copied to clip board", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
-                    if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboard.setText(item.getTitle());
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
+                    if (clipboard != null) {
                         clipboard.setPrimaryClip(clip);
                     }
                 }

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -77,6 +78,7 @@ import java.util.Map;
 import com.PollBuzz.pollbuzz.Utils.ImagePickerActivity;
 import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.Utils.helper;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -98,13 +100,13 @@ public class Image_type_poll extends AppCompatActivity {
     TextInputEditText question_image;
     firebase fb;
     TextView text1;
-    int flagm = 0,yeari,monthi,dayi;
+    int flagm = 0, yeari, monthi, dayi;
     long sec;
     Date date = Calendar.getInstance().getTime();
     Calendar cal = Calendar.getInstance();
     Date default_date;
     String expirydate;
-    Boolean flagA=false,flagB=false;
+    Boolean flagA = false, flagB = false;
     MaterialSpinner materialSpinner;
     ToggleButton toggleButton;
     String alpha_numeric;
@@ -148,13 +150,14 @@ public class Image_type_poll extends AppCompatActivity {
 
         materialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
 
                 flagm = 1;
-                if(item.equals("Custom Stop"))
+                if (item.equals("Custom Stop"))
                     sec = Long.MAX_VALUE;
                 else
-                sec = Long.parseLong(item);
+                    sec = Long.parseLong(item);
 
             }
         });
@@ -162,14 +165,13 @@ public class Image_type_poll extends AppCompatActivity {
         toggleButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                if(on){
+                if (on) {
                     flagm = 1;
                     sec = Long.parseLong("30");
                     materialSpinner.setVisibility(View.VISIBLE);
                     text1.setText("Select your time in sec");
                     expiry.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     flagm = 0;
                     materialSpinner.setVisibility(View.GONE);
                     text1.setText("Set Poll Expiry Date");
@@ -302,8 +304,8 @@ public class Image_type_poll extends AppCompatActivity {
                 question_image.requestFocus();
             } else if (!(flagA && flagB)) {
                 Toast.makeText(this, "Please make sure both options are added", Toast.LENGTH_SHORT).show();
-            }else {
-                if(expiry.getVisibility() == View.VISIBLE) {
+            } else {
+                if (expiry.getVisibility() == View.VISIBLE) {
 
                     if (expiry.getText().toString().isEmpty()) {
                         expiry.setText(dateFormat.format(default_date));
@@ -312,7 +314,7 @@ public class Image_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
-                                String sday = Integer.toString(dayi +1);
+                                String sday = Integer.toString(dayi + 1);
                                 String smonth = Integer.toString(monthi);
                                 String sint = Integer.toString(yeari);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
@@ -323,8 +325,7 @@ public class Image_type_poll extends AppCompatActivity {
                         }
 
                     }
-                }
-                else if(materialSpinner.getVisibility() == View.VISIBLE){
+                } else if (materialSpinner.getVisibility() == View.VISIBLE) {
                     addToDatabase();
                 }
 
@@ -390,13 +391,13 @@ public class Image_type_poll extends AppCompatActivity {
         logout = view.findViewById(R.id.logout);
         post_image = findViewById(R.id.post_imagetype);
         question_image = findViewById(R.id.question_imagetype);
-        dialog=new KAlertDialog(Image_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
+        dialog = new KAlertDialog(Image_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
         toggleButton = findViewById(R.id.toggle);
-        materialSpinner = (MaterialSpinner)findViewById(R.id.spinner);
-        materialSpinner.setItems("30","60","90","Custom Stop");
+        materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
+        materialSpinner.setItems("30", "60", "90", "Custom Stop");
     }
 
-    public void showDialog(Activity activity, String doc){
+    public void showDialog(Activity activity, String doc) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.code_dialog);
@@ -407,12 +408,26 @@ public class Image_type_poll extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
         final TextView code = dialog.findViewById(R.id.code);
+        final ImageButton copy = dialog.findViewById(R.id.clip_image);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clip board", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", code.getText());
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
         dialog.setCancelable(false);
 
 
         alpha_numeric = alpha_numeric(4);
-        fb.getPollsCollection().document(doc).update("poll_accessID","PB#"+alpha_numeric);
-        code.setText("PB#"+alpha_numeric);
+        fb.getPollsCollection().document(doc).update("poll_accessID", "PB#" + alpha_numeric);
+        code.setText("PB#" + alpha_numeric);
 
         dialog.show();
         window.setAttributes(lp);
@@ -462,11 +477,12 @@ public class Image_type_poll extends AppCompatActivity {
             }
         });
     }
-    public static String alpha_numeric(int count){
+
+    public static String alpha_numeric(int count) {
 
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
-            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
             builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();
@@ -476,7 +492,7 @@ public class Image_type_poll extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT,"Access Code for the Live poll :\n"+code);
+        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             startActivity(Intent.createChooser(intent, "Share Code Using"));
@@ -590,7 +606,7 @@ public class Image_type_poll extends AppCompatActivity {
         }
     }
 
-    private void addToStorage(String UID, PollDetails pollDetails)  {
+    private void addToStorage(String UID, PollDetails pollDetails) {
         try {
             Map<String, Integer> map = new HashMap<>();
             StorageReference mRef = fb.getStorageReference().child("polls/" + fb.getUserId() + "/" + UID + "/option1");
@@ -615,10 +631,10 @@ public class Image_type_poll extends AppCompatActivity {
                                                     fb.getPollsCollection().document(UID).set(pollDetails).addOnCompleteListener(task -> {
                                                         if (task.isSuccessful()) {
                                                             deleteCache();
-                                                            if(flagm == 1){
+                                                            if (flagm == 1) {
                                                                 dialog.dismissWithAnimation();
-                                                                showDialog(Image_type_poll.this,UID);
-                                                            }else {
+                                                                showDialog(Image_type_poll.this, UID);
+                                                            } else {
                                                                 MediaType mediaType = MediaType.parse("application/json");
                                                                 JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
                                                                 try {
@@ -715,16 +731,14 @@ public class Image_type_poll extends AppCompatActivity {
             polldetails.setQuestion(question_image.getText().toString().trim());
             polldetails.setCreated_date(dateFormat.parse(formatteddate));
             polldetails.setPoll_type("PICTURE BASED");
-            if(flagm == 1){
-                Log.d("yes","item");
+            if (flagm == 1) {
+                Log.d("yes", "item");
                 polldetails.setLive(true);
                 polldetails.setLivePoll(true);
                 polldetails.setSeconds(sec);
-            }
-            else
-            {
+            } else {
                 alpha_numeric = alpha_numeric(4);
-                polldetails.setPoll_accessID("PB#"+alpha_numeric);
+                polldetails.setPoll_accessID("PB#" + alpha_numeric);
                 polldetails.setExpiry_date(dateFormat.parse(expirydate));
             }
             polldetails.setAuthor(helper.getusernamePref(getApplicationContext()));

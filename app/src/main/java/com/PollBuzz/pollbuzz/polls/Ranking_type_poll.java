@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +68,7 @@ import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.Utils.helper;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -87,20 +89,20 @@ import org.json.JSONObject;
 public class Ranking_type_poll extends AppCompatActivity {
     Button add;
     LinearLayout group;
-    String name,expirydate;
+    String name, expirydate;
     TextInputEditText question_ranking;
     MaterialButton post_ranking;
-    int c, flagm = 0,yeari,monthi,dayi;
+    int c, flagm = 0, yeari, monthi, dayi;
     long sec;
     RadioButton b;
     TextView page_title;
-    ImageButton home,logout;
+    ImageButton home, logout;
     Date date = Calendar.getInstance().getTime();
     firebase fb;
     TextView text1;
     KAlertDialog dialog;
-    RadioButton option1,option2;
-    private ArrayList<String> uniqueoptions=new ArrayList<>();
+    RadioButton option1, option2;
+    private ArrayList<String> uniqueoptions = new ArrayList<>();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
     TextView expiry;
     Calendar cal = Calendar.getInstance();
@@ -138,17 +140,19 @@ public class Ranking_type_poll extends AppCompatActivity {
             fb.signOut(this);
         });
     }
+
     private void setListeners(String formatteddate) {
 
         materialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
 
                 flagm = 1;
-                if(item.equals("Custom Stop"))
+                if (item.equals("Custom Stop"))
                     sec = Long.MAX_VALUE;
                 else
-                sec = Long.parseLong(item);
+                    sec = Long.parseLong(item);
 
             }
         });
@@ -156,14 +160,13 @@ public class Ranking_type_poll extends AppCompatActivity {
         toggleButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                if(on){
+                if (on) {
                     flagm = 1;
                     sec = Long.parseLong("30");
                     materialSpinner.setVisibility(View.VISIBLE);
                     text1.setText("Select your time in sec");
                     expiry.setVisibility(View.GONE);
-                }
-                else{
+                } else {
                     flagm = 0;
                     materialSpinner.setVisibility(View.GONE);
                     text1.setText("Set Poll Expiry Date");
@@ -215,18 +218,12 @@ public class Ranking_type_poll extends AppCompatActivity {
             if (question_ranking.getText().toString().isEmpty()) {
                 question_ranking.setError("Please enter the question");
                 question_ranking.requestFocus();
-            }
-            else if (group.getChildCount()>12)
-            {
-                Toast.makeText(getApplicationContext(),"Maximum of 12 options allowed\nDelete some options",Toast.LENGTH_LONG).show();
-            }
-            else if(group.getChildCount()<2)
-            {
+            } else if (group.getChildCount() > 12) {
+                Toast.makeText(getApplicationContext(), "Maximum of 12 options allowed\nDelete some options", Toast.LENGTH_LONG).show();
+            } else if (group.getChildCount() < 2) {
                 Toast.makeText(getApplicationContext(), "Please add at least two options", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
-                if(expiry.getVisibility() == View.VISIBLE) {
+            } else {
+                if (expiry.getVisibility() == View.VISIBLE) {
 
                     if (expiry.getText().toString().isEmpty()) {
                         expiry.setText(dateFormat.format(default_date));
@@ -235,7 +232,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
-                                String sday = Integer.toString(dayi +1);
+                                String sday = Integer.toString(dayi + 1);
                                 String smonth = Integer.toString(monthi);
                                 String sint = Integer.toString(yeari);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
@@ -245,8 +242,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                }
-                else if(materialSpinner.getVisibility() == View.VISIBLE){
+                } else if (materialSpinner.getVisibility() == View.VISIBLE) {
                     addToDatabase(formatteddate);
                 }
             }
@@ -264,7 +260,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                String date=day+"-"+(month+1)+"-"+year;
+                                String date = day + "-" + (month + 1) + "-" + year;
                                 expiry.setText(date);
                                 yeari = year;
                                 monthi = month + 1;
@@ -291,36 +287,33 @@ public class Ranking_type_poll extends AppCompatActivity {
                 polldetails.setAuthor_lc(helper.getusernamePref(getApplicationContext()).toLowerCase());
                 polldetails.setAuthorUID(fb.getUserId());
                 polldetails.setTimestamp(Timestamp.now().getSeconds());
-                if(flagm == 1){
-                    Log.d("yes","item");
+                if (flagm == 1) {
+                    Log.d("yes", "item");
                     polldetails.setLive(true);
                     polldetails.setLivePoll(true);
                     polldetails.setSeconds(sec);
-                }
-                else
-                {
+                } else {
                     polldetails.setExpiry_date(dateFormat.parse(expirydate));
                     alpha_numeric = alpha_numeric(4);
-                    polldetails.setPoll_accessID("PB#"+alpha_numeric);
+                    polldetails.setPoll_accessID("PB#" + alpha_numeric);
                 }
 
-                Map<String,Object> option=new HashMap<>();
-                Map<String,Integer> ranks=new HashMap<>();
-                for(int i=0;i<group.getChildCount();i++)
-                {
-                    ranks.put(String.valueOf(i+1),0);
+                Map<String, Object> option = new HashMap<>();
+                Map<String, Integer> ranks = new HashMap<>();
+                for (int i = 0; i < group.getChildCount(); i++) {
+                    ranks.put(String.valueOf(i + 1), 0);
                 }
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
                     RadioButton v = (RadioButton) group.getChildAt(i);
                     map.put(v.getText().toString().trim(), 0);
-                    option.put(v.getText().toString(),ranks);
+                    option.put(v.getText().toString(), ranks);
                 }
                 polldetails.setMap(map);
                 polldetails.setPoll_type("RANKED");
                 CollectionReference docCreated = fb.getUserDocument().collection("Created");
                 DocumentReference doc = fb.getPollsCollection().document();
-                key=doc.getId();
+                key = doc.getId();
                 doc.set(polldetails)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -332,11 +325,10 @@ public class Ranking_type_poll extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            if(flagm == 1){
+                                            if (flagm == 1) {
                                                 dialog.dismissWithAnimation();
-                                                showDialog(Ranking_type_poll.this,doc);
-                                            }
-                                            else {
+                                                showDialog(Ranking_type_poll.this, doc);
+                                            } else {
                                                 MediaType mediaType = MediaType.parse("application/json");
                                                 JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
                                                 try {
@@ -396,20 +388,17 @@ public class Ranking_type_poll extends AppCompatActivity {
                                         }
                                     }
                                 });
-                                DocumentReference ref= fb.getPollsCollection().document(key).collection("OptionsCount").document("count");
+                                DocumentReference ref = fb.getPollsCollection().document(key).collection("OptionsCount").document("count");
                                 fb.getPollsCollection().document(key).collection("OptionsCount").document("count").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if(task.isSuccessful())
-                                        {
+                                        if (task.isSuccessful()) {
 
-                                            DocumentSnapshot result=task.getResult();
-                                            if(!result.exists())
-                                            {
+                                            DocumentSnapshot result = task.getResult();
+                                            if (!result.exists()) {
                                                 ref.set(option);
                                             }
                                         }
-
 
 
                                     }
@@ -423,7 +412,7 @@ public class Ranking_type_poll extends AppCompatActivity {
                         });
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
     }
@@ -443,25 +432,25 @@ public class Ranking_type_poll extends AppCompatActivity {
         c = group.getChildCount();
         question_ranking = findViewById(R.id.question_ranking);
         post_ranking = findViewById(R.id.post_ranking);
-        dialog=new KAlertDialog(Ranking_type_poll.this,SweetAlertDialog.PROGRESS_TYPE);
-        option1=findViewById(R.id.option1);
-        option2=findViewById(R.id.option2);
+        dialog = new KAlertDialog(Ranking_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
+        option1 = findViewById(R.id.option1);
+        option2 = findViewById(R.id.option2);
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         text1 = findViewById(R.id.text1);
         registerForContextMenu(option1);
         registerForContextMenu(option2);
-        expiry=findViewById(R.id.expiry_date);
+        expiry = findViewById(R.id.expiry_date);
         toggleButton = findViewById(R.id.toggle);
-        materialSpinner = (MaterialSpinner)findViewById(R.id.spinner);
-        materialSpinner.setItems("30","60","90","Custom Stop");
+        materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
+        materialSpinner.setItems("30", "60", "90", "Custom Stop");
 
         if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
     }
 
 
-    public void showDialog(Activity activity, DocumentReference doc){
+    public void showDialog(Activity activity, DocumentReference doc) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.code_dialog);
@@ -472,12 +461,26 @@ public class Ranking_type_poll extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
         final TextView code = dialog.findViewById(R.id.code);
+        final ImageButton copy = dialog.findViewById(R.id.clip_image);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clip board", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", code.getText());
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
         dialog.setCancelable(false);
 
         alpha_numeric = alpha_numeric(4);
         Toast.makeText(activity, doc.getId(), Toast.LENGTH_SHORT).show();
-        doc.update("poll_accessID","PB#"+alpha_numeric);
-        code.setText("PB#"+alpha_numeric);
+        doc.update("poll_accessID", "PB#" + alpha_numeric);
+        code.setText("PB#" + alpha_numeric);
 
         dialog.show();
         window.setAttributes(lp);
@@ -528,11 +531,11 @@ public class Ranking_type_poll extends AppCompatActivity {
         });
     }
 
-    public static String alpha_numeric(int count){
+    public static String alpha_numeric(int count) {
 
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
-            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
             builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();
@@ -542,7 +545,7 @@ public class Ranking_type_poll extends AppCompatActivity {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT,"Access Code for the Live poll :\n"+code);
+        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             startActivity(Intent.createChooser(intent, "Share Code Using"));
@@ -565,7 +568,6 @@ public class Ranking_type_poll extends AppCompatActivity {
     }
 
 
-
     private void openSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -581,7 +583,7 @@ public class Ranking_type_poll extends AppCompatActivity {
         dialog.show();
     }
 
-    public void showDialog(Activity activity, final RadioButton button,int flag){
+    public void showDialog(Activity activity, final RadioButton button, int flag) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.set_name_dialog);
@@ -592,8 +594,8 @@ public class Ranking_type_poll extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
 
-        final TextInputLayout text =  dialog.findViewById(R.id.name);
-        if(flag == 1 && b.getText() != null){
+        final TextInputLayout text = dialog.findViewById(R.id.name);
+        if (flag == 1 && b.getText() != null) {
             text.getEditText().setText(b.getText().toString().trim());
         }
 
@@ -602,9 +604,8 @@ public class Ranking_type_poll extends AppCompatActivity {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                String t=text.getEditText().getText().toString().trim();
-                if( flag==0)
-                {
+                String t = text.getEditText().getText().toString().trim();
+                if (flag == 0) {
                     group.removeView(button);
                 }
 
@@ -617,24 +618,19 @@ public class Ranking_type_poll extends AppCompatActivity {
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name=text.getEditText().getText().toString();
-                if(name.isEmpty())
-                {
+                name = text.getEditText().getText().toString();
+                if (name.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please Enter the option name", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    if(!doesContain(name))
-                    {
+                } else {
+                    if (!doesContain(name)) {
                         uniqueoptions.remove(button.getText().toString());
                         uniqueoptions.add(name);
                         button.setText(name);
-                        Toast.makeText(getApplicationContext(),"Option Added",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Option Added", Toast.LENGTH_LONG).show();
                         dialog.dismiss();
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(),"The option is already added",Toast.LENGTH_LONG).show();
-                        if(flag==0)
+                    } else {
+                        Toast.makeText(getApplicationContext(), "The option is already added", Toast.LENGTH_LONG).show();
+                        if (flag == 0)
                             group.removeView(button);
 
                         dialog.dismiss();
@@ -647,39 +643,35 @@ public class Ranking_type_poll extends AppCompatActivity {
         });
 
 
-
-
-
     }
+
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
-    {
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.radiobutton_menu, menu);
-        b=(RadioButton)v;
+        b = (RadioButton) v;
         menu.setHeaderTitle("Select The Action");
     }
+
     @Override
-    public boolean onContextItemSelected(MenuItem item){
-        if(item.getItemId()==R.id.edit){
-            showDialog(Ranking_type_poll.this,b,1);
-        }
-        else if(item.getItemId()==R.id.delete){
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.edit) {
+            showDialog(Ranking_type_poll.this, b, 1);
+        } else if (item.getItemId() == R.id.delete) {
             group.removeView(b);
             uniqueoptions.remove(b.getText().toString());
-            if(group.getChildCount()==0)
+            if (group.getChildCount() == 0)
                 group.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             return false;
         }
         return true;
     }
-    private boolean doesContain(String word)
-    {
-        for(int i=0;i<uniqueoptions.size();i++)
-        {
-            if(uniqueoptions.get(i).equalsIgnoreCase(word))
+
+    private boolean doesContain(String word) {
+        for (int i = 0; i < uniqueoptions.size(); i++) {
+            if (uniqueoptions.get(i).equalsIgnoreCase(word))
                 return true;
         }
         return false;
@@ -692,9 +684,10 @@ public class Ranking_type_poll extends AppCompatActivity {
         uniqueoptions.add("Option 1");
         uniqueoptions.add("Option 2");
         cal.setTime(date);
-        cal.add(Calendar.DAY_OF_MONTH,7);
-        default_date=cal.getTime();
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        default_date = cal.getTime();
     }
+
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {

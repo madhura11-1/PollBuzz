@@ -405,12 +405,9 @@ public class Multiple_type_response extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, "Copied to clip board", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
-                    if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                        android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        clipboard.setText(item.getTitle());
-                    } else {
-                        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
+                    if (clipboard != null) {
                         clipboard.setPrimaryClip(clip);
                     }
                 }

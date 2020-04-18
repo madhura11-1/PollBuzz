@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +74,7 @@ import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.Utils.helper;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -88,7 +90,7 @@ public class Multiple_type_poll extends AppCompatActivity {
     TextInputEditText question_multi;
     LinearLayout group;
     String name, expirydate;
-    int c, flagm = 0,yeari,monthi,dayi;
+    int c, flagm = 0, yeari, monthi, dayi;
     long sec;
     RadioButton b;
     Date date = Calendar.getInstance().getTime();
@@ -142,10 +144,10 @@ public class Multiple_type_poll extends AppCompatActivity {
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
 
                 flagm = 1;
-                if(item.equals("Custom Stop"))
+                if (item.equals("Custom Stop"))
                     sec = Long.MAX_VALUE;
                 else
-                sec = Long.parseLong(item);
+                    sec = Long.parseLong(item);
 
             }
         });
@@ -226,7 +228,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (dateFormat.parse(expiry.getText().toString()).compareTo(dateFormat.parse(formatteddate)) >= 0) {
-                                String sday = Integer.toString(dayi +1);
+                                String sday = Integer.toString(dayi + 1);
                                 String smonth = Integer.toString(monthi);
                                 String sint = Integer.toString(yeari);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
@@ -296,7 +298,7 @@ public class Multiple_type_poll extends AppCompatActivity {
                     polldetails.setSeconds(sec);
                 } else {
                     alpha_numeric = alpha_numeric(4);
-                    polldetails.setPoll_accessID("PB#"+alpha_numeric);
+                    polldetails.setPoll_accessID("PB#" + alpha_numeric);
                     polldetails.setExpiry_date(dateFormat.parse(expirydate));
                 }
                 Map<String, Integer> map = new HashMap<>();
@@ -435,12 +437,26 @@ public class Multiple_type_poll extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
         final TextView code = dialog.findViewById(R.id.code);
+        final ImageButton copy = dialog.findViewById(R.id.clip_image);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clip board", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", code.getText());
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
         dialog.setCancelable(false);
 
         alpha_numeric = alpha_numeric(4);
         Toast.makeText(activity, doc.getId(), Toast.LENGTH_SHORT).show();
-        doc.update("poll_accessID","PB#"+alpha_numeric);
-        code.setText("PB#"+alpha_numeric);
+        doc.update("poll_accessID", "PB#" + alpha_numeric);
+        code.setText("PB#" + alpha_numeric);
 
         dialog.show();
         window.setAttributes(lp);
@@ -491,11 +507,11 @@ public class Multiple_type_poll extends AppCompatActivity {
         });
     }
 
-    public static String alpha_numeric(int count){
+    public static String alpha_numeric(int count) {
 
         StringBuilder builder = new StringBuilder();
         while (count-- != 0) {
-            int character = (int)(Math.random()*ALPHA_NUMERIC_STRING.length());
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
             builder.append(ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();

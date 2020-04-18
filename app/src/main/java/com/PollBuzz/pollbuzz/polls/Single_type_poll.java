@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +74,7 @@ import java.util.Map;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.Utils.helper;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -86,7 +88,7 @@ public class Single_type_poll extends AppCompatActivity {
     Button add;
     RadioGroup group;
     String name, expirydate;
-    int c, flagm = 0,yeari,monthi,dayi;
+    int c, flagm = 0, yeari, monthi, dayi;
     long sec;
     RadioButton b;
     TextInputEditText question;
@@ -140,10 +142,10 @@ public class Single_type_poll extends AppCompatActivity {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 flagm = 1;
-                if(item.equals("Custom Stop"))
+                if (item.equals("Custom Stop"))
                     sec = Long.MAX_VALUE;
                 else
-                sec = Long.parseLong(item);
+                    sec = Long.parseLong(item);
             }
         });
 
@@ -207,7 +209,7 @@ public class Single_type_poll extends AppCompatActivity {
                     } else {
                         try {
                             if (df.parse(expiry.getText().toString()).compareTo(df.parse(formattedDate)) >= 0) {
-                                String sday = Integer.toString(dayi +1);
+                                String sday = Integer.toString(dayi + 1);
                                 String smonth = Integer.toString(monthi);
                                 String sint = Integer.toString(yeari);
                                 expirydate = (sday + "-" + smonth + "-" + sint);
@@ -268,7 +270,7 @@ public class Single_type_poll extends AppCompatActivity {
                 } else {
                     polldetails.setExpiry_date(df.parse(expirydate));
                     alpha_numeric = alpha_numeric(4);
-                    polldetails.setPoll_accessID("PB#"+alpha_numeric);
+                    polldetails.setPoll_accessID("PB#" + alpha_numeric);
                 }
                 Map<String, Integer> map = new HashMap<>();
                 for (int i = 0; i < group.getChildCount(); i++) {
@@ -397,7 +399,7 @@ public class Single_type_poll extends AppCompatActivity {
         registerForContextMenu(option2);
         toggleButton = findViewById(R.id.toggle);
         materialSpinner = (MaterialSpinner) findViewById(R.id.spinner);
-        materialSpinner.setItems("30", "60", "90","Custom Stop");
+        materialSpinner.setItems("30", "60", "90", "Custom Stop");
         expiry = findViewById(R.id.expiry_date);
         if (group.getChildCount() == 0)
             group.setVisibility(View.INVISIBLE);
@@ -414,6 +416,20 @@ public class Single_type_poll extends AppCompatActivity {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
         final TextView code = dialog.findViewById(R.id.code);
+        final ImageButton copy = dialog.findViewById(R.id.clip_image);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Copied to clip board", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", code.getText());
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
+            }
+        });
         dialog.setCancelable(false);
 
         alpha_numeric = alpha_numeric(4);
@@ -447,7 +463,7 @@ public class Single_type_poll extends AppCompatActivity {
                                 @Override
                                 public void onPermissionsChecked(MultiplePermissionsReport report) {
                                     if (report.areAllPermissionsGranted()) {
-                                        sharecode(code.getText().toString().trim(),doc.getId());
+                                        sharecode(code.getText().toString().trim(), doc.getId());
                                     }
 
                                     if (report.isAnyPermissionPermanentlyDenied()) {
@@ -478,11 +494,11 @@ public class Single_type_poll extends AppCompatActivity {
         return builder.toString();
     }
 
-    private void sharecode(String code,String UID) {
+    private void sharecode(String code, String UID) {
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code+"\n\nOr use the link:\n"+"https://pollbuzz.com/share/0"+UID);
+        intent.putExtra(Intent.EXTRA_TEXT, "Access Code for the Live poll :\n" + code + "\n\nOr use the link:\n" + "https://pollbuzz.com/share/0" + UID);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             startActivity(Intent.createChooser(intent, "Share Code Using"));
@@ -606,10 +622,11 @@ public class Single_type_poll extends AppCompatActivity {
         return true;
     }
 
-    private void showKeyboard(){
+    private void showKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
+
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
