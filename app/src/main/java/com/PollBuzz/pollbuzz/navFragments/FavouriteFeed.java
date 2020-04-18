@@ -513,7 +513,7 @@ public class FavouriteFeed extends Fragment {
     }
 
     private void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(Objects.requireNonNull(getActivity()), v);
+        PopupMenu popup = new PopupMenu(requireActivity(), v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.filter, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
