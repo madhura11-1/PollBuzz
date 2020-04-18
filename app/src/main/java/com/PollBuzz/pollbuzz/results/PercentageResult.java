@@ -36,9 +36,10 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.PollBuzz.pollbuzz.BuildConfig;
 import com.PollBuzz.pollbuzz.MainActivity;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.objects.ClipFunction;
 import com.PollBuzz.pollbuzz.objects.PollDetails;
-import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
@@ -61,8 +62,6 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.skydoves.powermenu.CustomPowerMenu;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.MenuBaseAdapter;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,8 +74,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class PercentageResult extends AppCompatActivity {
 
