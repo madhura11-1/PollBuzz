@@ -33,6 +33,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorPrimary"
         android:outlineSpotShadowColor="@color/colorPrimaryDark"
         android:outlineAmbientShadowColor="@color/colorPrimary"
         android:layout_centerHorizontal="true"

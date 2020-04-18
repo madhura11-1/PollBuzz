@@ -48,6 +48,7 @@ public class SplashScreen extends AppCompatActivity {
     firebase fb;
     TextView tv;
     ImageView image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,17 +61,14 @@ public class SplashScreen extends AppCompatActivity {
         splashProgress = findViewById(R.id.splashProgress);
         tv = (TextView) findViewById(R.id.txt);
         image = (ImageView) findViewById(R.id.imagee);
-
-
-
     }
 
 
-    private void playProgress() {
-        ObjectAnimator.ofInt(splashProgress, "progress", 100)
-                .setDuration(3000)
-                .start();
-    }
+//    private void playProgress() {
+//        ObjectAnimator.ofInt(splashProgress, "progress", 100)
+//                .setDuration(3000)
+//                .start();
+//    }
 
     public void fade() {
         Animation animation1 =
@@ -80,18 +78,14 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void tvanim() {
-        Animation animation1 =
-                AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.txt_animation_1);
-        tv.startAnimation(animation1);
         Animation animation2 =
                 AnimationUtils.loadAnimation(getApplicationContext(),
                         R.anim.txt_animation_2);
         tv.startAnimation(animation2);
-
     }
+
     private void startIntent() {
-        if (!isUserLoggedIn(fb)) {
+        if (!isUserLoggedIn()) {
             helper.removeProfileSetUpPref(getApplicationContext());
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
@@ -122,9 +116,10 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-    boolean isUserLoggedIn(firebase fb) {
+    boolean isUserLoggedIn() {
         return fb.getUser() != null;
     }
+
     private boolean isInternetAvailable(Context context) {
         boolean result = false;
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -154,9 +149,9 @@ public class SplashScreen extends AppCompatActivity {
         }
         return result;
     }
-    private  void showDialog()
-    {
-        Dialog dialog=new Dialog(SplashScreen.this);
+
+    private void showDialog() {
+        Dialog dialog = new Dialog(SplashScreen.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.no_internet_dialog);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -172,7 +167,7 @@ public class SplashScreen extends AppCompatActivity {
         tv.clearAnimation();
         image.getAnimation().cancel();
         image.clearAnimation();
-        Button ok=dialog.findViewById(R.id.ok);
+        Button ok = dialog.findViewById(R.id.ok);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,38 +176,24 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
 
-
-
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-    }
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        playProgress();
+//        playProgress();
         fade();
         tvanim();
-        boolean f=isInternetAvailable(SplashScreen.this);
-        if(!f)
+        boolean f = isInternetAvailable(SplashScreen.this);
+        if (!f)
             showDialog();
-        else
-        {
+        else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     startIntent();
                 }
             }, SPLASH_TIME);
-
         }
-
     }
 }

@@ -338,8 +338,7 @@ public class FavouriteFeed extends Fragment {
                                 z++;
                                 if (z == task.getResult().size()) {
                                     addToRecyclerView(dS, true);
-                                }
-                                else
+                                } else
                                     addToRecyclerView(dS, false);
                                 lastIndex = dS;
                             }
@@ -455,7 +454,7 @@ public class FavouriteFeed extends Fragment {
                                         adapter.notifyDataSetChanged();
                                         flagFetch = true;
                                         if (flagFirst) {
-                                            Log.d("FavFeed","hidden");
+                                            Log.d("FavFeed", "hidden");
                                             recyclerView.hideShimmerAdapter();
                                             recyclerView.scheduleLayoutAnimation();
                                             flagFirst = false;
@@ -470,7 +469,7 @@ public class FavouriteFeed extends Fragment {
                                     flagFirst = false;
                                     viewed.setText("There are no polls around...");
                                     viewed.setVisibility(View.VISIBLE);
-                                    Log.d("FavFeed","else");
+                                    Log.d("FavFeed", "else");
                                 }
                             }
                         }
@@ -481,7 +480,7 @@ public class FavouriteFeed extends Fragment {
                         flagFetch = false;
                         viewed.setText("There are no polls around...");
                         viewed.setVisibility(View.VISIBLE);
-                        Log.d("FavFeed","if else");
+                        Log.d("FavFeed", "if else");
                     }
                 }
             }
