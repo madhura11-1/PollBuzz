@@ -378,6 +378,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             if (recyclerView.getActualAdapter() != adapter)
                 recyclerView.hideShimmerAdapter();
             if (adapter.getItemCount() == 0) {
+                recyclerView.hideShimmerAdapter();
                 viewed.setVisibility(View.VISIBLE);
                 viewed.setText("You have no unvoted polls created in that date span.");
             }

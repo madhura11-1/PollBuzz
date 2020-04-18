@@ -293,6 +293,7 @@ public class FavouriteFeed extends Fragment {
             if (recyclerView.getActualAdapter() != adapter)
                 recyclerView.hideShimmerAdapter();
             if (adapter.getItemCount() == 0) {
+                recyclerView.hideShimmerAdapter();
                 viewed.setText("You have no unvoted polls created in that date span.");
                 viewed.setVisibility(View.VISIBLE);
             }
