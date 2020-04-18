@@ -34,7 +34,7 @@ public class helper {
         return prefs.getString(usernamePref, null);
     }
 
-    static void removeProfileSetUpPref(Context context) {
+    public static void removeProfileSetUpPref(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().clear().commit();
     }
