@@ -60,22 +60,6 @@ public class SplashScreen extends AppCompatActivity {
         splashProgress = findViewById(R.id.splashProgress);
         tv = (TextView) findViewById(R.id.txt);
         image = (ImageView) findViewById(R.id.imagee);
-        playProgress();
-        fade();
-        tvanim();
-        boolean f=isInternetAvailable(SplashScreen.this);
-        if(!f)
-            showDialog();
-        else
-        {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startIntent();
-                }
-            }, SPLASH_TIME);
-
-        }
 
 
 
@@ -201,4 +185,34 @@ public class SplashScreen extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playProgress();
+        fade();
+        tvanim();
+        boolean f=isInternetAvailable(SplashScreen.this);
+        if(!f)
+            showDialog();
+        else
+        {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startIntent();
+                }
+            }, SPLASH_TIME);
+
+        }
+
+    }
 }
