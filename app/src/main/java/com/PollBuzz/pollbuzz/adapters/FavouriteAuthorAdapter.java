@@ -82,6 +82,7 @@ public class FavouriteAuthorAdapter extends RecyclerView.Adapter<FavouriteAuthor
                 Glide.with(mContext)
                         .load(authorDetails.get(position).getPic())
                         .transform(new CircleCrop())
+                        .placeholder(R.drawable.ic_person_black_24dp)
                         .into(holder.voterPhoto);
             }
         } catch (Exception e) {

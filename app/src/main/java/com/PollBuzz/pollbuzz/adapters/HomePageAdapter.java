@@ -335,6 +335,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 Glide.with(mContext)
                         .load(mPollDetails.get(position).getPic())
                         .transform(new CircleCrop())
+                        .placeholder(R.drawable.ic_person_black_24dp)
                         .into(holder.profilePic);
             }
 

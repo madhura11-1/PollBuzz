@@ -64,6 +64,7 @@ public class VoterPageAdapter extends RecyclerView.Adapter<VoterPageAdapter.Vote
                 Glide.with(mContext)
                         .load(mVotedetails.get(position).getProgfileUrl())
                         .transform(new CircleCrop())
+                        .placeholder(R.drawable.ic_person_black_24dp)
                         .into(holder.voterPhoto);
             }
         } catch (Exception e) {
