@@ -321,59 +321,58 @@ public class Multiple_type_poll extends AppCompatActivity {
                                         if (flagm == 1) {
                                             dialog.dismissWithAnimation();
                                             showDialog(Multiple_type_poll.this, doc);
-                                        } else {
-                                            MediaType mediaType = MediaType.parse("application/json");
-                                            JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
-                                            try {
-                                                data.put("type", "MULTI SELECT");
-                                                data.put("username", helper.getusernamePref(Multiple_type_poll.this));
-                                                data.put("pollId", doc.getId());
-                                                data.put("title", polldetails.getQuestion());
-                                                if (helper.getpPicPref(Multiple_type_poll.this) != null)
-                                                    data.put("profilePic", helper.getpPicPref(Multiple_type_poll.this));
-                                                obj.put("data", data);
-                                                obj.put("to", "/topics/" + fb.getUserId());
-                                                obj.put("priority", "high");
-                                            } catch (JSONException e) {
-                                                Log.d("Exception", e.getMessage());
-                                            }
-                                            Log.d("NotificationBody", obj.toString());
-                                            RequestBody body = RequestBody.create(mediaType, obj.toString());
-                                            OkHttpClient client = new OkHttpClient();
-                                            Request request = new Request.Builder()
-                                                    .url("https://fcm.googleapis.com/fcm/send")
-                                                    .post(body)
-                                                    .addHeader("Authorization", "key=" + getString(R.string.server_key))
-                                                    .addHeader("Content-Type", "application/json")
-                                                    .build();
-                                            Call call = client.newCall(request);
-                                            call.enqueue(new Callback() {
-                                                @Override
-                                                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                                    runOnUiThread(new Runnable() {
-                                                        public void run() {
-                                                            Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-
-                                                @Override
-                                                public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
-                                                    if (response.isSuccessful()) {
-                                                        Log.d("Response", response.body().string());
-                                                    }
-                                                    runOnUiThread(new Runnable() {
-                                                        public void run() {
-                                                            Toast.makeText(Multiple_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
-                                                            dialog.dismissWithAnimation();
-                                                        }
-                                                    });
-                                                    Intent intent = new Intent(Multiple_type_poll.this, MainActivity.class);
-                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    startActivity(intent);
-                                                }
-                                            });
                                         }
+                                        MediaType mediaType = MediaType.parse("application/json");
+                                        JSONObject obj = new JSONObject(), notification = new JSONObject(), data = new JSONObject();
+                                        try {
+                                            data.put("type", "MULTI SELECT");
+                                            data.put("username", helper.getusernamePref(Multiple_type_poll.this));
+                                            data.put("pollId", doc.getId());
+                                            data.put("title", polldetails.getQuestion());
+                                            if (helper.getpPicPref(Multiple_type_poll.this) != null)
+                                                data.put("profilePic", helper.getpPicPref(Multiple_type_poll.this));
+                                            obj.put("data", data);
+                                            obj.put("to", "/topics/" + fb.getUserId());
+                                            obj.put("priority", "high");
+                                        } catch (JSONException e) {
+                                            Log.d("Exception", e.getMessage());
+                                        }
+                                        Log.d("NotificationBody", obj.toString());
+                                        RequestBody body = RequestBody.create(mediaType, obj.toString());
+                                        OkHttpClient client = new OkHttpClient();
+                                        Request request = new Request.Builder()
+                                                .url("https://fcm.googleapis.com/fcm/send")
+                                                .post(body)
+                                                .addHeader("Authorization", "key=" + getString(R.string.server_key))
+                                                .addHeader("Content-Type", "application/json")
+                                                .build();
+                                        Call call = client.newCall(request);
+                                        call.enqueue(new Callback() {
+                                            @Override
+                                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                runOnUiThread(new Runnable() {
+                                                    public void run() {
+                                                        Toast.makeText(getApplicationContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
+                                                if (response.isSuccessful()) {
+                                                    Log.d("Response", response.body().string());
+                                                }
+                                                runOnUiThread(new Runnable() {
+                                                    public void run() {
+                                                        Toast.makeText(Multiple_type_poll.this, "Your data added successfully", Toast.LENGTH_SHORT).show();
+                                                        dialog.dismissWithAnimation();
+                                                    }
+                                                });
+                                                Intent intent = new Intent(Multiple_type_poll.this, MainActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                startActivity(intent);
+                                            }
+                                        });
                                     } else {
                                         Toast.makeText(Multiple_type_poll.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         dialog.dismissWithAnimation();

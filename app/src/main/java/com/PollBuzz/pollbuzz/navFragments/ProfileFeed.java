@@ -516,6 +516,12 @@ public class ProfileFeed extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void showDialog() {
         dialog = new KAlertDialog(getContext(), SweetAlertDialog.PROGRESS_TYPE);
         dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));

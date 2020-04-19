@@ -508,6 +508,12 @@ public class VotedFeed extends Fragment {
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void closeKeyboard() {
         if (getActivity() != null) {
             View view = getActivity().getCurrentFocus();

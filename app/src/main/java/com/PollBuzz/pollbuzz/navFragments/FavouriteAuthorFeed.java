@@ -202,7 +202,11 @@ public class FavouriteAuthorFeed extends Fragment implements FavouriteAuthorAdap
             inputManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
     @Override
     public void onItemClicked() {
         closeKeyboard();
