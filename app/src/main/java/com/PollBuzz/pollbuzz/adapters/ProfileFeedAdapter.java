@@ -37,8 +37,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.PollBuzz.pollbuzz.Utils.firebase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.kinda.alert.KAlertDialog;
 
 public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.ProfileViewHolder> {
 
@@ -46,6 +48,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
     private Context mContext;
     private Boolean bool;
     private firebase fb;
+    private KAlertDialog dialog;
 
     public ProfileFeedAdapter(Context mContext, ArrayList<PollDetails> mPollDetails, Boolean bool) {
         this.mContext = mContext;
@@ -75,10 +78,10 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        Log.d("tokenId",task.getResult().getToken()+ " " +task.getResult().getId());
+                        Log.d("tokenId", task.getResult().getToken() + " " + task.getResult().getId());
                     }
                 });
-                Log.d("CardId",mPollDetails.get(position).getUID());
+                Log.d("CardId", mPollDetails.get(position).getUID());
                 Intent intent = new Intent(mContext, PercentageResult.class);
                 intent.putExtra("UID", mPollDetails.get(position).getUID());
                 intent.putExtra("type", mPollDetails.get(position).getPoll_type());
@@ -89,12 +92,33 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
             if (mPollDetails.get(position).getExpiry_date() != null) {
                 if (mPollDetails.get(position).getExpiry_date().compareTo(Timestamp.now().toDate()) >= 0)
                     holder.cardV.setOnClickListener(view -> {
-                        Log.d("CardId",mPollDetails.get(position).getUID());
-                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                        Log.d("CardId", mPollDetails.get(position).getUID());
+                        showDialog();
+                        fb.getPollsCollection().document(mPollDetails.get(position).getUID()).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document1 = task.getResult();
+                                    if (document1 != null) {
+                                        if (!document1.exists()) {
+                                            dialog.dismissWithAnimation();
+                                            startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                                        } else {
+                                            dialog.dismissWithAnimation();
+                                            Toast.makeText(mContext, "You have already voted once.", Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(mContext, PercentageResult.class);
+                                            intent.putExtra("UID", mPollDetails.get(position).getUID());
+                                            intent.putExtra("type", mPollDetails.get(position).getPoll_type());
+                                            mContext.startActivity(intent);
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     });
                 else {
                     holder.cardV.setOnClickListener(view -> {
-                        Log.d("CardId",mPollDetails.get(position).getUID());
+                        Log.d("CardId", mPollDetails.get(position).getUID());
                         Intent i = new Intent(mContext, PercentageResult.class);
                         i.putExtra("UID", mPollDetails.get(position).getUID());
                         i.putExtra("type", mPollDetails.get(position).getPoll_type());
@@ -106,7 +130,7 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                 holder.cardV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("CardId",mPollDetails.get(position).getUID());
+                        Log.d("CardId", mPollDetails.get(position).getUID());
                         Bundle bundle = new Bundle();
                         bundle.putString("user_id", fb.getUserId());
                         bundle.putString("poll_id", mPollDetails.get(position).getUID());
@@ -114,7 +138,28 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                         FirebaseAnalytics.getInstance(mContext).logEvent("profile_card_live_clicked", bundle);
                         if (holder.live.getVisibility() == View.VISIBLE) {
 //                            showcodedialog(position);
-                            startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                            showDialog();
+                            fb.getPollsCollection().document(mPollDetails.get(position).getUID()).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document1 = task.getResult();
+                                        if (document1 != null) {
+                                            if (!document1.exists()) {
+                                                dialog.dismissWithAnimation();
+                                                startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                                            } else {
+                                                dialog.dismissWithAnimation();
+                                                Toast.makeText(mContext, "You have already voted once.", Toast.LENGTH_LONG).show();
+                                                Intent intent = new Intent(mContext, PercentageResult.class);
+                                                intent.putExtra("UID", mPollDetails.get(position).getUID());
+                                                intent.putExtra("type", mPollDetails.get(position).getPoll_type());
+                                                mContext.startActivity(intent);
+                                            }
+                                        }
+                                    }
+                                }
+                            });
                         } else {
                             Intent i = new Intent(mContext, PercentageResult.class);
                             i.putExtra("UID", mPollDetails.get(position).getUID());
@@ -254,4 +299,11 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
         });
     }
 
+    private void showDialog() {
+        dialog = new KAlertDialog(mContext, KAlertDialog.PROGRESS_TYPE);
+        dialog.getProgressHelper().setBarColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
+        dialog.setTitleText("Loading poll...");
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }

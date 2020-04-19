@@ -674,6 +674,7 @@ public class Image_type_poll extends AppCompatActivity {
                                                                 public void onResponse(@NotNull Call call, @NotNull final Response response) throws IOException {
                                                                     if (response.isSuccessful()) {
                                                                         Log.d("Response", response.body().string());
+                                                                        response.close();
                                                                     }
                                                                     runOnUiThread(new Runnable() {
                                                                         public void run() {

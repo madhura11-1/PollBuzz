@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-//    signingConfigs {
-//        release {
-//            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
-//            storePassword '******'
-//            keyAlias = 'PollBuzz'
-//            keyPassword '******'
-//        }
-//    }
+    signingConfigs {
+        release {
+            storeFile file('/home/divyank/AndroidStudioProjects/PollBuzzKey/PollBuzz.jks')
+            storePassword 'pb1234'
+            keyAlias = 'PollBuzz'
+            keyPassword 'pb1234'
+        }
+    }
 
     packagingOptions {
         exclude("META-INF/*.kotlin_module")
@@ -25,7 +25,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        signingConfig signingConfigs.release
+        signingConfig signingConfigs.release
     }
 
     buildTypes {

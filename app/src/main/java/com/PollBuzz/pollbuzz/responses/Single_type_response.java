@@ -154,7 +154,6 @@ public class Single_type_response extends AppCompatActivity {
                                 }
                             } else {
                                 //Log.d(TAG, "Document does not exist!");
-
                                 fav_author.setEnabled(false);
                                 Map<String, String> map = new HashMap<>();
                                 map.put("Username", (polldetails.getAuthor()));

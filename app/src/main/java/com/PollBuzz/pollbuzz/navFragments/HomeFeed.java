@@ -315,7 +315,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                                     }
                                                     else {
                                                         dialog.dismissWithAnimation();
-                                                        Toast.makeText(getContext(),"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getContext(),"You have already voted once.",Toast.LENGTH_LONG).show();
                                                         Intent intent = new Intent(getContext(), PercentageResult.class);
                                                         intent.putExtra("UID", finalPollDetails.getUID());
                                                         intent.putExtra("type", finalPollDetails.getPoll_type());
