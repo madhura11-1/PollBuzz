@@ -103,12 +103,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 bundle.putString("poll_id", mPollDetails.get(position).getUID());
                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                 mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
-                if (holder.live.getVisibility() == View.VISIBLE) {
-                    showcodedialog(position);
-                } else
+//                if (holder.live.getVisibility() == View.VISIBLE) {
+//                    showcodedialog(position);
+//                } else
                     startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
             } else {
-                Toast.makeText(mContext,"The poll is expired\nRedirecting you to the poll's result",Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext,"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
                 Intent i = new Intent(mContext, PercentageResult.class);
                 i.putExtra("UID", mPollDetails.get(position).getUID());
                 i.putExtra("type", mPollDetails.get(position).getPoll_type());

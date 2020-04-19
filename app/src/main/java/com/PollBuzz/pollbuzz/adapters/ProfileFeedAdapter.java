@@ -111,9 +111,10 @@ public class ProfileFeedAdapter extends RecyclerView.Adapter<ProfileFeedAdapter.
                         bundle.putString("user_id", fb.getUserId());
                         bundle.putString("poll_id", mPollDetails.get(position).getUID());
                         bundle.putString("timestamp", Timestamp.now().toDate().toString());
-                        FirebaseAnalytics.getInstance(mContext).logEvent("profile_card_vote_clicked", bundle);
+                        FirebaseAnalytics.getInstance(mContext).logEvent("profile_card_live_clicked", bundle);
                         if (holder.live.getVisibility() == View.VISIBLE) {
-                            showcodedialog(position);
+//                            showcodedialog(position);
+                            startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                         } else {
                             Intent i = new Intent(mContext, PercentageResult.class);
                             i.putExtra("UID", mPollDetails.get(position).getUID());

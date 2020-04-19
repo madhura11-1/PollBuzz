@@ -91,10 +91,10 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
                 bundle.putString("poll_id", mPollDetails.get(position).getUID());
                 bundle.putString("timestamp", Timestamp.now().toDate().toString());
                 mFirebaseAnalytics.logEvent("home_card_vote_clicked", bundle);
-                if(holder.live.getVisibility() == View.VISIBLE){
-                    showcodedialog(mPollDetails.get(position).getUID(),position);
-                }
-                else
+//                if(holder.live.getVisibility() == View.VISIBLE){
+//                    showcodedialog(mPollDetails.get(position).getUID(),position);
+//                }
+//                else
                     startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
             }
             else

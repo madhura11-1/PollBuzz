@@ -307,7 +307,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                                 DocumentSnapshot document1 = task.getResult();
                                                 if (document1 != null) {
                                                     if (!document1.exists()) {
-                                                        Log.d("HomeFeed","Exists");
                                                         dialog.dismissWithAnimation();
                                                         GotoActivity(finalPollDetails);
                                                         linear_id_search.setVisibility(View.INVISIBLE);
@@ -315,8 +314,8 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                                         id_search_edittext.setText("");
                                                     }
                                                     else {
-                                                        Log.d("HomeFeed","NotExists");
                                                         dialog.dismissWithAnimation();
+                                                        Toast.makeText(getContext(),"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
                                                         Intent intent = new Intent(getContext(), PercentageResult.class);
                                                         intent.putExtra("UID", finalPollDetails.getUID());
                                                         intent.putExtra("type", finalPollDetails.getPoll_type());
