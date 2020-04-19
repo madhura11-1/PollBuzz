@@ -307,10 +307,15 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                                 DocumentSnapshot document1 = task.getResult();
                                                 if (document1 != null) {
                                                     if (!document1.exists()) {
+                                                        Log.d("HomeFeed","Exists");
                                                         dialog.dismissWithAnimation();
                                                         GotoActivity(finalPollDetails);
+                                                        linear_id_search.setVisibility(View.INVISIBLE);
+                                                        linear_search.setVisibility(View.VISIBLE);
+                                                        id_search_edittext.setText("");
                                                     }
                                                     else {
+                                                        Log.d("HomeFeed","NotExists");
                                                         dialog.dismissWithAnimation();
                                                         Intent intent = new Intent(getContext(), PercentageResult.class);
                                                         intent.putExtra("UID", finalPollDetails.getUID());
@@ -321,10 +326,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                             }
                                         }
                                     });
-                                    GotoActivity(pollDetails);
-                                    linear_id_search.setVisibility(View.INVISIBLE);
-                                    linear_search.setVisibility(View.VISIBLE);
-                                    id_search_edittext.setText("");
                                 } else {
                                     Toast toast = Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT);
                                     toast.setGravity(Gravity.CENTER, 0, 0);

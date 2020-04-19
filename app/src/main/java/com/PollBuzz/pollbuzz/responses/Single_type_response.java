@@ -455,8 +455,5 @@ public class Single_type_response extends AppCompatActivity {
 
             }
         });
-
-
-
     }
 }
