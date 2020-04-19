@@ -157,10 +157,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                                     }
                                                 }
                                             });*/
+                                            Log.d("Favourite","Unsubscribing");
                                             FirebaseMessaging.getInstance().unsubscribeFromTopic(mPollDetails.get(position).getAuthorUID())
                                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
+                                                            Log.d("Favourite","Unsubscribed");
                                                             if (task.isSuccessful()) {
                                                                 Log.d("UnSubscribedFrom", mPollDetails.get(position).getAuthorUID());
 
