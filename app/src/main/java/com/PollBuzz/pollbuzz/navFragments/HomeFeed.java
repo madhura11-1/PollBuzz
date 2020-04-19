@@ -31,13 +31,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.PollBuzz.pollbuzz.objects.PollDetails;
+import com.PollBuzz.pollbuzz.MainActivity;
 import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
 import com.PollBuzz.pollbuzz.responses.Single_type_response;
+import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -49,6 +52,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.kinda.alert.KAlertDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,9 +60,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Objects;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private ArrayList<PollDetails> arrayList;
@@ -85,6 +86,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private int mDay = c.get(Calendar.DAY_OF_MONTH);
     final String formatteddate = dateFormat.format(date);
     private int currentFlag = 0;
+    private KAlertDialog dialog;
 
     public HomeFeed() {
     }
@@ -296,6 +298,27 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                     pollDetails.setUID(q.getId());
                                 }
                                 if (pollDetails != null) {
+                                    showDialog();
+                                    PollDetails finalPollDetails = pollDetails;
+                                    fb.getPollsCollection().document(pollDetails.getUID()).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document1 = task.getResult();
+                                                if (document1 != null) {
+                                                    if (!document1.exists())
+                                                        GotoActivity(finalPollDetails);
+                                                    else {
+                                                        dialog.dismissWithAnimation();
+                                                        Intent intent = new Intent(getContext(), PercentageResult.class);
+                                                        intent.putExtra("UID", finalPollDetails.getUID());
+                                                        intent.putExtra("type", finalPollDetails.getPoll_type());
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
                                     GotoActivity(pollDetails);
                                     linear_id_search.setVisibility(View.INVISIBLE);
                                     linear_search.setVisibility(View.VISIBLE);
@@ -628,6 +651,14 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                 }
             }
         }
+    }
+
+    private void showDialog() {
+        dialog = new KAlertDialog(getContext(), KAlertDialog.PROGRESS_TYPE);
+        dialog.getProgressHelper().setBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        dialog.setTitleText("Loading poll...");
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override
