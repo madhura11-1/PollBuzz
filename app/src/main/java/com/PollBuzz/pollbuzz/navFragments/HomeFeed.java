@@ -306,8 +306,10 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                             if (task.isSuccessful()) {
                                                 DocumentSnapshot document1 = task.getResult();
                                                 if (document1 != null) {
-                                                    if (!document1.exists())
+                                                    if (!document1.exists()) {
+                                                        dialog.dismissWithAnimation();
                                                         GotoActivity(finalPollDetails);
+                                                    }
                                                     else {
                                                         dialog.dismissWithAnimation();
                                                         Intent intent = new Intent(getContext(), PercentageResult.class);
