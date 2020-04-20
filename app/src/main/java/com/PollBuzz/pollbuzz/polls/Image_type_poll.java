@@ -682,9 +682,11 @@ public class Image_type_poll extends AppCompatActivity {
                                                                             dialog.dismissWithAnimation();
                                                                         }
                                                                     });
-                                                                    Intent intent = new Intent(Image_type_poll.this, MainActivity.class);
-                                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                                    startActivity(intent);
+                                                                    if (flagm != 1) {
+                                                                        Intent intent = new Intent(Image_type_poll.this, MainActivity.class);
+                                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                                        startActivity(intent);
+                                                                    }
                                                                 }
                                                             });
                                                         } else {
