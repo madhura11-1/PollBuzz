@@ -103,7 +103,7 @@ public class SignupFragment extends Fragment {
         emailL = (TextInputLayout) view.findViewById(R.id.email);
         passwordL = (TextInputLayout) view.findViewById(R.id.password);
         password2L = (TextInputLayout) view.findViewById(R.id.password2);
-        signup = view.findViewById(R.id.signup);
+        signup = view.findViewById(R.id.fragment_signup);
         fb = new firebase();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
     }

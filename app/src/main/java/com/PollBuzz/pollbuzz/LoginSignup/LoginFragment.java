@@ -74,7 +74,7 @@ public class LoginFragment extends Fragment {
     void setGlobals(View view) {
         email = (TextInputLayout) view.findViewById(R.id.email);
         password = (TextInputLayout) view.findViewById(R.id.password);
-        login = view.findViewById(R.id.login);
+        login = view.findViewById(R.id.fragment_login);
         gsignin = view.findViewById(R.id.gsignin);
         fb = new firebase();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

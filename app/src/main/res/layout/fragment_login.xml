@@ -48,7 +48,7 @@
     <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/login"
+            android:id="@+id/fragment_login"
             android:text="Login"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
