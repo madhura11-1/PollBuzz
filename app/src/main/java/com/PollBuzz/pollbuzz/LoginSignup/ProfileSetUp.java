@@ -17,9 +17,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +61,7 @@ import com.kinda.alert.KAlertDialog;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +76,7 @@ public class ProfileSetUp extends AppCompatActivity {
     FirebaseAuth mAuth;
     TextInputLayout name, Uname, date;
     ImageView pPic;
-    ImageButton edit;
+    ImageView edit;
     MaterialButton save, male, female;
     DatePickerDialog mDatePickerDialog;
     Uri uri;
@@ -81,6 +85,8 @@ public class ProfileSetUp extends AppCompatActivity {
     String gender = null;
     firebase fb;
     private KAlertDialog dialog;
+    Spinner spinner;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,14 +113,14 @@ public class ProfileSetUp extends AppCompatActivity {
                     }, yearT, monthT, dayT);
             mDatePickerDialog.show();
         });
-        male.setOnClickListener(view -> {
+        /*male.setOnClickListener(view -> {
             closeKeyboard();
             isMale();
         });
         female.setOnClickListener(view -> {
             closeKeyboard();
             isFemale();
-        });
+        });*/
         edit.setOnClickListener(view -> {
             closeKeyboard();
             try {
@@ -158,28 +164,6 @@ public class ProfileSetUp extends AppCompatActivity {
         }
     }
 
-    private void isFemale() {
-        female.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        female.setTextColor(getResources().getColor(R.color.white));
-        female.setAlpha(1.0f);
-        male.setBackgroundColor(getResources().getColor(R.color.white));
-        male.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        male.setAlpha(0.5f);
-        male.setElevation(-0.5f);
-        gender = "female";
-    }
-
-    private void isMale() {
-        male.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        male.setTextColor(getResources().getColor(R.color.white));
-        male.setAlpha(1.0f);
-        female.setBackgroundColor(getResources().getColor(R.color.white));
-        female.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        female.setAlpha(0.5f);
-        female.setElevation(-0.5f);
-        gender = "male";
-    }
-
     private void isDateValid(int age, int monthOfYear, int dayOfMonth, int monthT, int dayT) {
         if (age < 0) {
             flag = 0;
@@ -195,22 +179,42 @@ public class ProfileSetUp extends AppCompatActivity {
     }
 
     private void setGlobals() {
-        getSupportActionBar().setTitle("Create Profile");
+        getSupportActionBar().hide();
         name = findViewById(R.id.name);
         Uname = findViewById(R.id.Uname);
         date = findViewById(R.id.birth);
         edit = findViewById(R.id.edit);
         pPic = findViewById(R.id.profilePic);
-        male = findViewById(R.id.male);
-        male.setBackgroundColor(getResources().getColor(R.color.white));
-        male.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        male.setAlpha(0.5f);
-        male.setElevation(-0.5f);
-        female = findViewById(R.id.female);
-        female.setBackgroundColor(getResources().getColor(R.color.white));
-        female.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        female.setAlpha(0.5f);
-        female.setElevation(-0.5f);
+        spinner=findViewById(R.id.spinner);
+        List<String> list = new ArrayList<String>();
+        list.add("Female");
+        list.add("Male");
+
+
+        adapter = new ArrayAdapter<String>(this, R.layout.spinner_item,list);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getSelectedItem() == "Male"){
+                    gender = "male";
+
+                }else{
+                    gender = "female";
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+
+
+
         save = findViewById(R.id.save);
         fb = new firebase();
         if (fb.getUser().getDisplayName() != null)

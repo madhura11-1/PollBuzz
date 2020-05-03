@@ -12,5 +12,6 @@
         <item>@font/maven_pro</item>
         <item>@font/oleo_script_swash_caps</item>
         <item>@font/pacifico</item>
+        <item>@font/roboto</item>
     </array>
 </resources>

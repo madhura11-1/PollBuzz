@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="14sp"
+    android:gravity="left"
+    android:textColor="@color/lilac"
+    android:padding="10dp"
+    android:hint="Gender"
+    android:textColorHint="@color/lilac"
+    android:background="@color/colorPrimaryDark"
+
+    />
