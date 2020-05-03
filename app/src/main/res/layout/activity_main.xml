@@ -18,16 +18,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/cL"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="42dp"
-        android:src="@drawable/ic_add_primary_dark_24dp"
+        android:src="@drawable/ic_add_24dp"
         android:tooltipText="Add Poll"
-        app:backgroundTint="#9C27B0"
+        app:backgroundTint="@color/colorPrimaryDark"
         app:borderWidth="0dp"
         app:elevation="10dp"
         app:maxImageSize="40dp"
         app:pressedTranslationZ="12dp"
-        app:rippleColor="@color/colorPrimary" />
+        app:rippleColor="@color/colorPrimary"
+        android:tint="@color/white"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cL"
@@ -41,7 +42,7 @@
         <!--            android:layout_width="40dp"-->
         <!--            android:layout_height="70dp"-->
         <!--            android:background="@color/colorPrimary" />-->
-        <me.ibrahimsn.lib.SmoothBottomBar
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom"
             android:layout_width="0dp"
             android:layout_height="70dp"
@@ -51,7 +52,9 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:menu="@menu/home_menu"
-            app:textSize="12sp" />
+            app:textSize="12sp"
+            app:itemIconTint="@color/bttom_nav_icon"
+            app:itemTextColor="@color/bttom_nav_icon"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

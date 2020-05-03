@@ -3,6 +3,7 @@ package com.PollBuzz.pollbuzz;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,7 +40,7 @@ import java.util.Objects;
 import me.ibrahimsn.lib.SmoothBottomBar;
 
 public class MainActivity extends AppCompatActivity {
-    public static SmoothBottomBar bottomBar;
+    public static BottomNavigationView bottomBar;
     private FragmentManager fm;
     private FloatingActionButton fab;
     private ImageButton logout;
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             View view = getSupportActionBar().getCustomView();
             view.findViewById(R.id.home).setVisibility(View.GONE);
             setGlobals(view);
-            setBottomBar();
+            //setBottomBar();
             setListeners();
         }
     }
@@ -137,16 +139,17 @@ public class MainActivity extends AppCompatActivity {
     private void setGlobals(View view) {
         bottomBar = findViewById(R.id.bottom);
         fab = findViewById(R.id.fab);
+        fab.setColorFilter(getResources().getColor(R.color.white));
         try {
             YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(fab);
         } catch (Exception e) {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
         fm = getSupportFragmentManager();
-        fragmentListener(fm);
+        //fragmentListener(fm);
         fm.beginTransaction()
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                .add(R.id.container, new HomeFeed(), "home")
+                .replace(R.id.container, new HomeFeed(), "home")
                 .commit();
         logout = view.findViewById(R.id.logout);
     }
@@ -161,21 +164,18 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("Fragmentmanager", f.getTag());
                     switch (f.getTag()) {
                         case "home":
-                            bottomBar.setActiveItem(0);
+                            bottomBar.setSelectedItemId(R.id.home);
                             break;
                         case "favourite":
-                            bottomBar.setActiveItem(1);
-                            break;
-                        case "voted":
-                            bottomBar.setActiveItem(2);
+                            bottomBar.setSelectedItemId(R.id.favourite);
                             break;
                         case "profile":
-                            bottomBar.setActiveItem(3);
+                            bottomBar.setSelectedItemId(R.id.profile);
                             break;
                     }
                 }
             }
-        }, true);
+        }, false);
     }
 
     private void setListeners() {
@@ -189,38 +189,42 @@ public class MainActivity extends AppCompatActivity {
                 fb.signOut(MainActivity.this);
             }
         });
-    }
 
-    private void setBottomBar() {
-        bottomBar.setOnItemSelectedListener(i -> {
-            switch (i) {
-                case 0:
-                    newFragment(new HomeFeed(), "home");
-                    break;
-                case 1:
-                    newFragment(new FavouriteFeed(), "favourite");
-                    break;
-                case 2:
-                    newFragment(new VotedFeed(), "voted");
-                    break;
-                case 3:
-                    newFragment(new ProfileFeed(), "profile");
-                    break;
+        bottomBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Toast.makeText(getApplicationContext(),item.getItemId(),Toast.LENGTH_LONG).show();
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        newFragment(new HomeFeed(), "home");
+                        break;
+                    case R.id.favourite:
+                        newFragment(new FavouriteFeed(), "favourite");
+                        break;
+                    case R.id.profile:
+                        newFragment(new ProfileFeed(), "profile");
+                        break;
 
+                }
+                return true;
             }
         });
     }
+
+
 
     private void newFragment(Fragment fragment, String id) {
         try {
             fm.beginTransaction()
                     .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-                    .add(R.id.container, fragment, id)
+                    .replace(R.id.container, fragment, id)
                     .addToBackStack(id)
                     .commit();
-        } catch (Exception e) {
-            FirebaseCrashlytics.getInstance().log(e.getMessage());
-        }
+
+        }catch(Exception e){
+                FirebaseCrashlytics.getInstance().log(e.getMessage());
+            }
+
     }
 
     @Override
@@ -237,22 +241,24 @@ public class MainActivity extends AppCompatActivity {
                 }
                 switch (Objects.requireNonNull(fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 2).getName())) {
                     case "home":
-                        bottomBar.setActiveItem(0);
+                       // bottomBar.setActiveItem(0);
+                        bottomBar.setSelectedItemId(R.id.home);
                         break;
                     case "favourite":
-                        bottomBar.setActiveItem(1);
-                        break;
-                    case "voted":
-                        bottomBar.setActiveItem(2);
+                        //bottomBar.setActiveItem(1);
+                        bottomBar.setSelectedItemId(R.id.favourite);
                         break;
                     case "profile":
-                        bottomBar.setActiveItem(3);
+                        //bottomBar.setActiveItem(3);
+                        bottomBar.setSelectedItemId(R.id.profile);
                         break;
                 }
+
             }
         } else if (fragmentManager.getBackStackEntryCount() == 1) {
             fragmentManager.popBackStack();
-            bottomBar.setActiveItem(0);
+            //bottomBar.setActiveItem(0);
+            bottomBar.setSelectedItemId(R.id.home);
         } else {
             super.onBackPressed();
             finish();

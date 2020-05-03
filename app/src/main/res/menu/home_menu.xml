@@ -9,10 +9,6 @@
         android:id="@+id/favourite"
         android:icon="@drawable/ic_star_white_24dp"
         android:title="Favourites" />
-    <item
-        android:id="@+id/voted"
-        android:icon="@drawable/ic_beenhere_black_24dp"
-        android:title="Voted" />
 
     <item
         android:id="@+id/profile"

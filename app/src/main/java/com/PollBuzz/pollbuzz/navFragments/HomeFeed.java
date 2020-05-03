@@ -87,7 +87,12 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     final String formatteddate = dateFormat.format(date);
     private int currentFlag = 0;
     private KAlertDialog dialog;
-
+    public static HomeFeed newInstance(String param1, String param2) {
+        HomeFeed fragment = new HomeFeed();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
     public HomeFeed() {
     }
 
