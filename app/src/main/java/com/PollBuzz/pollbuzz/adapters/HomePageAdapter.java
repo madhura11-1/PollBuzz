@@ -395,8 +395,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         try {
 
             holder.live.setVisibility(View.GONE);
-            holder.vote_count.setText(mPollDetails.get(position).getPollcount());
+            //holder.vote_count.setText(mPollDetails.get(position).getPollcount());
             Log.d("Votes",String.valueOf(mPollDetails.get(position).getPollcount()));
+            holder.vote_counter.setText(String.valueOf(mPollDetails.get(position).getPollcount()));
 
                 fb.getUserDocument().collection("Favourite Authors").document(mPollDetails.get(position).getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -523,7 +524,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     static class HomeViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout pPicArea;
-        private TextView  card_query, card_author, card_date, card_status, live,vote_count;
+        private TextView  card_query, card_author, card_date, card_status, live,vote_counter;
         private ImageView profilePic,following,menu_home;
         private CardView cardV;
 
@@ -545,7 +546,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             cardV = itemView.findViewById(R.id.cardV);
             following=itemView.findViewById(R.id.following);
             menu_home=itemView.findViewById(R.id.menu_home);
-            vote_count=itemView.findViewById(R.id.vote_count);
+            vote_counter=(TextView)itemView.findViewById(R.id.vote_count_no);
         }
     }
     public interface okClicked {
