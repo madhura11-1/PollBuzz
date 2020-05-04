@@ -19,18 +19,20 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
+        <activity android:name=".LoginSignup.LoginActivity"
+            android:screenOrientation="unspecified"
+            />
         <activity android:name=".Utils.DeepLinkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!--URL is https://pollbuzz.com/share-->
+                <!-- URL is https://pollbuzz.com/share -->
                 <data
-                    android:scheme="https"
-                    android:pathPrefix="/share"
                     android:host="pollbuzz.com"
-                    />
-
+                    android:pathPrefix="/share"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -42,11 +44,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".Utils.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="firebase_performance_logcat_enabled"
             android:value="true" />
@@ -106,7 +110,7 @@
             android:name=".LoginSignup.ProfileSetUp"
             android:screenOrientation="unspecified" />
         <activity
-            android:name="com.PollBuzz.pollbuzz.Utils.ImagePickerActivity"
+            android:name=".Utils.ImagePickerActivity"
             android:screenOrientation="unspecified" />
         <activity
             android:name=".responses.Single_type_response"

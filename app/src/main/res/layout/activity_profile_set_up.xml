@@ -68,13 +68,9 @@
             android:hint="Full Name"
             android:textColorHint="@color/lilac"
             app:boxBackgroundColor="@color/colorPrimaryDark"
-
             app:boxStrokeColor="@color/text_input_box_stroke"
             app:boxStrokeWidth="1dp"
             app:hintTextColor="@color/lilac"
-
-
-
         >
 
         <com.google.android.material.textfield.TextInputEditText

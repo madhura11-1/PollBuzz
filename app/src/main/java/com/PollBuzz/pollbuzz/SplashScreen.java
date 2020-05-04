@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.PollBuzz.pollbuzz.LoginSignup.LoginActivity;
 import com.PollBuzz.pollbuzz.LoginSignup.LoginSignupActivity;
 import com.PollBuzz.pollbuzz.LoginSignup.ProfileSetUp;
 import com.PollBuzz.pollbuzz.Utils.firebase;
@@ -94,7 +95,7 @@ public class SplashScreen extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("timestamp", Timestamp.now().toDate().toString());
             mFirebaseAnalytics.logEvent("open_by_unknown", bundle);
-            Intent i = new Intent(this, LoginSignupActivity.class);
+            Intent i = new Intent(this, LoginActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         } else {
