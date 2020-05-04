@@ -27,7 +27,7 @@
         android:visibility="visible"
         app:rcAnimationSpeedScale="6"
         app:rcBackgroundColor="@color/white"
-        app:rcProgressColor="@color/colorPrimaryDark"
+        app:rcProgressColor="@color/colorPrimary"
         app:rcRadius="15dp"/>
 
     </RelativeLayout>

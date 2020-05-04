@@ -150,7 +150,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         holder.menu_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,"tapped",Toast.LENGTH_LONG).show();
                 showPopup(holder,v,position);
             }
         });
