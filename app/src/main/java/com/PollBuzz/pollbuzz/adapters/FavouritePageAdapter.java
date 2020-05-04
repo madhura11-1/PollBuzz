@@ -399,7 +399,7 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             card_date = itemView.findViewById(R.id.card_date);
             card_status=itemView.findViewById(R.id.card_status);
             pPicArea = itemView.findViewById(R.id.profileArea);
-            voteArea = itemView.findViewById(R.id.voteArea);
+           // voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
             fav_author=itemView.findViewById(R.id.fav_author);
             fav_author.setVisibility(View.GONE);
