@@ -19,9 +19,10 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:targetApi="q">
-        <activity android:name=".LoginSignup.LoginActivity"
-            android:screenOrientation="unspecified"
-            />
+        <activity android:name=".LoginSignup.SigninActivity"></activity>
+        <activity
+            android:name=".LoginSignup.LoginActivity"
+            android:screenOrientation="unspecified" />
         <activity android:name=".Utils.DeepLinkActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
