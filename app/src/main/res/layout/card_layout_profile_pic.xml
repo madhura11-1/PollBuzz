@@ -84,7 +84,8 @@
                     android:id="@+id/menu_home"
                     android:src="@drawable/threedot_menu"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    android:padding="10dp"/>
             </RelativeLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
