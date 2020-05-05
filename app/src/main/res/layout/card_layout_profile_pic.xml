@@ -4,7 +4,9 @@
     android:id="@+id/cardV"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="10dp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="4dp"
     app:cardElevation="15dp">
@@ -19,9 +21,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-
-
-
                 <RelativeLayout
                     android:id="@+id/profileArea"
                     android:layout_width="wrap_content"
@@ -32,14 +31,13 @@
 
                     <ImageView
                         android:id="@+id/pPic"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:adjustViewBounds="true"
                         android:background="@drawable/voter_item_outline"
-                        android:padding="2dp"
                         android:src="@drawable/ic_person_black_24dp" />
                 </RelativeLayout>
             <LinearLayout
@@ -64,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto"
                 android:text="Author"
-                android:textColor="@color/black"
+                android:textColor="#8a8a8a"
                 android:textSize="18sp"
                 android:paddingTop="10dp"
                 />
@@ -96,7 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:text="\u00B7 Date"
+                    android:text="Date"
                     android:textColor="#8a8a8a"
                     android:textSize="12sp"
                     android:padding="5dp"
@@ -227,7 +225,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -236,9 +234,8 @@
                 android:layout_alignParentStart="true"
                 >
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:src="@mipmap/vote_counter"
                     android:layout_gravity="center"
                     android:layout_marginStart="10dp"

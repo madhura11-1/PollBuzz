@@ -84,6 +84,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private int mYear = c.get(Calendar.YEAR);
     private int mMonth = c.get(Calendar.MONTH);
     private int mDay = c.get(Calendar.DAY_OF_MONTH);
+
     final String formatteddate = dateFormat.format(date);
     private int currentFlag = 0;
     private KAlertDialog dialog;
