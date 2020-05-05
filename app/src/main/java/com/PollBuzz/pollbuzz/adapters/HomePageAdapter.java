@@ -488,13 +488,31 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
                 //holder.vote_count.setText(mPollDetails.get(position).getPollcount());
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            Date date1 = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).getQuestion() != null)
                 holder.card_query.setText(mPollDetails.get(position).getQuestion().trim());
             if (mPollDetails.get(position).getUsername() != null)
                 holder.card_author.setText((mPollDetails.get(position).getUsername().trim()));
             if (mPollDetails.get(position).getCreated_date() != null) {
                 String date = df.format(mPollDetails.get(position).getCreated_date());
-                holder.card_date.setText("\u00B7 "+date.trim());
+                Log.d("date_new",Long.toString(((date1.getTime() - mPollDetails.get(position).getCreated_date().getTime())/(60*60*1000))));
+                Log.d("time",Long.toString(((date1.getTime())/(60*60*1000*24))));
+                Log.d("create",Long.toString(((mPollDetails.get(position).getCreated_date().getTime())/(60*60*1000))));
+                Log.d("hrs ago",Long.toString(((Timestamp.now().toDate().getTime() - mPollDetails.get(position).getCreated_date().getTime()))/86400000));
+                long y = ((Timestamp.now().toDate().getTime() - mPollDetails.get(position).getCreated_date().getTime())*24)/86400000;
+                long y1 = ((Timestamp.now().toDate().getTime() - mPollDetails.get(position).getCreated_date().getTime()))/86400000;
+                if(y1<=0) {
+                    if (y > 0)
+                        holder.card_date.setText("\u00B7" + y + " hr ago");
+                    else
+                        holder.card_date.setText("\u00B7 few minutes ago");
+                }
+                else{
+                    if(y1 == 1)
+                     holder.card_date.setText("\u00B7" + y1 + " day ago");
+                     else
+                        holder.card_date.setText("\u00B7" + y1 + " days ago");
+                }
             }
             Date date = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
@@ -507,8 +525,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             } else if (mPollDetails.get(position).isLive()) {
                 Log.d("live", "true");
                 holder.live.setVisibility(View.VISIBLE);
-                long x=mPollDetails.get(position).getSeconds()-Timestamp.now().getSeconds()+mPollDetails.get(position).getTimestamp();
-                holder.card_status.setText("\u00B7 "+x+" seconds left");
+                if(mPollDetails.get(position).getSeconds() == Long.MAX_VALUE)
+                {
+                    holder.card_status.setText("\u00B7 " + "Custom");
+                }
+                else {
+                    long x=mPollDetails.get(position).getSeconds()-Timestamp.now().getSeconds()+mPollDetails.get(position).getTimestamp();
+                    holder.card_status.setText("\u00B7 " + x + " seconds left");
+                }
                 status="Active";
             } else {
                 holder.live.setVisibility(View.GONE);
@@ -516,8 +540,13 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 {
                     Date one=mPollDetails.get(position).getExpiry_date();
                     long x =  (one.getTime()-date.getTime())/86400000;
-                    if(x>0)
-                        holder.card_status.setText("\u00B7 "+x+" days left");
+                    if(x>0) {
+                        if(x == 1){
+                            holder.card_status.setText("\u00B7 " + x + " day left");
+                        }
+                        else
+                        holder.card_status.setText("\u00B7 " + x + " days left");
+                    }
                     else
                         holder.card_status.setText("\u00B7 Expires Today" );
                     status="Active";
