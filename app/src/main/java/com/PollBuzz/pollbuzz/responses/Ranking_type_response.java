@@ -270,7 +270,6 @@ public class Ranking_type_response extends AppCompatActivity {
     }
 
     private void setGlobals(View view) {
-        logout = view.findViewById(R.id.logout);
         home = view.findViewById(R.id.home);
         group = findViewById(R.id.options);
         sequence = findViewById(R.id.sequence);

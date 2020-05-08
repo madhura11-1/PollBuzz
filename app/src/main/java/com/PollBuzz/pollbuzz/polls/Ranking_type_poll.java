@@ -427,7 +427,6 @@ public class Ranking_type_poll extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         page_title = view.findViewById(R.id.page_title);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);

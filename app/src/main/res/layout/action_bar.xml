@@ -13,11 +13,11 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:fontFamily="@font/fascinate_inline"
+        android:fontFamily="@font/roboto"
         android:gravity="center_vertical"
         android:text="Poll Buzz"
         android:textColor="@color/white"
-        android:textSize="27sp"
+        android:textSize="20sp"
 
 
         />
@@ -31,9 +31,9 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/home"
-            android:tooltipText="Home"
-            android:src="@drawable/ic_home_white_24dp"
+            android:id="@+id/filter"
+            android:tooltipText="Filter Polls"
+            android:src="@drawable/filter_icon"
             android:background="@android:color/transparent"
             android:layout_weight="1"
             android:layout_marginHorizontal="7dp"
@@ -41,9 +41,9 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/logout"
-            android:tooltipText="Log Out"
-            android:src="@drawable/ic_logout_white_24dp"
+            android:id="@+id/search_ID"
+            android:tooltipText="Search Poll by ID"
+            android:src="@drawable/actionbar_search"
             android:background="@android:color/transparent"
             android:layout_weight="1"
             android:layout_marginHorizontal="7dp"

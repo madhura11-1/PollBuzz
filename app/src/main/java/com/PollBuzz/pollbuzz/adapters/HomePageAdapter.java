@@ -503,20 +503,20 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 long y1 = ((Timestamp.now().toDate().getTime() - mPollDetails.get(position).getCreated_date().getTime()))/86400000;
                 if(y1<=0) {
                     if (y > 0)
-                        holder.card_date.setText("\u00B7 " + y + " hr ago");
+                        holder.card_date.setText("• " + y + " hr ago");
                     else
-                        holder.card_date.setText("\u00B7 few minutes ago");
+                        holder.card_date.setText("• few minutes ago");
                 }
                 else{
                     if(y1 == 1)
-                     holder.card_date.setText("\u00B7 " + y1 + " day ago");
+                     holder.card_date.setText("• " + y1 + " day ago");
                      else
-                        holder.card_date.setText("\u00B7 " + y1 + " days ago");
+                        holder.card_date.setText("• " + y1 + " days ago");
                 }
             }
             Date date = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
-                holder.card_status.setText("\u00B7 Expired");
+                holder.card_status.setText("• Expired");
                 status="Expired";
                 holder.live.setVisibility(View.GONE);
                 fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live",false);
@@ -527,11 +527,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 holder.live.setVisibility(View.VISIBLE);
                 if(mPollDetails.get(position).getSeconds() == Long.MAX_VALUE)
                 {
-                    holder.card_status.setText("\u00B7 " + "Custom");
+                    holder.card_status.setText("• " + "Custom");
                 }
                 else {
                     long x=mPollDetails.get(position).getSeconds()-Timestamp.now().getSeconds()+mPollDetails.get(position).getTimestamp();
-                    holder.card_status.setText("\u00B7 " + x + " seconds left");
+                    holder.card_status.setText("• " + x + " seconds left");
                 }
                 status="Active";
             } else {
@@ -542,19 +542,19 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     long x =  (one.getTime()-date.getTime())/86400000;
                     if(x>0) {
                         if(x == 1){
-                            holder.card_status.setText("\u00B7 " + x + " day left");
+                            holder.card_status.setText("• " + x + " day left");
                         }
                         else
-                        holder.card_status.setText("\u00B7 " + x + " days left");
+                        holder.card_status.setText("• " + x + " days left");
                     }
                     else
-                        holder.card_status.setText("\u00B7 Expires Today" );
+                        holder.card_status.setText("• Expires Today" );
                     status="Active";
                 }
 
                 else
                 {
-                    holder.card_status.setText("\u00B7 Expired");
+                    holder.card_status.setText("• Expired");
                     status="Expired";
                 }
             }

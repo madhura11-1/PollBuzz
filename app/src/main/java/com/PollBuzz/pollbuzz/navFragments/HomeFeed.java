@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -70,7 +71,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private LayoutAnimationController controller;
     private MaterialTextView viewed;
     private EditText id_search_edittext;
-    private ImageButton search, check, back1, back2, id_search, id_search_back;
+    private ImageButton search, check, back1, back2, id_search, id_search_back,filter_action_bar,search_id_action_bar;
     private String name = "";
     private Button search_button, id_search_button;
     private TextView starting, ending;
@@ -83,6 +84,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private Calendar c = Calendar.getInstance();
     private int mYear = c.get(Calendar.YEAR);
     private int mMonth = c.get(Calendar.MONTH);
+    private View actionbar_view,id_search_barview;
     private int mDay = c.get(Calendar.DAY_OF_MONTH);
 
     final String formatteddate = dateFormat.format(date);
@@ -102,6 +104,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home_feed, container, false);
         setGlobals(view);
+        setActionBar();
         return view;
     }
 
@@ -113,7 +116,38 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
 
     }
 
+    private void setActionBar() {
+        MainActivity mainActivity = (MainActivity)getActivity();
+        actionbar_view = mainActivity.getview();
+        filter_action_bar = actionbar_view.findViewById(R.id.filter);
+        search_id_action_bar = actionbar_view.findViewById(R.id.search_ID);
+
+    }
+
     private void setListeners() {
+
+        search_id_action_bar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                actionbar_view.setVisibility(View.GONE);
+                ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+                actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                actionBar.setDisplayShowCustomEnabled(true);
+                actionBar.setCustomView(R.layout.search_id);
+                id_search_barview = actionBar.getCustomView();
+                setnewActionView(id_search_barview);
+            }
+        });
+
+        filter_action_bar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeKeyboard();
+                showPopup(v);
+            }
+        });
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -131,10 +165,13 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
         });
 
-        search.setOnClickListener(view -> {
-            closeKeyboard();
-            showPopup(view);
-        });
+     /*   search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HomeFeed.this.closeKeyboard();
+                HomeFeed.this.showPopup(view);
+            }
+        });*/
 
         back1.setOnClickListener(view -> {
             closeKeyboard();
@@ -269,80 +306,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
         });
 
-        id_search_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                YoYo.with(Techniques.SlideOutRight).duration(700).playOn(linear_id_search);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        linear_id_search.setVisibility(View.INVISIBLE);
-                        linear_search.setVisibility(View.VISIBLE);
-                        id_search_edittext.setText("");
-                    }
-                }, 700);
 
-            }
-        });
-
-        id_search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeKeyboard();
-                if (id_search_edittext.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(getContext(), "Please enter the poll ID", Toast.LENGTH_SHORT).show();
-                } else {
-                    String poll_id = id_search_edittext.getText().toString().trim();
-                    fb.getPollsCollection().whereEqualTo("poll_accessID", poll_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful() && task.getResult() != null) {
-                                PollDetails pollDetails = null;
-                                for (QueryDocumentSnapshot q : task.getResult()) {
-                                    pollDetails = q.toObject(PollDetails.class);
-                                    pollDetails.setUID(q.getId());
-                                }
-                                if (pollDetails != null) {
-                                    showDialog();
-                                    PollDetails finalPollDetails = pollDetails;
-                                    fb.getPollsCollection().document(pollDetails.getUID()).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                DocumentSnapshot document1 = task.getResult();
-                                                if (document1 != null) {
-                                                    if (!document1.exists()) {
-                                                        dialog.dismissWithAnimation();
-                                                        GotoActivity(finalPollDetails);
-                                                        linear_id_search.setVisibility(View.INVISIBLE);
-                                                        linear_search.setVisibility(View.VISIBLE);
-                                                        id_search_edittext.setText("");
-                                                    }
-                                                    else {
-                                                        dialog.dismissWithAnimation();
-                                                        Toast.makeText(getContext(),"You have already voted once.",Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(getContext(), PercentageResult.class);
-                                                        intent.putExtra("UID", finalPollDetails.getUID());
-                                                        intent.putExtra("type", finalPollDetails.getPoll_type());
-                                                        startActivity(intent);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Toast toast = Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.CENTER, 0, 0);
-                                    toast.show();
-                                }
-
-                            }
-                        }
-                    });
-                }
-            }
-        });
     }
 
     private void GotoActivity(PollDetails pollDetails) {
@@ -618,9 +582,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         fb = new firebase();
         linear_search = view.findViewById(R.id.linear_search);
         linear_id_search = view.findViewById(R.id.linear_id_search);
-        id_search_edittext = view.findViewById(R.id.id_search_edittext);
-        id_search_back = view.findViewById(R.id.id_search_back);
-        id_search_button = view.findViewById(R.id.search_pollid);
     }
 
     private void showPopup(View v) {
@@ -632,9 +593,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-                        search_layout.setVisibility(View.VISIBLE);
-                        date_layout.setVisibility(View.GONE);
-                        viewed.setVisibility(View.GONE);
+
                         return true;
                     case R.id.by_date:
                         date_layout.setVisibility(View.VISIBLE);
@@ -647,6 +606,88 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
         });
         popup.show();
+    }
+
+    private void setnewActionView(View view) {
+
+        id_search_back = view.findViewById(R.id.id_search_back);
+        id_search_edittext = view.findViewById(R.id.id_search_edittext);
+        id_search_button = view.findViewById(R.id.search_pollid);
+
+        id_search_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                YoYo.with(Techniques.SlideOutRight).duration(700).playOn(linear_id_search);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        actionbar_view.setVisibility(View.VISIBLE);
+                        id_search_barview.setVisibility(View.GONE);
+                        id_search_edittext.setText("");
+                    }
+                }, 700);
+
+            }
+        });
+
+        id_search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeKeyboard();
+                if (id_search_edittext.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(getContext(), "Please enter the poll ID", Toast.LENGTH_SHORT).show();
+                } else {
+                    String poll_id = id_search_edittext.getText().toString().trim();
+                    fb.getPollsCollection().whereEqualTo("poll_accessID", poll_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                PollDetails pollDetails = null;
+                                for (QueryDocumentSnapshot q : task.getResult()) {
+                                    pollDetails = q.toObject(PollDetails.class);
+                                    pollDetails.setUID(q.getId());
+                                }
+                                if (pollDetails != null) {
+                                    showDialog();
+                                    PollDetails finalPollDetails = pollDetails;
+                                    fb.getPollsCollection().document(pollDetails.getUID()).collection("Response").document(fb.getUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                DocumentSnapshot document1 = task.getResult();
+                                                if (document1 != null) {
+                                                    if (!document1.exists()) {
+                                                        dialog.dismissWithAnimation();
+                                                        GotoActivity(finalPollDetails);
+                                                        linear_id_search.setVisibility(View.INVISIBLE);
+                                                        linear_search.setVisibility(View.VISIBLE);
+                                                        id_search_edittext.setText("");
+                                                    }
+                                                    else {
+                                                        dialog.dismissWithAnimation();
+                                                        Toast.makeText(getContext(),"You have already voted once.",Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent(getContext(), PercentageResult.class);
+                                                        intent.putExtra("UID", finalPollDetails.getUID());
+                                                        intent.putExtra("type", finalPollDetails.getPoll_type());
+                                                        startActivity(intent);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Toast toast = Toast.makeText(getContext(), "The poll ID is invalid!", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
+                                    toast.show();
+                                }
+
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void closeKeyboard() {

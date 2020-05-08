@@ -388,7 +388,6 @@ public class Image_type_poll extends AppCompatActivity {
         view2 = findViewById(R.id.image2);
         text1 = findViewById(R.id.text1);
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         post_image = findViewById(R.id.post_imagetype);
         question_image = findViewById(R.id.question_imagetype);
         dialog = new KAlertDialog(Image_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);

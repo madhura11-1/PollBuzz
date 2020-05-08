@@ -151,7 +151,6 @@ public class Descriptive_type_poll extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
         home = findViewById(R.id.home);
-        logout = findViewById(R.id.logout);
         post_descriptive = findViewById(R.id.post_descriptive);
         question_descriptive = findViewById(R.id.question_descriptive);
         dialog = new KAlertDialog(Descriptive_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);

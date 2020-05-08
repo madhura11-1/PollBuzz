@@ -146,7 +146,6 @@ public class Descriptive_type_result extends AppCompatActivity {
 
     private void setGlobals(View view) {
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         query = findViewById(R.id.query);
         answer = findViewById(R.id.answer);
         response = new HashMap<>();

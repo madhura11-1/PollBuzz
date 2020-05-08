@@ -347,7 +347,6 @@ public class Multiple_type_response extends AppCompatActivity {
 
     private void setGlobals(View view) {
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         c = 0;
         submit = findViewById(R.id.submit);
         query = findViewById(R.id.query);

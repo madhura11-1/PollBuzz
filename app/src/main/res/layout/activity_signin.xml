@@ -135,6 +135,7 @@ tools:context="com.PollBuzz.pollbuzz.LoginSignup.SigninActivity">
             app:cornerRadius="4dp"
             android:textColor="@color/black"
             app:backgroundTint="@color/white"
+            android:textAllCaps="false"
             android:padding="15dp"/>
 
         <TextView

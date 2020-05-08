@@ -108,7 +108,6 @@ public class PieChartActivity extends AppCompatActivity {
         String voter = "Total Voters : " + String.valueOf(PercentageResult.total);
         voters.setText(voter);
         dialog = new Dialog(PieChartActivity.this);
-        logout = view.findViewById(R.id.logout);
         home = view.findViewById(R.id.home);
         fb = new firebase();
 

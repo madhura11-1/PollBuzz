@@ -141,7 +141,6 @@ public class Descriptive_type_response extends AppCompatActivity {
         dialog = new Dialog(Descriptive_type_response.this);
         fb = new firebase();
         response = new HashMap<>();
-        logout = view.findViewById(R.id.logout);
         home = view.findViewById(R.id.home);
     }
 }

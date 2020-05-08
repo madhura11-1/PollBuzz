@@ -656,7 +656,6 @@ public class PercentageResult extends AppCompatActivity {
         linearLayout = findViewById(R.id.percentage);
         fb = new firebase();
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         question_percentage = findViewById(R.id.question_percentage);
         date_percentage = findViewById(R.id.date_percentage);
         result = findViewById(R.id.result);

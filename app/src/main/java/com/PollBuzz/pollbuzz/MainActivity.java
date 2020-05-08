@@ -43,12 +43,13 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomBar;
     private FragmentManager fm;
     private FloatingActionButton fab;
-    private ImageButton logout;
+    private ImageButton search_ID,filter;
     firebase fb;
     public static String PARAMS_UID = "UID";
     public static String PARAMS_TYPE = "type";
     private KAlertDialog dialog;
     private String type, UID;
+    View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setCustomView(R.layout.action_bar);
-            View view = getSupportActionBar().getCustomView();
-            view.findViewById(R.id.home).setVisibility(View.GONE);
+            view = getSupportActionBar().getCustomView();
             setGlobals(view);
             //setBottomBar();
             setListeners();
@@ -151,7 +151,12 @@ public class MainActivity extends AppCompatActivity {
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(R.id.container, new HomeFeed(), "home")
                 .commit();
-        logout = view.findViewById(R.id.logout);
+        search_ID = view.findViewById(R.id.search_ID);
+        filter = view.findViewById(R.id.filter);
+    }
+
+    public View getview(){
+         return view;
     }
 
     void fragmentListener(FragmentManager fm) {
@@ -182,12 +187,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(view1 -> {
             Intent i = new Intent(MainActivity.this, PollList.class);
             startActivity(i);
-        });
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fb.signOut(MainActivity.this);
-            }
         });
 
         bottomBar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

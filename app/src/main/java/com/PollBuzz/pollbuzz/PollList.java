@@ -62,7 +62,6 @@ public class PollList extends AppCompatActivity {
         page_title = view.findViewById(R.id.page_title);
         page_title.setText("Poll Types");
         view.findViewById(R.id.home).setVisibility(View.INVISIBLE);
-        view.findViewById(R.id.logout).setVisibility(View.INVISIBLE);
         card1 = findViewById(R.id.card1);
         card2 = findViewById(R.id.card2);
 //        card3 = findViewById(R.id.card3);

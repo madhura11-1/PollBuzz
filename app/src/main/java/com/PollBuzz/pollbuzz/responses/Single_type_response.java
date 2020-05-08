@@ -354,7 +354,6 @@ public class Single_type_response extends AppCompatActivity {
 
     private void setGlobals(View view) {
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         submit = findViewById(R.id.submit);
         query = findViewById(R.id.query);
         group = findViewById(R.id.options);

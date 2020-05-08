@@ -122,7 +122,6 @@ public class ResultActivity extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         home = view.findViewById(R.id.home);
         viewed = findViewById(R.id.viewed);
-        logout = view.findViewById(R.id.logout);
         page_title = view.findViewById(R.id.page_title);
         fb = new firebase();
         controller = AnimationUtils.loadLayoutAnimation(getApplicationContext(), R.anim.animation_down_to_up);

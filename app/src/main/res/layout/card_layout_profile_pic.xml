@@ -94,13 +94,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    android:text="Date"
+                    android:text="• Date"
                     android:textColor="#8a8a8a"
                     android:textSize="12sp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:paddingEnd="5dp"
-
                     />
                     <TextView
                         android:id="@+id/card_status"
@@ -109,16 +107,13 @@
                         android:layout_weight="2"
                         android:fontFamily="@font/roboto"
                         android:gravity="center_vertical"
-                        android:text="\u00B7 Active"
+                        android:text="• Active"
                         android:textColor="#8a8a8a"
                         android:textSize="12sp"
                         android:layout_marginStart="10dp"/>
                 </LinearLayout>
 
             </LinearLayout>
-
-
-
 
 
             <!--<LinearLayout

@@ -177,7 +177,6 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                finish();
             }
         });
 

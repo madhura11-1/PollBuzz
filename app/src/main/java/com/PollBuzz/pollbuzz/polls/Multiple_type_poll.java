@@ -404,7 +404,6 @@ public class Multiple_type_poll extends AppCompatActivity {
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
         home = view.findViewById(R.id.home);
-        logout = view.findViewById(R.id.logout);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);
         c = group.getChildCount();
