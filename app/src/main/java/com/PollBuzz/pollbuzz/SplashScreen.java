@@ -155,6 +155,28 @@ public class SplashScreen extends AppCompatActivity {
         return result;
     }
 
+    public void afterdialog(){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                boolean f = isInternetAvailable(SplashScreen.this);
+                if (!f)
+                    showDialog();
+                else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            startIntent();
+                        }
+                    }, SPLASH_TIME);
+                }
+            }
+        },2000);
+
+    }
+
     private void showDialog() {
         Dialog dialog = new Dialog(SplashScreen.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -167,16 +189,17 @@ public class SplashScreen extends AppCompatActivity {
         dialog.setCancelable(false);
         dialog.show();
         window.setAttributes(lp);
-        splashProgress.setVisibility(View.GONE);
+        //splashProgress.setVisibility(View.GONE);
         /*tv.getAnimation().cancel();
         tv.clearAnimation();*/
-        image.getAnimation().cancel();
-        image.clearAnimation();
+        //image.getAnimation().cancel();
+        //image.clearAnimation();
         Button ok = dialog.findViewById(R.id.ok);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                afterdialog();
             }
         });
 

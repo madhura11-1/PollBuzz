@@ -622,7 +622,9 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+
                         actionbar_view.setVisibility(View.VISIBLE);
+                        setActionBar();
                         id_search_barview.setVisibility(View.GONE);
                         id_search_edittext.setText("");
                     }
