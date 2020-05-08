@@ -503,15 +503,15 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 long y1 = ((Timestamp.now().toDate().getTime() - mPollDetails.get(position).getCreated_date().getTime()))/86400000;
                 if(y1<=0) {
                     if (y > 0)
-                        holder.card_date.setText("\u00B7" + y + " hr ago");
+                        holder.card_date.setText("\u00B7 " + y + " hr ago");
                     else
                         holder.card_date.setText("\u00B7 few minutes ago");
                 }
                 else{
                     if(y1 == 1)
-                     holder.card_date.setText("\u00B7" + y1 + " day ago");
+                     holder.card_date.setText("\u00B7 " + y1 + " day ago");
                      else
-                        holder.card_date.setText("\u00B7" + y1 + " days ago");
+                        holder.card_date.setText("\u00B7 " + y1 + " days ago");
                 }
             }
             Date date = Calendar.getInstance().getTime();
