@@ -66,7 +66,6 @@ public class Single_type_response extends AppCompatActivity {
     String key;
     Typeface typeface;
     Dialog dialog;
-    ImageButton home, logout;
     MaterialButton submit;
     Map<String, Object> response;
     String resp;
@@ -89,7 +88,6 @@ public class Single_type_response extends AppCompatActivity {
         Intent intent = getIntent();
         getIntentExtras(intent);
         setGlobals(view);
-        setActionBarFunctionality();
         showDialog();
         retrieveData();
         setListeners();
@@ -341,19 +339,8 @@ public class Single_type_response extends AppCompatActivity {
         Log.d("SingleType", key);
     }
 
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Single_type_response.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
 
     private void setGlobals(View view) {
-        home = view.findViewById(R.id.home);
         submit = findViewById(R.id.submit);
         query = findViewById(R.id.query);
         group = findViewById(R.id.options);

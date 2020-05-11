@@ -25,7 +25,7 @@
         android:layout_below="@+id/imagee"
         android:layout_centerHorizontal="true"
         android:visibility="visible"
-        app:rcAnimationSpeedScale="4"
+        app:rcAnimationSpeedScale="8"
         app:rcBackgroundColor="@color/white"
         app:rcProgressColor="@color/colorPrimary"
         app:rcRadius="15dp"/>

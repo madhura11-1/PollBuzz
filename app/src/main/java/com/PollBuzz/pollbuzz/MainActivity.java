@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomBar;
     private FragmentManager fm;
     private FloatingActionButton fab;
-    private ImageButton search_ID,filter;
     firebase fb;
     public static String PARAMS_UID = "UID";
     public static String PARAMS_TYPE = "type";
@@ -87,12 +86,8 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             getSupportActionBar().show();
-            final ActionBar actionBar = getSupportActionBar();
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setDisplayShowCustomEnabled(true);
-            actionBar.setCustomView(R.layout.action_bar);
-            view = getSupportActionBar().getCustomView();
-            setGlobals(view);
+
+            setGlobals();
             //setBottomBar();
             setListeners();
         }
@@ -136,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void setGlobals(View view) {
+    private void setGlobals() {
         bottomBar = findViewById(R.id.bottom);
         fab = findViewById(R.id.fab);
         fab.setColorFilter(getResources().getColor(R.color.white));
@@ -151,8 +146,6 @@ public class MainActivity extends AppCompatActivity {
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(R.id.container, new HomeFeed(), "home")
                 .commit();
-        search_ID = view.findViewById(R.id.search_ID);
-        filter = view.findViewById(R.id.filter);
     }
 
     public View getview(){

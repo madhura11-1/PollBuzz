@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
     <RelativeLayout
-        android:id="@+id/linear_id_search"
+        android:id="@+id/linear_id_search2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -12,7 +12,7 @@
 
 
         <ImageButton
-            android:id="@+id/id_search_back"
+            android:id="@+id/name_search_back2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back_arrow2"
@@ -24,32 +24,32 @@
             android:layout_gravity="center_vertical" />
 
         <EditText
-            android:id="@+id/id_search_edittext"
+            android:id="@+id/name_search_edittext"
             android:layout_width="190dp"
             android:layout_height="wrap_content"
-            android:hint="Enter poll ID"
+            android:hint="Author name"
             android:textColorHint="@color/font_color"
             android:textSize="14sp"
-            android:layout_toRightOf="@id/id_search_back"
-            android:layout_toLeftOf="@id/search_pollid"
+            android:layout_toRightOf="@id/name_search_back2"
+            android:layout_toLeftOf="@id/searchname_poll"
             android:backgroundTint="@color/font_color"
             android:gravity="bottom"
             />
 
         <Button
             android:layout_alignParentRight="true"
-            android:id="@+id/search_pollid"
+            android:id="@+id/searchname_poll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/font_color"
-            android:text="Search Poll"
+            android:text="Search"
             android:textSize="17sp"
             android:scaleX="0.8"
             android:fontFamily="@font/roboto"
             android:scaleY="0.8"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
-             />
+            />
 
 
 

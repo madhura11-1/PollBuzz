@@ -73,7 +73,7 @@ public class Image_type_responses extends AppCompatActivity {
     Typeface typeface;
     Dialog dialog;
     firebase fb;
-    ImageButton logout, home, fav_author;
+    ImageButton fav_author;
     PollDetails polldetails;
     KAlertDialog dialog1;
     SpotsDialog dialog2;
@@ -91,7 +91,6 @@ public class Image_type_responses extends AppCompatActivity {
         getIntentExtras(intent);
         setGlobals(view);
         setListeners();
-        setActionBarFunctionality();
         showDialog();
         retrieveData();
     }
@@ -372,25 +371,13 @@ public class Image_type_responses extends AppCompatActivity {
     }
 
 
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Image_type_responses.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
-
-
     private void getIntentExtras(Intent intent) {
         key = intent.getExtras().getString("UID");
 
     }
 
     private void setGlobals(View view) {
-        home = view.findViewById(R.id.home);
+
         group = findViewById(R.id.options);
         options = new HashMap<>();
         response = new HashMap<>();

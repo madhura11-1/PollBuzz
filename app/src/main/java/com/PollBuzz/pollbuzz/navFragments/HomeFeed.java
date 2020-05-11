@@ -70,10 +70,10 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private firebase fb;
     private LayoutAnimationController controller;
     private MaterialTextView viewed;
-    private EditText id_search_edittext;
-    private ImageButton search, check, back1, back2, id_search, id_search_back,filter_action_bar,search_id_action_bar;
+    private EditText id_search_edittext,name_search_edittext;
+    private ImageButton search, id_search, id_search_back,filter_action_bar,search_id_action_bar,name_search_back,date_search_back;
     private String name = "";
-    private Button search_button, id_search_button;
+    private Button search_button, id_search_button,name_search_button,date_search_button;
     private TextView starting, ending;
     private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
@@ -84,7 +84,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private Calendar c = Calendar.getInstance();
     private int mYear = c.get(Calendar.YEAR);
     private int mMonth = c.get(Calendar.MONTH);
-    private View actionbar_view,id_search_barview;
+    private View actionbar_view,id_search_barview,name_search_barview,date_search_barview;
     private int mDay = c.get(Calendar.DAY_OF_MONTH);
 
     final String formatteddate = dateFormat.format(date);
@@ -117,10 +117,14 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     }
 
     private void setActionBar() {
-        MainActivity mainActivity = (MainActivity)getActivity();
-        actionbar_view = mainActivity.getview();
+        ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.action_bar);
+        actionbar_view = actionBar.getCustomView();
         filter_action_bar = actionbar_view.findViewById(R.id.filter);
         search_id_action_bar = actionbar_view.findViewById(R.id.search_ID);
+        setListeners();
 
     }
 
@@ -130,7 +134,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             @Override
             public void onClick(View v) {
 
-                actionbar_view.setVisibility(View.GONE);
+                actionbar_view.setVisibility(View.INVISIBLE);
                 ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
                 actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
                 actionBar.setDisplayShowCustomEnabled(true);
@@ -173,129 +177,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
         });*/
 
-        back1.setOnClickListener(view -> {
-            closeKeyboard();
-            flagFirst = true;
-            arrayList.clear();
-            adapter.notifyDataSetChanged();
-            lastIndex = null;
-            currentFlag = 0;
-            getData(0, "", null, null);
-            search_layout.setVisibility(View.GONE);
-            recyclerView.showShimmerAdapter();
-            search_type.setText("");
-        });
 
-        back2.setOnClickListener(view -> {
-            closeKeyboard();
-            flagFirst = true;
-            arrayList.clear();
-            adapter.notifyDataSetChanged();
-            lastIndex = null;
-            currentFlag = 0;
-            getData(0, "", null, null);
-            date_layout.setVisibility(View.GONE);
-            recyclerView.showShimmerAdapter();
-            starting.setText("");
-            starting.setHint("Starting Date");
-            ending.setText("");
-            ending.setHint("Ending Date");
-        });
-
-        search_type.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (!search_type.getText().toString().isEmpty()) {
-                    closeKeyboard();
-                    arrayList.clear();
-                    adapter.notifyDataSetChanged();
-                    currentFlag = 1;
-                    flagFirst = true;
-                    lastIndex = null;
-                    name = search_type.getText().toString();
-                    getData(1, name, null, null);
-                } else
-                    Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
-            }
-            return false;
-        });
-
-        search_button.setOnClickListener(view -> {
-            if (!search_type.getText().toString().isEmpty()) {
-                closeKeyboard();
-                recyclerView.showShimmerAdapter();
-                arrayList.clear();
-                adapter.notifyDataSetChanged();
-                currentFlag = 1;
-                flagFirst = true;
-                lastIndex = null;
-                name = search_type.getText().toString();
-                viewed.setVisibility(View.GONE);
-                getData(1, name, null, null);
-            } else
-                Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
-        });
-
-        starting.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                            String date = day + "-" + (month + 1) + "-" + year;
-                            starting.setText(date);
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        });
-
-        ending.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                            String date = day + "-" + (month + 1) + "-" + year;
-                            ending.setText(date);
-
-                        }
-                    }, mYear, mMonth, mDay);
-            datePickerDialog.show();
-        });
-
-        check.setOnClickListener(v -> {
-            try {
-                flagFirst = true;
-                viewed.setVisibility(View.GONE);
-                lastIndex = null;
-                if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
-                    Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
-                else {
-                    if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
-                        Date start = dateFormat.parse(starting.getText().toString());
-                        Date end = dateFormat.parse(ending.getText().toString());
-                        if (start.compareTo(end) > 0)
-                            Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
-                        else {
-                            arrayList.clear();
-                            adapter.notifyDataSetChanged();
-                            currentFlag = 2;
-                            viewed.setVisibility(View.GONE);
-                            getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
-                        }
-                    } else {
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        recyclerView.showShimmerAdapter();
-                        viewed.setVisibility(View.GONE);
-                        if (starting.getText().toString().isEmpty())
-                            getData(2, "", null, dateFormat.parse(ending.getText().toString()));
-                        else
-                            getData(2, "", dateFormat.parse(starting.getText().toString()), null);
-                        currentFlag = 2;
-                    }
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
 
         id_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -570,12 +452,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
         recyclerView.showShimmerAdapter();
-        check = view.findViewById(R.id.check);
         search_button = view.findViewById(R.id.search_button);
-        starting = view.findViewById(R.id.starting_date);
-        ending = view.findViewById(R.id.ending_date);
-        back1 = view.findViewById(R.id.back1);
-        back2 = view.findViewById(R.id.back2);
         search_type = view.findViewById(R.id.search_type);
         id_search = view.findViewById(R.id.id_search);
         YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
@@ -593,11 +470,10 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.by_author:
-
+                         setSearchNameActionBar();
                         return true;
                     case R.id.by_date:
-                        date_layout.setVisibility(View.VISIBLE);
-                        search_layout.setVisibility(View.GONE);
+                        setSearchDateActionBar();
                         viewed.setVisibility(View.GONE);
                         return true;
                     default:
@@ -606,6 +482,181 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
         });
         popup.show();
+    }
+
+    private void setSearchDateActionBar() {
+        actionbar_view.setVisibility(View.INVISIBLE);
+        ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.search_date);
+        date_search_barview = actionBar.getCustomView();
+        setDateActionView(date_search_barview);
+
+    }
+
+    private void setDateActionView(View date_search_barview) {
+
+        starting = date_search_barview.findViewById(R.id.start_date);
+        ending = date_search_barview.findViewById(R.id.end_date);
+        date_search_back = date_search_barview.findViewById(R.id.name_search_back3);
+        date_search_button = date_search_barview.findViewById(R.id.searchdate_poll);
+
+        date_search_back.setOnClickListener(view -> {
+            closeKeyboard();
+            flagFirst = true;
+            arrayList.clear();
+            adapter.notifyDataSetChanged();
+            lastIndex = null;
+            currentFlag = 0;
+            getData(0, "", null, null);
+            date_layout.setVisibility(View.GONE);
+            recyclerView.showShimmerAdapter();
+            starting.setText("");
+            starting.setHint("Starting Date");
+            ending.setText("");
+            ending.setHint("Ending Date");
+            date_search_barview.setVisibility(View.GONE);
+            actionbar_view.setVisibility(View.VISIBLE);
+            setActionBar();
+        });
+
+
+
+        starting.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            String date = day + "-" + (month + 1) + "-" + year;
+                            starting.setText(date);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
+
+        ending.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                            String date = day + "-" + (month + 1) + "-" + year;
+                            ending.setText(date);
+
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
+        });
+
+        date_search_button.setOnClickListener(v -> {
+            try {
+                flagFirst = true;
+                viewed.setVisibility(View.GONE);
+                lastIndex = null;
+                if (starting.getText().toString().isEmpty() && ending.getText().toString().isEmpty())
+                    Toast.makeText(getContext(), "Please atleast choose one of the dates", Toast.LENGTH_LONG).show();
+                else {
+                    if (!starting.getText().toString().isEmpty() && !ending.getText().toString().isEmpty()) {
+                        Date start = dateFormat.parse(starting.getText().toString());
+                        Date end = dateFormat.parse(ending.getText().toString());
+                        if (start.compareTo(end) > 0)
+                            Toast.makeText(getContext(), "Starting date can't be after the ending date", Toast.LENGTH_LONG).show();
+                        else {
+                            arrayList.clear();
+                            adapter.notifyDataSetChanged();
+                            currentFlag = 2;
+                            viewed.setVisibility(View.GONE);
+                            getData(2, "", dateFormat.parse(starting.getText().toString()), dateFormat.parse(ending.getText().toString()));
+                        }
+                    } else {
+                        arrayList.clear();
+                        adapter.notifyDataSetChanged();
+                        recyclerView.showShimmerAdapter();
+                        viewed.setVisibility(View.GONE);
+                        if (starting.getText().toString().isEmpty())
+                            getData(2, "", null, dateFormat.parse(ending.getText().toString()));
+                        else
+                            getData(2, "", dateFormat.parse(starting.getText().toString()), null);
+                        currentFlag = 2;
+                    }
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+    private void setSearchNameActionBar() {
+
+        actionbar_view.setVisibility(View.INVISIBLE);
+        ActionBar actionBar = ((MainActivity)getActivity()).getSupportActionBar();
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.search_name);
+        name_search_barview = actionBar.getCustomView();
+        setNameActionView(name_search_barview);
+
+
+    }
+
+    private void setNameActionView(View name_search_barview) {
+
+        name_search_back = name_search_barview.findViewById(R.id.name_search_back2);
+        name_search_edittext = name_search_barview.findViewById(R.id.name_search_edittext);
+        name_search_button = name_search_barview.findViewById(R.id.searchname_poll);
+
+        name_search_back.setOnClickListener(view -> {
+            closeKeyboard();
+            flagFirst = true;
+            arrayList.clear();
+            adapter.notifyDataSetChanged();
+            lastIndex = null;
+            currentFlag = 0;
+            getData(0, "", null, null);
+            //search_layout.setVisibility(View.GONE);
+            recyclerView.showShimmerAdapter();
+            name_search_edittext.setText("");
+            name_search_barview.setVisibility(View.GONE);
+            actionbar_view.setVisibility(View.VISIBLE);
+            setActionBar();
+            name_search_edittext.setText("");
+
+        });
+
+        name_search_edittext.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (!name_search_edittext.getText().toString().isEmpty()) {
+                    closeKeyboard();
+                    arrayList.clear();
+                    adapter.notifyDataSetChanged();
+                    currentFlag = 1;
+                    flagFirst = true;
+                    lastIndex = null;
+                    name = name_search_edittext.getText().toString();
+                    getData(1, name, null, null);
+                } else
+                    Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+            }
+            return false;
+        });
+
+        name_search_button.setOnClickListener(view -> {
+            if (!name_search_edittext.getText().toString().isEmpty()) {
+                closeKeyboard();
+                recyclerView.showShimmerAdapter();
+                arrayList.clear();
+                adapter.notifyDataSetChanged();
+                currentFlag = 1;
+                flagFirst = true;
+                lastIndex = null;
+                name = name_search_edittext.getText().toString();
+                viewed.setVisibility(View.GONE);
+                getData(1, name, null, null);
+            } else
+                Toast.makeText(getContext(), "Please enter the author name", Toast.LENGTH_LONG).show();
+        });
+
     }
 
     private void setnewActionView(View view) {
@@ -617,18 +668,11 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         id_search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                YoYo.with(Techniques.SlideOutRight).duration(700).playOn(linear_id_search);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        actionbar_view.setVisibility(View.VISIBLE);
-                        setActionBar();
-                        id_search_barview.setVisibility(View.GONE);
-                        id_search_edittext.setText("");
-                    }
-                }, 700);
+                id_search_barview.setVisibility(View.GONE);
+                actionbar_view.setVisibility(View.VISIBLE);
+                setActionBar();
+                id_search_edittext.setText("");
 
             }
         });

@@ -72,7 +72,7 @@ public class Ranking_type_response extends AppCompatActivity {
     String key;
     Typeface typeface;
     Dialog dialog;
-    ImageButton logout, home, fav_author;
+    ImageButton fav_author;
     int c;
     firebase fb;
     PollDetails polldetails;
@@ -93,7 +93,6 @@ public class Ranking_type_response extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
         setGlobals(view);
         showDialog();
-        setActionBarFunctionality();
         retrieveData();
 
         submit.setOnClickListener(new View.OnClickListener() {
@@ -257,20 +256,7 @@ public class Ranking_type_response extends AppCompatActivity {
 
     }
 
-
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Ranking_type_response.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
-
     private void setGlobals(View view) {
-        home = view.findViewById(R.id.home);
         group = findViewById(R.id.options);
         sequence = findViewById(R.id.sequence);
         options = new HashMap<>();
