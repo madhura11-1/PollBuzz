@@ -83,7 +83,7 @@ public class Single_type_response extends AppCompatActivity {
         setContentView(R.layout.activity_single_type_response);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setCustomView(R.layout.action_bar);
+        getSupportActionBar().setCustomView(R.layout.action_bar_overall);
         View view = getSupportActionBar().getCustomView();
         Intent intent = getIntent();
         getIntentExtras(intent);
