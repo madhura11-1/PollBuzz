@@ -98,7 +98,6 @@ public class Single_type_poll extends AppCompatActivity {
     String alpha_numeric;
     Date date = Calendar.getInstance().getTime();
     firebase fb;
-    ImageButton home, logout;
     KAlertDialog dialog;
     RadioButton option1, option2;
     ArrayList<String> uniqueoptions = new ArrayList<>();
@@ -114,7 +113,6 @@ public class Single_type_poll extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setGlobals();
-        setActionBarFunctionality();
         final String formattedDate = df.format(date);
         setListeners(formattedDate);
         TapTargetView.showFor(this,
@@ -126,16 +124,6 @@ public class Single_type_poll extends AppCompatActivity {
         );
     }
 
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Single_type_poll.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
 
     private void setListeners(String formattedDate) {
         materialSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
@@ -384,7 +372,6 @@ public class Single_type_poll extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
-        home = view.findViewById(R.id.home);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);
         add = findViewById(R.id.add);

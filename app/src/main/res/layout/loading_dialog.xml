@@ -4,19 +4,30 @@
     android:layout_height="wrap_content"
     xmlns:dots="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-    <pl.tajchert.waitingdots.DotsTextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="60sp"
-        android:textColor="@color/colorPrimaryDark"
-        dots:autoplay="true"
-        dots:period="1000"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
+        android:paddingTop="10dp"
+        android:paddingStart="90dp"
+        android:orientation="horizontal">
+
+        <ProgressBar
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading Your Poll…"
+            android:textSize="14sp"
+            android:layout_gravity="center_vertical"
+            android:textColor="#292929"/>
 
 
-    />
+    </LinearLayout>
 
 
 </FrameLayout>

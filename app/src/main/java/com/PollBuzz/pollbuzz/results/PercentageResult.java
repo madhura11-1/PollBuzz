@@ -80,7 +80,6 @@ public class PercentageResult extends AppCompatActivity {
     TextView question_percentage, date_percentage;
 
     firebase fb;
-    ImageButton home, logout;
     String uid, type;
     Map<String, Integer> map;
     LinearLayout linearLayout;
@@ -108,7 +107,6 @@ public class PercentageResult extends AppCompatActivity {
         Intent intent = getIntent();
         setGlobals(view);
         getIntentExtras(intent);
-        setActionBarFunctionality();
         retrievedata(fb);
         setListeners();
     }
@@ -617,17 +615,6 @@ public class PercentageResult extends AppCompatActivity {
         }
     }
 
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(PercentageResult.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
-
     private void showDialog() {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.loading_dialog);
@@ -655,7 +642,6 @@ public class PercentageResult extends AppCompatActivity {
     private void setGlobals(View view) {
         linearLayout = findViewById(R.id.percentage);
         fb = new firebase();
-        home = view.findViewById(R.id.home);
         question_percentage = findViewById(R.id.question_percentage);
         date_percentage = findViewById(R.id.date_percentage);
         result = findViewById(R.id.result);

@@ -125,7 +125,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 //                if (holder.live.getVisibility() == View.VISIBLE) {
 //                    showcodedialog(position);
 //                } else
-                    startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                    startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type(),holder.card_date.getText().toString().trim(),holder.card_status.getText().toString().trim());
             } if (status.equals("Expired")) {
                 Toast.makeText(mContext,"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
                 Intent i = new Intent(mContext, PercentageResult.class);
@@ -444,7 +444,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     if (code_type.getText().toString().equals(mPollDetails.get(position).getPoll_accessID())) {
                         dialog.dismiss();
                         callBack.onItemClicked();
-                        startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
+                        //startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type());
                     } else {
                         code_type.setError("Incorrect Poll ID");
                         code_type.requestFocus();
@@ -576,7 +576,7 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
     }
 
-    private void startIntent(String uid, String pollType) {
+    private void startIntent(String uid, String pollType,String card_date,String card_status) {
         Intent intent;
         switch (pollType) {
             case "SINGLE CHOICE":
@@ -595,6 +595,9 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 throw new IllegalStateException("Unexpected value: " + pollType);
         }
         intent.putExtra("UID", uid);
+        intent.putExtra("card_date",card_date);
+        intent.putExtra("card_status",card_status);
+
         mContext.startActivity(intent);
     }
 
