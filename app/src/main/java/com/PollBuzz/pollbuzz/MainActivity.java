@@ -20,6 +20,7 @@ import com.PollBuzz.pollbuzz.navFragments.FavouriteFeed;
 import com.PollBuzz.pollbuzz.navFragments.HomeFeed;
 import com.PollBuzz.pollbuzz.navFragments.ProfileFeed;
 import com.PollBuzz.pollbuzz.navFragments.VotedFeed;
+import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.responses.Image_type_responses;
 import com.PollBuzz.pollbuzz.responses.Multiple_type_response;
 import com.PollBuzz.pollbuzz.responses.Ranking_type_response;
@@ -28,13 +29,18 @@ import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.kinda.alert.KAlertDialog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import me.ibrahimsn.lib.SmoothBottomBar;
@@ -48,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     public static String PARAMS_TYPE = "type";
     private KAlertDialog dialog;
     private String type, UID;
+    private PollDetails polldetails;
+    String date1,left;
     View view;
 
     @Override
@@ -71,9 +79,76 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document1 = task.getResult();
                             if (document1 != null) {
-                                if (!document1.exists())
-                                    startIntent(UID, type);
-                                else {
+                                if (!document1.exists()) {
+                                    fb.getPollsCollection().document(UID).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                    polldetails = documentSnapshot.toObject(PollDetails.class);
+                                                    if (polldetails.getCreated_date() != null) {
+                                                        long y = ((Timestamp.now().toDate().getTime() - polldetails.getCreated_date().getTime())*24)/86400000;
+                                                        long y1 = ((Timestamp.now().toDate().getTime() - polldetails.getCreated_date().getTime()))/86400000;
+                                                        if(y1<=0) {
+                                                            if (y > 0)
+                                                                date1 = "• " + y + " hr ago";
+                                                            else
+                                                                date1 = "• few minutes ago";
+                                                        }
+                                                        else{
+                                                            if(y1 == 1)
+                                                                date1 = "• " + y1 + " day ago";
+                                                            else
+                                                                date1 = "• " + y1 + " days ago";
+                                                        }
+                                                    }
+                                                    Date date = Calendar.getInstance().getTime();
+                                                    if (polldetails.isLive() && (Timestamp.now().getSeconds() - polldetails.getTimestamp()) > polldetails.getSeconds()) {
+                                                        left = "• Expired";
+                                                        fb.getPollsCollection().document(polldetails.getUID()).update("live",false);
+                                                        polldetails.setLive(false);
+                                                    } else if (polldetails.isLive()) {
+                                                        if(polldetails.getSeconds() == Long.MAX_VALUE)
+                                                        {
+                                                            left = "• " + "Custom";
+                                                        }
+                                                        else {
+                                                            long x=polldetails.getSeconds()-Timestamp.now().getSeconds()+polldetails.getTimestamp();
+                                                            left = "• " + x + " seconds left";
+                                                        }
+                                                    } else {
+                                                        if (polldetails.getExpiry_date() != null && polldetails.getExpiry_date().compareTo(date) >= 0)
+                                                        {
+                                                            Date one = polldetails.getExpiry_date();
+                                                            long x =  (one.getTime()-date.getTime())/86400000;
+                                                            if(x>0) {
+                                                                if(x == 1){
+                                                                    left = "• " + x + " day left";
+                                                                }
+                                                                else
+                                                                    left = "• " + x + " days left";
+                                                            }
+                                                            else
+                                                                left = "• Expires Today";
+                                                        }
+
+                                                        else
+                                                        {
+                                                            left = "• Expired";
+                                                        }
+                                                    }
+
+
+                                                    startIntent(UID, type,date1,left);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(MainActivity.this, "Unable to load data", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+                                } else {
                                     dialog.dismissWithAnimation();
                                     Intent intent = new Intent(MainActivity.this, PercentageResult.class);
                                     intent.putExtra("UID", UID);
@@ -93,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startIntent(String uid, String pollType) {
+    private void startIntent(String uid, String pollType,String date1,String left) {
         Intent intent;
         try {
             Log.d("MainActivity", uid + " " + pollType);
@@ -114,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
                     throw new IllegalStateException("Unexpected value: " + pollType);
             }
             intent.putExtra("UID", uid);
+            intent.putExtra("card_date", date1);
+            intent.putExtra("card_status", left);
             dialog.dismissWithAnimation();
             Log.d("MainActivity", "intent");
             startActivity(intent);

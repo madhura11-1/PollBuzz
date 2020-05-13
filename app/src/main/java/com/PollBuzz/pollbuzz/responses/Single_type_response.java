@@ -38,12 +38,15 @@ import com.PollBuzz.pollbuzz.objects.ClipFunction;
 import com.PollBuzz.pollbuzz.objects.PollDetails;
 import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.Timestamp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
@@ -79,7 +82,7 @@ public class Single_type_response extends AppCompatActivity {
     PollDetails polldetails;
     Map<String, Integer> update;
     KAlertDialog dialog1;
-    ImageButton fav_author;
+    ImageButton share;
     ImageView profile_pic,following,menuhome;
     SpotsDialog dialog2;
 
@@ -115,6 +118,27 @@ public class Single_type_response extends AppCompatActivity {
                     Toast.makeText(Single_type_response.this, "Please select a option...", Toast.LENGTH_SHORT).show();
                 } else
                     submitResponse(fb);
+            }
+        });
+
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("timestamp", Timestamp.now().toDate().toString());
+                    bundle.putString("UID", key);
+                    FirebaseAnalytics.getInstance(Single_type_response.this).logEvent("share_link", bundle);
+                    int type = 0;
+                    String shareBody = "https://pollbuzz.com/share/" + type + key;
+                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                    startActivity(Intent.createChooser(sharingIntent, "Share link via"));
+                } catch (IllegalStateException e) {
+                    Toast.makeText(Single_type_response.this, "Something went wrong. Please try again!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
   /*      fav_author.setOnClickListener(new View.OnClickListener() {
@@ -426,6 +450,15 @@ public class Single_type_response extends AppCompatActivity {
                             author.setText(polldetails.getAuthor());
                             card_status.setText(passed_status);
                             card_date.setText(passed_date);
+                            if(polldetails.getPic() == null) {
+                                profile_pic.setImageResource(R.drawable.ic_person_black_24dp);
+                            } else {
+                                Glide.with(getApplicationContext())
+                                        .load(polldetails.getPic())
+                                        .transform(new CircleCrop())
+                                        .placeholder(R.drawable.ic_person_black_24dp)
+                                        .into(profile_pic);
+                            }
                             if(polldetails.isLive()){
                                 live.setVisibility(View.VISIBLE);
                             }
@@ -517,6 +550,7 @@ public class Single_type_response extends AppCompatActivity {
         card_status = findViewById(R.id.card_status);
         vote_count = findViewById(R.id.vote_count_no);
         live = findViewById(R.id.live);
+        share = view.findViewById(R.id.share);
         group = findViewById(R.id.options);
         following = findViewById(R.id.following);
         menuhome = findViewById(R.id.menu_home);
