@@ -252,13 +252,14 @@ public class Single_type_response extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
+                                                            dialog2.dismiss();
+                                                            following.setVisibility(View.VISIBLE);
+                                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
+
                                                             Log.d("SubscribedTo", polldetails.getAuthorUID());
 
                                                         }
-                                                        dialog2.dismiss();
-                                                        following.setVisibility(View.VISIBLE);
-                                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
-                                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
+
                                                     }
                                                 });
                                     }
@@ -284,12 +285,12 @@ public class Single_type_response extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
                                                             Log.d("UnSubscribedFrom", polldetails.getAuthorUID());
+                                                            dialog2.dismiss();
+                                                            following.setVisibility(View.GONE);
+                                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
 
                                                         }
-                                                        dialog2.dismiss();
-                                                        following.setVisibility(View.GONE);
-                                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
-                                                        fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
+
                                                     }
                                                 });
                                     }
@@ -330,7 +331,7 @@ public class Single_type_response extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast toast = Toast.makeText(Single_type_response.this, "Copied to clip board", Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.setGravity(Gravity.BOTTOM, 0, 0);
                 toast.show();
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) Single_type_response.this.getSystemService(Context.CLIPBOARD_SERVICE);
                 android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", code.getText());

@@ -6,66 +6,64 @@
     android:orientation="vertical"
     android:paddingBottom="10dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
-
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:fontFamily="@font/roboto"
             android:gravity="center"
-            android:text="Poll Id"
-            android:textColor="@color/black"
-            android:textSize="25sp"
+            android:text="Poll ID"
+            android:textColor="#8a8a8a"
+            android:textSize="18sp"
+            android:padding="10dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/share_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_share"
-            android:tooltipText="Share Result"
-            app:layout_constraintBottom_toBottomOf="@id/title"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/title" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="Poll Id"
-            android:textColor="@color/black"
+            android:textColor="#292929"
             android:textIsSelectable="true"
             android:fontFamily="@font/roboto"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="normal" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
 
         <ImageButton
             android:padding="10dp"
-            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:id="@+id/clip_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
+            android:layout_marginStart="100dp"
+            android:tint="@color/colorPrimary"
             android:src="@drawable/ic_content_copy_black_24dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/share_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center"
+            android:layout_marginRight="100dp"
+            android:src="@drawable/ic_share"
+            android:tooltipText="Share Result" />
     </RelativeLayout>
 
 
