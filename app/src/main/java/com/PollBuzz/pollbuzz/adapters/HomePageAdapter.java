@@ -84,7 +84,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
     SpotsDialog dialog;
     okClicked callBack;
     int flag=0;
-    String status="Active";
 
     public HomePageAdapter(Context mContext, ArrayList<PollDetails> mPollDetails, okClicked callBack) {
         this.mContext = mContext;
@@ -116,7 +115,14 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 
         holder.cardV.setOnClickListener(view -> {
             Log.d("CardId",mPollDetails.get(position).getUID());
-            if (status.equals("Active")) {
+            if (holder.card_status.getText().equals("• Expired")) {
+
+                Toast.makeText(mContext,"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
+                Intent i = new Intent(mContext, PercentageResult.class);
+                i.putExtra("UID", mPollDetails.get(position).getUID());
+                i.putExtra("type", mPollDetails.get(position).getPoll_type());
+                mContext.startActivity(i);
+            }else {
                 Bundle bundle = new Bundle();
                 bundle.putString("user_id", fb.getUserId());
                 bundle.putString("poll_id", mPollDetails.get(position).getUID());
@@ -125,13 +131,8 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
 //                if (holder.live.getVisibility() == View.VISIBLE) {
 //                    showcodedialog(position);
 //                } else
-                    startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type(),holder.card_date.getText().toString().trim(),holder.card_status.getText().toString().trim());
-            } if (status.equals("Expired")) {
-                Toast.makeText(mContext,"The poll is expired.\nRedirecting you to the poll's result.",Toast.LENGTH_LONG).show();
-                Intent i = new Intent(mContext, PercentageResult.class);
-                i.putExtra("UID", mPollDetails.get(position).getUID());
-                i.putExtra("type", mPollDetails.get(position).getPoll_type());
-                mContext.startActivity(i);
+                startIntent(mPollDetails.get(position).getUID(), mPollDetails.get(position).getPoll_type(),holder.card_date.getText().toString().trim(),holder.card_status.getText().toString().trim());
+
             }
 
         });
@@ -517,7 +518,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
             Date date = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).isLive() && (Timestamp.now().getSeconds() - mPollDetails.get(position).getTimestamp()) > mPollDetails.get(position).getSeconds()) {
                 holder.card_status.setText("• Expired");
-                status="Expired";
                 holder.live.setVisibility(View.GONE);
                 fb.getPollsCollection().document(mPollDetails.get(position).getUID()).update("live",false);
                 mPollDetails.get(position).setLive(false);
@@ -533,7 +533,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     long x=mPollDetails.get(position).getSeconds()-Timestamp.now().getSeconds()+mPollDetails.get(position).getTimestamp();
                     holder.card_status.setText("• " + x + " seconds left");
                 }
-                status="Active";
             } else {
                 holder.live.setVisibility(View.GONE);
                 if (mPollDetails.get(position).getExpiry_date() != null && mPollDetails.get(position).getExpiry_date().compareTo(date) >= 0)
@@ -549,13 +548,11 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                     }
                     else
                         holder.card_status.setText("• Expires Today" );
-                    status="Active";
                 }
 
                 else
                 {
                     holder.card_status.setText("• Expired");
-                    status="Expired";
                 }
             }
             if (mPollDetails.get(position).getPic() == null) {
