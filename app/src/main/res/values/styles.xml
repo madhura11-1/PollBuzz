@@ -43,6 +43,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#2a154e</item>
+    </style>
+
 
 
 </resources>

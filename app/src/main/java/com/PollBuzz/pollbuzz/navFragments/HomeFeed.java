@@ -71,14 +71,13 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private LayoutAnimationController controller;
     private MaterialTextView viewed;
     private EditText id_search_edittext,name_search_edittext;
-    private ImageButton search, id_search, id_search_back,filter_action_bar,search_id_action_bar,name_search_back,date_search_back;
+    private ImageButton id_search_back,filter_action_bar,search_id_action_bar,name_search_back,date_search_back;
     private String name = "";
-    private Button search_button, id_search_button,name_search_button,date_search_button;
+    private Button id_search_button,name_search_button,date_search_button;
     private TextView starting, ending;
-    private TextInputEditText search_type;
     private DocumentSnapshot lastIndex;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private LinearLayout search_layout, date_layout, linear_search, linear_id_search;
+    private LinearLayout linear_id_search;
     private Date date = Calendar.getInstance().getTime();
     private Boolean flagFirst = true, flagFetch = true;
     private Calendar c = Calendar.getInstance();
@@ -168,27 +167,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                 }
             }
         });
-
-     /*   search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HomeFeed.this.closeKeyboard();
-                HomeFeed.this.showPopup(view);
-            }
-        });*/
-
-
-
-        id_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                linear_search.setVisibility(View.GONE);
-                linear_id_search.setVisibility(View.VISIBLE);
-                YoYo.with(Techniques.SlideInRight).duration(700).playOn(linear_id_search);
-            }
-        });
-
-
     }
 
     private void GotoActivity(PollDetails pollDetails) {
@@ -214,33 +192,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         getContext().startActivity(intent);
     }
 
-/*    private void getArrayListByAuthor(String name,String id,long timestamp) {
-        fb.getPollsCollection().whereEqualTo("author", name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                            if(id.equals(dS.getId()))
-                            addToRecyclerView(dS,timestamp);
-                        }
-                    }
-                    else{
-                        if(arrayList.isEmpty()){
-                            recyclerView.hideShimmerAdapter();
-                            viewed.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-
-            }
-        });
-
-    }*/
-
     private void getArrayListByDate(Date start, Date end, QueryDocumentSnapshot id, boolean islast) throws ParseException {
         if (end == null)
             end = dateFormat.parse(formatteddate);
@@ -261,30 +212,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             }
 
         }
-
-    /*    fb.getPollsCollection().orderBy("created_date").whereGreaterThanOrEqualTo("created_date", start)
-                .whereLessThanOrEqualTo("created_date", end).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    if (!task.getResult().isEmpty()) {
-                        viewed.setVisibility(View.VISIBLE);
-                        arrayList.clear();
-                        adapter.notifyDataSetChanged();
-                        for (QueryDocumentSnapshot dS : task.getResult()) {
-                                addToRecyclerView(dS, timestamp);
-
-                        }
-
-                    }else{
-                        if(arrayList.isEmpty()){
-                            recyclerView.hideShimmerAdapter();
-                            viewed.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-            }
-        });*/
     }
 
     private void getData(int flagi, String name, Date start, Date end) {
@@ -439,9 +366,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
     private void setGlobals(@NonNull View view) {
         arrayList = new ArrayList<>();
         viewed = view.findViewById(R.id.viewed);
-        search = view.findViewById(R.id.search);
-        search_layout = view.findViewById(R.id.type_layout);
-        date_layout = view.findViewById(R.id.date_layout);
         controller = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.animation_down_to_up);
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -452,12 +376,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutAnimation(controller);
         recyclerView.showShimmerAdapter();
-        search_button = view.findViewById(R.id.search_button);
-        search_type = view.findViewById(R.id.search_type);
-        id_search = view.findViewById(R.id.id_search);
-        YoYo.with(Techniques.ZoomInDown).duration(1100).playOn(view.findViewById(R.id.text));
         fb = new firebase();
-        linear_search = view.findViewById(R.id.linear_search);
         linear_id_search = view.findViewById(R.id.linear_id_search);
     }
 
@@ -510,7 +429,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
             lastIndex = null;
             currentFlag = 0;
             getData(0, "", null, null);
-            date_layout.setVisibility(View.GONE);
             recyclerView.showShimmerAdapter();
             starting.setText("");
             starting.setHint("Starting Date");
@@ -524,7 +442,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
 
 
         starting.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),R.style.DatePicker,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -536,7 +454,7 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
         });
 
         ending.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),R.style.DatePicker,
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -707,7 +625,6 @@ public class HomeFeed extends Fragment implements HomePageAdapter.okClicked {
                                                         dialog.dismissWithAnimation();
                                                         GotoActivity(finalPollDetails);
                                                         linear_id_search.setVisibility(View.INVISIBLE);
-                                                        linear_search.setVisibility(View.VISIBLE);
                                                         id_search_edittext.setText("");
                                                     }
                                                     else {

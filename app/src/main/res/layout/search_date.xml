@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/linear_id_search3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,6 +69,7 @@
             android:id="@+id/searchdate_poll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:backgroundTint="@color/font_color"
             android:text="Search"
             android:textSize="17sp"
@@ -79,6 +80,6 @@
             android:textColor="@color/colorPrimary"
             />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
