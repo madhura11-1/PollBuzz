@@ -204,68 +204,69 @@
                 </RadioGroup>
 
 
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentStart="true"
+                        >
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@mipmap/vote_counter"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:id="@+id/vote_counter"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/vote_count_no"
+                            android:text="0"
+                            android:textColor="#7f7395"
+                            android:layout_marginStart="5dp"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginEnd="10dp"
+                        android:text="LIVE"
+                        android:textColor="#ee0006"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true"
+                        />
+                </RelativeLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cornerRadius="4dp"
+                    android:text="Vote"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/maven_pro"
+                    android:textStyle="bold"
+                    android:padding="10dp"
+                    android:textSize="15sp"
+                    android:layout_margin="20dp"
+                    android:stateListAnimator="@animator/button_anim"/>
+
+
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentStart="true"
-            >
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/vote_counter"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:id="@+id/vote_counter"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/vote_count_no"
-                android:text="0"
-                android:textColor="#7f7395"
-                android:layout_marginStart="5dp"
-                android:textSize="12sp"/>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/live"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginEnd="10dp"
-            android:text="LIVE"
-            android:textColor="#ee0006"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:visibility="gone"
-            android:layout_alignParentEnd="true"
-            />
-    </RelativeLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cornerRadius="4dp"
-        android:text="Vote"
-        android:textAllCaps="false"
-        android:fontFamily="@font/maven_pro"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:textSize="15sp"
-        android:layout_margin="20dp"
-        android:stateListAnimator="@animator/button_anim"/>
 
 </LinearLayout>

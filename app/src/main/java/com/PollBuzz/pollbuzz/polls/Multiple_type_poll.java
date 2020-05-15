@@ -96,7 +96,6 @@ public class Multiple_type_poll extends AppCompatActivity {
     Date date = Calendar.getInstance().getTime();
     firebase fb;
     TextView text1;
-    ImageButton home, logout;
     KAlertDialog dialog;
     RadioButton option1, option2;
     ArrayList<String> uniqueoptions = new ArrayList<>();
@@ -113,7 +112,6 @@ public class Multiple_type_poll extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setGlobals();
-        setActionBarFunctionality();
         final String formatteddate = dateFormat.format(date);
         setListeners(formatteddate);
         TapTargetView.showFor(this,
@@ -123,17 +121,6 @@ public class Multiple_type_poll extends AppCompatActivity {
                         .dimColor(R.color.black)
                         .transparentTarget(false)
         );
-    }
-
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Multiple_type_poll.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
     }
 
     private void setListeners(String formatteddate) {
@@ -403,7 +390,6 @@ public class Multiple_type_poll extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.action_bar);
         View view = getSupportActionBar().getCustomView();
         fb = new firebase();
-        home = view.findViewById(R.id.home);
         group = findViewById(R.id.options);
         add = findViewById(R.id.add);
         c = group.getChildCount();

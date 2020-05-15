@@ -460,7 +460,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
         try {
 
             holder.live.setVisibility(View.GONE);
-            //holder.vote_count.setText(mPollDetails.get(position).getPollcount());
             Log.d("Votes",String.valueOf(mPollDetails.get(position).getPollcount()));
             holder.vote_counter.setText(String.valueOf(mPollDetails.get(position).getPollcount()));
 
@@ -478,16 +477,12 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                                 holder.following.setVisibility(View.GONE);
                                 holder.profilePic.setBackgroundResource(R.drawable.voter_item_outline);
                                 flag=0;
-
-
                             }
                         } else {
 
                         }
                     }
                 });
-
-                //holder.vote_count.setText(mPollDetails.get(position).getPollcount());
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             Date date1 = Calendar.getInstance().getTime();
             if (mPollDetails.get(position).getQuestion() != null)
@@ -556,7 +551,6 @@ public class HomePageAdapter extends RecyclerView.Adapter<HomePageAdapter.HomeVi
                 }
             }
             if (mPollDetails.get(position).getPic() == null) {
-                Log.d("NoPic", String.valueOf(position));
                 holder.profilePic.setImageResource(R.drawable.ic_person_black_24dp);
             } else {
                 Glide.with(mContext)

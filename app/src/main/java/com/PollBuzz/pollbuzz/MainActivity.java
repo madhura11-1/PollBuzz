@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
             getSupportActionBar().show();
 
             setGlobals();
-            //setBottomBar();
             setListeners();
         }
     }
@@ -192,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("card_date", date1);
             intent.putExtra("card_status", left);
             dialog.dismissWithAnimation();
-            Log.d("MainActivity", "intent");
             startActivity(intent);
         } catch (IllegalStateException e) {
             dialog.dismissWithAnimation();
@@ -218,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
             FirebaseCrashlytics.getInstance().log(e.getMessage());
         }
         fm = getSupportFragmentManager();
-        //fragmentListener(fm);
         fm.beginTransaction()
                 .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
                 .replace(R.id.container, new HomeFeed(), "home")

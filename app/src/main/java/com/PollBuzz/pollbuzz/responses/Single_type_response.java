@@ -27,16 +27,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.transition.Slide;
-import androidx.transition.Visibility;
 
 import com.PollBuzz.pollbuzz.MainActivity;
-import com.PollBuzz.pollbuzz.adapters.HomePageAdapter;
+import com.PollBuzz.pollbuzz.R;
+import com.PollBuzz.pollbuzz.Utils.firebase;
 import com.PollBuzz.pollbuzz.objects.ClipFunction;
 import com.PollBuzz.pollbuzz.objects.PollDetails;
-import com.PollBuzz.pollbuzz.R;
 import com.PollBuzz.pollbuzz.results.PercentageResult;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -50,19 +47,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.kinda.alert.KAlertDialog;
-import com.skydoves.powermenu.CustomPowerMenu;
-import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.MenuBaseAdapter;
-import com.skydoves.powermenu.OnMenuItemClickListener;
-import com.skydoves.powermenu.PowerMenu;
-import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.PollBuzz.pollbuzz.Utils.firebase;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import dmax.dialog.SpotsDialog;
@@ -82,7 +72,7 @@ public class Single_type_response extends AppCompatActivity {
     PollDetails polldetails;
     Map<String, Integer> update;
     KAlertDialog dialog1;
-    ImageButton share;
+    ImageButton share,back_overall;
     ImageView profile_pic,following,menuhome;
     SpotsDialog dialog2;
 
@@ -133,7 +123,6 @@ public class Single_type_response extends AppCompatActivity {
                     String shareBody = "https://pollbuzz.com/share/" + type + key;
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
                     sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
                     startActivity(Intent.createChooser(sharingIntent, "Share link via"));
                 } catch (IllegalStateException e) {
@@ -141,110 +130,15 @@ public class Single_type_response extends AppCompatActivity {
                 }
             }
         });
-  /*      fav_author.setOnClickListener(new View.OnClickListener() {
+
+        back_overall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                dialog2.show();
-                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                {
-
-                                    fav_author.setEnabled(false);
-                                    //Log.d(TAG, "Document exists!");
-                                    fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            //dialog1.dismissWithAnimation();
-                                            FirebaseMessaging.getInstance().unsubscribeFromTopic(polldetails.getAuthorUID())
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()) {
-                                                                Log.d("UnSubscribedFrom", polldetails.getAuthorUID());
-
-                                                            }
-                                                            dialog2.dismiss();
-                                                            fav_author.setEnabled(true);
-                                                            Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
-                                                            fav_author.setImageResource(R.drawable.ic_star_border_dark_24dp);
-                                                        }
-                                                    });
-                                        }
-                                    })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // dialog1.dismissWithAnimation();
-                                                    dialog2.dismiss();
-                                                    fav_author.setEnabled(true);
-                                                    Toast.makeText(getApplicationContext(), "Failed " + polldetails.getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-
-
-                                }
-                            } else {
-                                //Log.d(TAG, "Document does not exist!");
-                                fav_author.setEnabled(false);
-                                Map<String, String> map = new HashMap<>();
-                                map.put("Username", (polldetails.getAuthor()));
-                                fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        //dialog1.dismissWithAnimation();
-                                        FirebaseMessaging.getInstance().subscribeToTopic(polldetails.getAuthorUID())
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            Log.d("SubscribedTo", polldetails.getAuthorUID());
-
-                                                        }
-                                                        dialog2.dismiss();
-                                                        fav_author.setEnabled(true);
-                                                        Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
-                                                        fav_author.setImageResource(R.drawable.ic_star_gold_24dp);
-                                                    }
-                                                });
-                                    }
-                                })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                //dialog1.dismissWithAnimation();
-                                                dialog2.dismiss();
-                                                fav_author.setEnabled(true);
-                                                Toast.makeText(getApplicationContext(), "Failed to add " + polldetails.getAuthor() + " to your favourite authors", Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                            }
-                        } else {
-                            //Log.d(TAG, "Failed with: ", task.getException());
-                        }
-                    }
-                });
+                Intent intent = new Intent(Single_type_response.this,MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
-        });*/
-
-       /* id.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String y = polldetails.getPoll_accessID().toString();
-
-                CustomPowerMenu customPowerMenu = new CustomPowerMenu.Builder<>(Single_type_response.this, new IconMenuAdapter())
-                        .addItem(new ClipFunction(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_content_copy_black_24dp), y))
-                        .setAnimation(MenuAnimation.ELASTIC_CENTER)
-                        .setMenuRadius(10f)
-                        .setMenuShadow(10f)
-                        .build();
-                customPowerMenu.showAsAnchorCenter(view);
-            }
-        });*/
+        });
     }
 
     private void showPopup(View v) {
@@ -270,7 +164,6 @@ public class Single_type_response extends AppCompatActivity {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        //dialog1.dismissWithAnimation();
                                         FirebaseMessaging.getInstance().subscribeToTopic(polldetails.getAuthorUID())
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
@@ -278,10 +171,8 @@ public class Single_type_response extends AppCompatActivity {
                                                         if (task.isSuccessful()) {
                                                             dialog2.dismiss();
                                                             following.setVisibility(View.VISIBLE);
+                                                            profile_pic.setBackgroundResource(R.drawable.green_boundary_pic);
                                                             Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " added to your favourite authors", Toast.LENGTH_LONG).show();
-
-                                                            Log.d("SubscribedTo", polldetails.getAuthorUID());
-
                                                         }
 
                                                     }
@@ -291,7 +182,6 @@ public class Single_type_response extends AppCompatActivity {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                //dialog1.dismissWithAnimation();
                                                 dialog2.dismiss();
                                                 Toast.makeText(getApplicationContext(), "Failed to add " + polldetails.getAuthor() + " to your favourite authors", Toast.LENGTH_LONG).show();
                                             }
@@ -302,7 +192,6 @@ public class Single_type_response extends AppCompatActivity {
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        //dialog1.dismissWithAnimation();
                                         FirebaseMessaging.getInstance().unsubscribeFromTopic(polldetails.getAuthorUID())
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
@@ -310,7 +199,8 @@ public class Single_type_response extends AppCompatActivity {
                                                         if (task.isSuccessful()) {
                                                             Log.d("UnSubscribedFrom", polldetails.getAuthorUID());
                                                             dialog2.dismiss();
-                                                            following.setVisibility(View.GONE);
+                                                            following.setVisibility(View.INVISIBLE);
+                                                            profile_pic.setBackgroundResource(R.drawable.voter_item_outline);
                                                             Toast.makeText(getApplicationContext(), polldetails.getAuthor() + " removed from favourite authors", Toast.LENGTH_LONG).show();
 
                                                         }
@@ -322,7 +212,6 @@ public class Single_type_response extends AppCompatActivity {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                // dialog1.dismissWithAnimation();
                                                 dialog2.dismiss();
                                                 Toast.makeText(getApplicationContext(), "Failed " + polldetails.getAuthor() + " removing from favourite authors", Toast.LENGTH_LONG).show();
                                             }
@@ -450,6 +339,7 @@ public class Single_type_response extends AppCompatActivity {
                             author.setText(polldetails.getAuthor());
                             card_status.setText(passed_status);
                             card_date.setText(passed_date);
+                            vote_count.setText(polldetails.getPollcount().toString());
                             if(polldetails.getPic() == null) {
                                 profile_pic.setImageResource(R.drawable.ic_person_black_24dp);
                             } else {
@@ -462,15 +352,16 @@ public class Single_type_response extends AppCompatActivity {
                             if(polldetails.isLive()){
                                 live.setVisibility(View.VISIBLE);
                             }
-
                                 fb.getUserDocument().collection("Favourite Authors").document(polldetails.getAuthorUID()).get().addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         DocumentSnapshot document = task1.getResult();
                                         if (document != null) {
                                             if (document.exists()) {
                                                 following.setVisibility(View.VISIBLE);
+                                                profile_pic.setBackgroundResource(R.drawable.green_boundary_pic);
                                             } else {
                                                 following.setVisibility(View.INVISIBLE);
+                                                profile_pic.setBackgroundResource(R.drawable.voter_item_outline);
                                             }
                                         }
                                     } else {
@@ -536,7 +427,6 @@ public class Single_type_response extends AppCompatActivity {
         key = intent.getExtras().getString("UID");
         passed_date = intent.getExtras().getString("card_date");
         passed_status = intent.getExtras().getString("card_status");
-        Log.d("SingleType", key);
     }
 
 
@@ -551,6 +441,7 @@ public class Single_type_response extends AppCompatActivity {
         vote_count = findViewById(R.id.vote_count_no);
         live = findViewById(R.id.live);
         share = view.findViewById(R.id.share);
+        back_overall = view.findViewById(R.id.back_overall);
         group = findViewById(R.id.options);
         following = findViewById(R.id.following);
         menuhome = findViewById(R.id.menu_home);
@@ -583,42 +474,6 @@ public class Single_type_response extends AppCompatActivity {
         dialog1.setTitleText("Uploading your response");
         dialog1.setCancelable(false);
         dialog1.show();
-    }
-
-    public class IconMenuAdapter extends MenuBaseAdapter<ClipFunction> {
-
-        @Override
-        public View getView(int index, View view, ViewGroup viewGroup) {
-            final Context context = viewGroup.getContext();
-
-            if (view == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.copy_clipboard, viewGroup, false);
-            }
-
-            ClipFunction item = (ClipFunction) getItem(index);
-            final ImageView icon = view.findViewById(R.id.clip_image);
-            icon.setImageDrawable(item.getIcon());
-            final TextView title = view.findViewById(R.id.clip_id);
-            title.setText(item.getTitle());
-
-            icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast toast = Toast.makeText(context, "Copied to clip board", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                    android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", item.getTitle());
-                    if (clipboard != null) {
-                        clipboard.setPrimaryClip(clip);
-                    }
-                }
-            });
-
-            return super.getView(index, view, viewGroup);
-        }
-
     }
     private  void showExpiredDialog()
     {
