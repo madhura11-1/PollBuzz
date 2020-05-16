@@ -330,15 +330,29 @@ public class Multiple_type_response extends AppCompatActivity {
                             vote_count.setText(polldetails.getPollcount().toString());
                             card_date.setText(passed_date);
                             card_status.setText(passed_status);
-                            if (polldetails.getPic() == null) {
-                                profilePic.setImageResource(R.drawable.ic_person_black_24dp);
-                            } else {
-                                Glide.with(getApplicationContext())
-                                        .load(polldetails.getPic())
-                                        .transform(new CircleCrop())
-                                        .placeholder(R.drawable.ic_person_black_24dp)
-                                        .into(profilePic);
-                            }
+                            fb.getUsersCollection().document(polldetails.getAuthorUID()).get()
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            String url = documentSnapshot.getString("pic");
+                                            if(url != null) {
+                                                Glide.with(getApplicationContext())
+                                                        .load(url)
+                                                        .transform(new CircleCrop())
+                                                        .placeholder(R.drawable.ic_person_black_24dp)
+                                                        .into(profilePic);
+                                            }
+                                            else{
+                                                profilePic.setImageResource(R.drawable.ic_person_black_24dp);
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(Multiple_type_response.this, "Cannot Load your profile pic", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                             if (polldetails.isLive()) {
                                 live.setVisibility(View.VISIBLE);
                             }
