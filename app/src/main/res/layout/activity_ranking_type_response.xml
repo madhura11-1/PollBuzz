@@ -4,18 +4,164 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f6f0f3"
     tools:context=".responses.Ranking_type_response">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:elevation="10dp"
-        app:cardCornerRadius="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="15dp"
+        app:cardBackgroundColor="#ffffff"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp">
+
+                <RelativeLayout
+                    android:id="@+id/profileArea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/pPic"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/voter_item_outline"
+                        android:src="@drawable/ic_person_black_24dp" />
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_alignParentStart="true">
+                            <TextView
+                                android:id="@+id/author"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/roboto"
+                                android:text="Author"
+                                android:textColor="#8a8a8a"
+                                android:textSize="16sp"
+                                android:paddingTop="10dp"
+                                android:layout_gravity="bottom"
+                                />
+                            <ImageView
+                                android:layout_width="60sp"
+                                android:layout_height="35sp"
+                                android:src="@mipmap/following"
+                                android:paddingTop="10dp"
+                                android:id="@+id/following"
+                                android:layout_marginStart="10dp"
+                                android:visibility="invisible"
+                                />
+                        </LinearLayout>
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/menu_home"
+                            android:src="@drawable/threedot_menu"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="10dp"
+                            android:padding="10dp"/>
+                    </RelativeLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="3dp">
+                        <TextView
+                            android:id="@+id/card_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto"
+                            android:text="• Date"
+                            android:textColor="#8a8a8a"
+                            android:textSize="12sp"
+                            android:paddingBottom="5dp"
+                            />
+                        <TextView
+                            android:id="@+id/card_status"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:fontFamily="@font/roboto"
+                            android:text="• Active"
+                            android:textColor="#8a8a8a"
+                            android:textSize="12sp"
+                            android:layout_marginStart="10dp"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/query"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:text="Query"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Single Select"
+        android:textSize="10sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:layout_marginStart="20dp"
+        android:textColor="#8a8a8a"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:strokeColor="@color/colorPrimary"
         app:strokeWidth="1dp"
-        android:layout_margin="10dp"
-        app:cardBackgroundColor="#f2e2ff"
-        app:cardElevation="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:background="#f6f0f3"
+        android:orientation="vertical"
         >
         <ScrollView
             android:layout_width="match_parent"
@@ -25,181 +171,129 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-
-                    <ImageView android:id="@+id/id1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:maxWidth="30dp"
-                        android:maxHeight="30dp"
-                        android:src="@drawable/ic_id2"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="20dp"
-                        android:clickable="true"
-                        />
-
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Priority Poll"
-                    android:layout_margin="10dp"
-                    android:textSize="30sp"
-                    android:fontFamily="@font/maven_pro"
-                    android:textStyle="bold"
-
-                    />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Author : "
-                            android:layout_marginStart="10dp"
-                            android:layout_marginVertical="10dp"
-                            android:textSize="27sp"
-                            android:fontFamily="@font/maven_pro"
-                            android:textStyle="bold"
-
-                            />
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="Author Name "
-                            android:layout_marginVertical="10dp"
-                            android:textSize="25sp"
-                            android:fontFamily="@font/maven_pro"
-                            android:textStyle="bold"
-                            android:id="@+id/author"
-                            android:textColor="@color/colorPrimaryDark"
-                            />
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_star_border_dark_24dp"
-                        android:layout_margin="10dp"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/fav_author"
-                        />
-                </RelativeLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/query"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/didact_gothic"
-                    android:gravity="start"
-                    android:text="Query"
-                    android:layout_margin="10dp"
-                    android:textAlignment="viewStart"
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:textSize="27sp"/>
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Options"
-                    android:layout_margin="10dp"
-                    android:textSize="25sp"
-                    android:fontFamily="@font/maven_pro"
-                    android:textStyle="bold"
-                    />
-
-
-
-                <LinearLayout
+                <RadioGroup
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/options"
-                    android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-                    android:background="@drawable/circle"
                     android:tag="Options"
                     >
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Option1"
-                        android:id="@+id/option1"/>
+                        android:textColor="#958ba2"
+                        android:textSize="14sp"
+                        android:background="@drawable/border_gsignin"
+                        android:id="@+id/option1"
+                        android:buttonTint="@color/colorPrimary"
+                        android:layout_marginBottom="10dp"/>
                     <RadioButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Option 2"
+                        android:textColor="#958ba2"
+                        android:textSize="14sp"
+                        android:buttonTint="@color/colorPrimary"
+                        android:background="@drawable/border_gsignin"
                         android:id="@+id/option2"/>
+                </RadioGroup>
 
-
-
-                </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginVertical="10dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your Priority Queue"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/roboto"
+                    android:textStyle="normal"
+                    android:layout_marginStart="10dp"
+                    android:textColor="#8a8a8a"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/circle"
                     android:orientation="vertical"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginVertical="10dp"
-
+                    android:id="@+id/sequence"
                     >
-                   <com.google.android.material.textview.MaterialTextView
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:text="Your priority sequence"
-                       android:textSize="25sp"
-                       android:fontFamily="@font/maven_pro"
-                       android:textStyle="bold"
-                       android:textAlignment="center"
-                       android:gravity="center"
-                       />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_marginVertical="10dp"
-                        android:id="@+id/sequence"
+                        android:orientation="horizontal"
+                        android:layout_alignParentStart="true"
                         >
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@mipmap/vote_counter"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:id="@+id/vote_counter"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/vote_count_no"
+                            android:text="0"
+                            android:textColor="#7f7395"
+                            android:layout_marginStart="5dp"
+                            android:textSize="12sp"/>
                     </LinearLayout>
 
-                </LinearLayout>
+                    <TextView
+                        android:id="@+id/live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginEnd="10dp"
+                        android:text="LIVE"
+                        android:textColor="#ee0006"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        android:layout_alignParentEnd="true"
+                        />
+                </RelativeLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/submit"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cornerRadius="20dp"
-                    android:layout_gravity="center"
-                    android:text="SUBMIT"
+                    app:cornerRadius="4dp"
+                    android:text="Vote"
+                    android:textAllCaps="false"
                     android:fontFamily="@font/maven_pro"
                     android:textStyle="bold"
-                    android:layout_marginTop="50dp"
                     android:padding="10dp"
                     android:textSize="15sp"
+                    android:layout_margin="20dp"
                     android:stateListAnimator="@animator/button_anim"/>
-
 
 
             </LinearLayout>
         </ScrollView>
-
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-
+    </LinearLayout>
 
 </LinearLayout>

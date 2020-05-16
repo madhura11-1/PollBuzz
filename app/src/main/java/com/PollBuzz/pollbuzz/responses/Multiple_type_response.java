@@ -385,7 +385,7 @@ public class Multiple_type_response extends AppCompatActivity {
                                 button.setBackgroundResource(R.drawable.border_gsignin);
                                 button.setText(entry.getKey());
                                 update.put(entry.getKey(), entry.getValue());
-                                button.setTextSize(20.0f);
+                                button.setTextSize(14.0f);
                                 group.addView(button);
                                 int finalI = i;
                                 button.setOnClickListener(new View.OnClickListener() {
