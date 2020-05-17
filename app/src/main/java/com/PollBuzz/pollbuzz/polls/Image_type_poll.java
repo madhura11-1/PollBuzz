@@ -92,7 +92,6 @@ public class Image_type_poll extends AppCompatActivity {
 
     Button add;
     LinearLayout l1, l2, group;
-    ImageButton home, logout;
     Uri uri1, uri2;
     ImageView view1, view2;
     RadioButton b1, b2;
@@ -133,7 +132,6 @@ public class Image_type_poll extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setGlobals();
-        setActionBarFunctionality();
         registerForContextMenu(b1);
         registerForContextMenu(b2);
         setListeners();
@@ -358,17 +356,6 @@ public class Image_type_poll extends AppCompatActivity {
 
     }
 
-    private void setActionBarFunctionality() {
-        home.setOnClickListener(v -> {
-            Intent i = new Intent(Image_type_poll.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-        });
-        logout.setOnClickListener(v -> {
-            fb.signOut(this);
-        });
-    }
-
     private void setGlobals() {
         setContentView(R.layout.activity_image_type_poll);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
@@ -387,7 +374,6 @@ public class Image_type_poll extends AppCompatActivity {
         view1 = findViewById(R.id.image1);
         view2 = findViewById(R.id.image2);
         text1 = findViewById(R.id.text1);
-        home = view.findViewById(R.id.home);
         post_image = findViewById(R.id.post_imagetype);
         question_image = findViewById(R.id.question_imagetype);
         dialog = new KAlertDialog(Image_type_poll.this, SweetAlertDialog.PROGRESS_TYPE);
@@ -593,7 +579,6 @@ public class Image_type_poll extends AppCompatActivity {
             if (url != null) {
                 Glide.with(this)
                         .load(url)
-                        .transform(new RoundedCorners(50))
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .into(view);
@@ -733,7 +718,6 @@ public class Image_type_poll extends AppCompatActivity {
             polldetails.setCreated_date(dateFormat.parse(formatteddate));
             polldetails.setPoll_type("PICTURE BASED");
             if (flagm == 1) {
-                Log.d("yes", "item");
                 polldetails.setLive(true);
                 polldetails.setLivePoll(true);
                 polldetails.setSeconds(sec);
@@ -749,7 +733,6 @@ public class Image_type_poll extends AppCompatActivity {
             fb.getPollsCollection().add(polldetails)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-//                            deleteCache();
                             Map<String, Object> m = new HashMap<>();
                             m.put("pollId", task.getResult().getId());
                             m.put("timestamp", Timestamp.now().getSeconds());

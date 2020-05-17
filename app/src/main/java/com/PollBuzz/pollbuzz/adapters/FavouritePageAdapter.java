@@ -401,7 +401,6 @@ public class FavouritePageAdapter extends RecyclerView.Adapter<FavouritePageAdap
             pPicArea = itemView.findViewById(R.id.profileArea);
            // voteArea = itemView.findViewById(R.id.voteArea);
             profilePic = itemView.findViewById(R.id.pPic);
-            fav_author=itemView.findViewById(R.id.fav_author);
             fav_author.setVisibility(View.GONE);
             live = itemView.findViewById(R.id.live);
             cardV=itemView.findViewById(R.id.cardV);
