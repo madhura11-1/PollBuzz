@@ -1,6 +1,6 @@
 # PollBuzz
 
-PollBuzz is polling application where a user can:
+PollBuzz is polling application where a user can:  
 1.Create a poll  
 2.Vote for other user's poll  
 3.Create a live poll.The time for live poll can be selected or it can be customized  
